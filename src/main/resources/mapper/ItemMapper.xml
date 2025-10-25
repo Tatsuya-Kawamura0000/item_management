@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.itemmanagement.mapper.ItemMapper">
+	<select id="findAll" resultType="com.example.itemmanagement.entity.Items">
+  <![CDATA[
+    SELECT
+      items.id,
+      items.name,
+      items.category_id AS categoryId,
+      items.amount,
+      items.deadline,
+      items.purchase_date AS purchaseDate,
+      items.others,
+      items.status,
+      categories.name AS categoryName
+    FROM
+      items
+    INNER JOIN categories
+      ON items.category_id = categories.id
+    WHERE
+      items.status <> 0
+  ]]>
+	</select>
+	
+	<insert id="add">
+		INSERT INTO items(
+			name,
+			category_id,
+			amount,
+			deadline,
+			purchase_date,
+			others,
+			status
+		) VALUES (
+			#{name},
+			#{categoryId},
+			#{amount},
+			#{deadline},
+			#{purchaseDate},
+			#{others},
+			#{status}
+		)
+	</insert>
+</mapper>	

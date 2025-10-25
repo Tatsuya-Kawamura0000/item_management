@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{/style.css}">
+<script  th:src="@{js/jquery-3.7.1.min.js}"></script>
+<script  th:src="@{js/script.js}"></script>
+
+<title>食材一覧</title>
+</head>
+<body>
+	<h1>食材一覧</h1>
+	<a th:href="@{/users/add}">食材追加</a>
+
+	<table>
+		<tr>
+			<th></th>
+			<th>食材</th>
+			<th>カテゴリー</th>
+			<th>量</th>
+			<th>期限</th>
+			<th>購入日</th>
+			<th>その他</th>
+			<th></th>
+		</tr>
+
+		<tr th:each="item: ${items}">
+			<td><a th:href="@{/users/edit/{id}(id=${item.id})}">編集</a></td>
+			
+			<td th:text="${item.name}"></td>
+			<td th:text="${item.categoryName}"></td>
+			<td th:text="${item.amount}"></td>
+			<td th:text="${item.deadline}"></td>
+			<td th:text="${item.purchaseDate}"></td>
+			<td th:text="${item.others}"></td>
+			<td th:if="${item.status == 1}">
+			<form th:action="@{/users/stop/{id}(id=${item.id})}" method="post">
+			<input type="submit" value="使い切った！" class="button">
+			</form>
+			</td>
+			
+		</tr>
+	</table>
+</body>
+</html>
