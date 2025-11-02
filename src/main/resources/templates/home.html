@@ -11,7 +11,8 @@
 <body>
 	<h1>食材一覧</h1>
 	<a th:href="@{/users/add}">食材追加</a>
-
+	<a th:href="@{/users/shoppingList}">買い物リスト</a>
+	
 	<table>
 		<tr>
 			<th></th>
@@ -34,9 +35,14 @@
 			<td th:text="${item.purchaseDate}"></td>
 			<td th:text="${item.others}"></td>
 			<td th:if="${item.status == 1}">
-			<form th:action="@{/users/stop/{id}(id=${item.id})}" method="post">
+			<form th:action="@{/users/stop/{id}(id=${item.id})}" method="post" onsubmit="return confirm('使い切りましたか？');">
 			<input type="submit" value="使い切った！" class="button">
+			<td th:if="${item.expiringSoon}" style="color:red;">期限が近い！</td>
 			</form>
+			
+
+			</tr>
+			
 			</td>
 			
 		</tr>

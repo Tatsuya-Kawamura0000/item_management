@@ -12,4 +12,11 @@ public interface ItemMapper {
 	List<Items> findAll();  //items一覧を返すメソッド
 
 	int add(Items entity);
+	
+	int stop(int id); //statsを0に変更（消費済み）するメソッド
+	
+	Items findById(int id);
+	
+	int update (Items item);
+	
 }

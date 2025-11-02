@@ -1,30 +1,21 @@
 package com.example.itemmanagement.service;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.mapper.ItemMapper;
 
 @Service
-public class GetAllItemsService {
+public class StopItemService {
 	
 	@Autowired 
 	private ItemMapper mapper;
 
 	@Transactional 
-	public List<Items> getAllItems() {
+	public void stopItem(int id) {
 
-		return mapper.findAll(); //mapper.findAll()メソッドで取得したitems一覧をItems型のリストで返却
+		 mapper.stop(id); 			//mapper.stop(id)メソッドで,引数に渡したidを持つ食品のstatusを0に更新
 
 	}
-	
-	public Items getItemById(int id) {
-		
-        return mapper.findById(id);
-    }
 
 }

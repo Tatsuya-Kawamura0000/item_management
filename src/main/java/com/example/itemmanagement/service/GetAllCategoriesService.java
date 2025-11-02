@@ -10,7 +10,7 @@ import com.example.itemmanagement.entity.Categories;
 import com.example.itemmanagement.mapper.CategoryMapper;
 
 @Service
-public class GetAllCategoriesService {
+public class GetAllCategoriesService {					//全カテゴリーをリスト型で返却するサービス
 	
 	@Autowired
     private CategoryMapper mapper;

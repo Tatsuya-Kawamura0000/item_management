@@ -43,4 +43,42 @@
 			#{status}
 		)
 	</insert>
+	
+	<update id="stop">
+   		 UPDATE
+   		 	items
+   		 SET 
+			status = 0
+   		 WHERE 
+   		 	id = #{id}			<!-- #{id} が Mapper 引数の id に置き換わる -->
+	</update>
+	
+	<select id="findById" parameterType="int" resultType="com.example.itemmanagement.entity.Items">
+    SELECT 
+        i.id,
+        i.name,
+        i.category_id AS categoryId,
+        c.name AS categoryName,
+        i.amount,
+        i.deadline,
+        i.purchase_date AS purchaseDate,
+        i.others,
+        i.status
+    FROM items i
+   		 LEFT JOIN categories c ON i.category_id = c.id
+    WHERE i.id = #{id}
+	</select>
+
+ 	<update id="update" parameterType="com.example.itemmanagement.entity.Items">
+        UPDATE items
+        SET 
+            name = #{name},
+            category_id = #{categoryId},
+            amount = #{amount},
+            deadline = #{deadline},
+            purchase_date = #{purchaseDate},
+            others = #{others}
+        WHERE id = #{id}
+    </update>
+
 </mapper>	

@@ -16,7 +16,7 @@
 </head>
 <body>
 	<div class="form-body">
-	<h1>食材追加</h1>
+	<h1>食材追加</h1> 
 
 	<form th:action="@{/users}" th:object="${form}" method="POST">
 
@@ -64,6 +64,7 @@
 				</div>
 
 		<input type="submit" value="追加">
+		<a th:href="@{/users}" class="button">戻る</a>
 
 	</form>
 	</div>

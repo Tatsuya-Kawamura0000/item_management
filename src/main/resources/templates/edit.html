@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/style.css}">
+
+    <!-- jQuery（先に読み込む） -->
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
+    <!-- DatepickerのCSS/JS -->
+    <link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
+    <script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
+
+    <title>食材編集</title>
+</head>
+<body>
+    <h1>食材編集</h1>
+
+    <form th:action="@{/users/update/{id}(id=${item.id})}" method="post">
+
+        <table>
+            <tr>
+                <th>食材名</th>
+                <td><input type="text" name="name" th:value="${item.name}" required></td>
+            </tr>
+
+            <tr>
+                <th>カテゴリー</th>
+                <td>
+                    <select name="categoryId" required>
+                        <option value="">--選択してください--</option>
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"
+                                th:selected="${category.id == item.categoryId}">
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th>量</th>
+                <td><input type="text" name="amount" th:value="${item.amount}"></td>
+            </tr>
+
+            <tr>
+                <th>期限</th>
+                <td><input type="text" id="deadline" name="deadline" th:value="${item.deadline}"></td>
+            </tr>
+
+            <tr>
+                <th>購入日</th>
+                <td><input type="text" id="purchaseDate" name="purchaseDate" th:value="${item.purchaseDate}"></td>
+            </tr>
+
+            <tr>
+                <th>その他</th>
+                <td><textarea name="others" rows="3" cols="30" th:text="${item.others}"></textarea></td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <input type="submit" value="更新する" class="button">
+            <a th:href="@{/users}" class="button">戻る</a>
+        </div>
+
+    </form>
+
+    <script>
+        // Bootstrap Datepicker 初期化（日本語対応）
+        $('#deadline, #purchaseDate').datepicker({
+            format: 'yyyy-mm-dd',
+            language: 'ja',
+            autoclose: true,
+            todayHighligh
+
