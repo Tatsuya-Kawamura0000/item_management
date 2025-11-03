@@ -19,4 +19,7 @@ public interface ItemMapper {
 	
 	int update (Items item);
 	
+	int updateFavorite(Items item);
+
+	
 }

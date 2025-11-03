@@ -14,6 +14,7 @@
       items.purchase_date AS purchaseDate,
       items.others,
       items.status,
+      items.favorite_flg AS favorite,
       categories.name AS categoryName
     FROM
       items
@@ -21,6 +22,8 @@
       ON items.category_id = categories.id
     WHERE
       items.status <> 0
+    ORDER BY 
+      items.id ASC
   ]]>
 	</select>
 	
@@ -63,7 +66,8 @@
         i.deadline,
         i.purchase_date AS purchaseDate,
         i.others,
-        i.status
+        i.status,
+        i.favorite_flg AS favorite
     FROM items i
    		 LEFT JOIN categories c ON i.category_id = c.id
     WHERE i.id = #{id}
@@ -77,8 +81,17 @@
             amount = #{amount},
             deadline = #{deadline},
             purchase_date = #{purchaseDate},
-            others = #{others}
+            others = #{others},
+            favorite_flg = #{favorite}
         WHERE id = #{id}
+        
     </update>
+    
+    <update id="updateFavorite" parameterType="com.example.itemmanagement.entity.Items">
+    UPDATE items
+    SET favorite_flg = #{favorite}
+    WHERE id = #{id}
+	</update>
+    
 
 </mapper>	

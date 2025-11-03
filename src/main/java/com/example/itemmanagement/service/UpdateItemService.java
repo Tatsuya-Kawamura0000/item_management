@@ -19,5 +19,11 @@ public class UpdateItemService {
 	        
 	    }
 	    
+	    public void updateFavorite(Items item) {
+	    	
+	        mapper.updateFavorite(item);
+	    }
+
+	    
 	}
 

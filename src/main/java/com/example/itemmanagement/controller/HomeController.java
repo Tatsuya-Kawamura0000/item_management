@@ -150,4 +150,20 @@ public class HomeController {
 
 	}
 	
+	@PostMapping("/favorite/{id}")
+	public String toggleFavorite(@PathVariable("id") int id) {
+
+	    // IDでアイテム取得
+	    Items item = getAllItemsService.getItemById(id);
+
+	    // favoriteを反転
+	    item.setFavorite(!item.isFavorite());
+
+	    // 更新
+	    updateItemService.updateFavorite(item);
+
+	    // 一覧に戻る
+	    return "redirect:/users";
+	}
+
 }

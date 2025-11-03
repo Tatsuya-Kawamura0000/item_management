@@ -31,4 +31,6 @@ public class Items {
 	
 	private boolean expiringSoon;		//期限が3日以内であれば、true
 	
+	private boolean favorite;
+	
 }
