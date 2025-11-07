@@ -134,8 +134,8 @@ a.button:hover { color: #6a1b9a; }
                 <th>期限</th>
                 <th>メモ</th>
                 <th>お気に入り</th>
-                <th>使い切ったボタン</th>
-                <th>注意</th>
+                <th></th>
+                <th></th>
             </tr>
 
             <tr th:each="item : ${items}">
@@ -162,6 +162,19 @@ a.button:hover { color: #6a1b9a; }
         </table>
     </div>
 </div>
-
+<script th:inline="javascript">
+window.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('popupMessage');
+    if (popup) {
+        // 2.5秒後にフェードアウト
+        setTimeout(() => {
+            popup.style.transition = "opacity 0.5s ease-out";
+            popup.style.opacity = '0';
+            // フェードアウト後に完全削除
+            setTimeout(() => popup.remove(), 500);
+        }, 2500);
+    }
+});
+</script>
 </body>
 </html>
