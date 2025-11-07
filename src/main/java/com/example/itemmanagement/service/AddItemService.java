@@ -32,6 +32,8 @@ public class AddItemService {
 		entity.setOthers(form.getOthers());
 
 		entity.setStatus(1);
+		
+		entity.setFavorite(form.isFavorite());
 
 		return mapper.add(entity); //UserMapperのcreateメソッド
 		

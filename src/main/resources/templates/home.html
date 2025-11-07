@@ -13,6 +13,13 @@
 	<a th:href="@{/users/add}">食材追加</a>
 	<a th:href="@{/users/shoppingList}">買い物リスト</a>
 	
+	<!-- ✅ 成功メッセージ表示部分 -->
+	<div id="popupMessage"
+	     th:if="${successMessage}"
+	     th:text="${successMessage}"
+	     class="popup-message">
+	</div>
+	
 	<table>
 		<tr>
 			<th></th>
@@ -51,9 +58,68 @@
 		        </form>
 		    </td>
 
-		    <td th:if="${item.expiringSoon}" style="color:red;">期限が近い！</td>
+		    <td th:if="${item.expiringSoon}" style="color:red;">気を付けて！</td>
 		    <td th:if="${!item.expiringSoon}"></td>
 		</tr>
+		
+
+		
+		<style>
+		  .popup-message {
+		    position: fixed;
+		    top: 20px;
+		    right: 20px;
+		    background-color: #4CAF50;
+		    color: white;
+		    padding: 10px 20px;
+		    border-radius: 8px;
+		    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+		    z-index: 1000;
+		    opacity: 0.95;
+		    font-weight: bold;
+		    transition: opacity 0.5s ease-out;
+		  }
+		</style>
+
+		<script th:inline="javascript">
+		  // ページ読み込み時にポップアップを2.5秒後に消す
+		  window.addEventListener('DOMContentLoaded', function() {
+		    const popup = document.getElementById('popupMessage');
+		    if (popup) {
+		      setTimeout(() => {
+		        popup.style.opacity = '0';
+		        setTimeout(() => popup.remove(), 500); // フェードアウト後に削除
+		      }, 2500);
+		    }
+			
+			const confirmAdd = /*[[${confirmAddToList}]]*/ false;
+			const targetItemId = /*[[${targetItemId}]]*/ 0;
+			
+			
+			// --- ここから追加 ---
+			console.log("confirmAdd:", confirmAdd);
+			console.log("targetItemId:", targetItemId);
+			// --- ここまで追加 ---
+
+			    if (confirmAdd) {
+			      const result = confirm('お気に入り登録されています。\n買い物リストに追加しますか？');
+				  
+				  // --- ここから追加 ---
+				  console.log("User clicked 'はい'? ", result);
+				  // --- ここまで追加 ---
+				  
+			      if (result) {
+			        // 「はい」→ 買い物リスト追加リクエストを送信
+			        fetch(`/users/add-to-shopping-list/${targetItemId}`, {
+			          method: 'POST'
+			        }).then(() => {
+			          alert('買い物リストに追加しました！');
+			        });
+			      }
+			    }
+			
+		  });
+		</script>
 			
 		
 	</table>

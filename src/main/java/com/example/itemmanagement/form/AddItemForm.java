@@ -28,6 +28,8 @@ public class AddItemForm {
 	private Integer status;
 	
 	private String categoryName;
+	
+	private boolean favorite;
 
 	public int getId() {
 		return id;

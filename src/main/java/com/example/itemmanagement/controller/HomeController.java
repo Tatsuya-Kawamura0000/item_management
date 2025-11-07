@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.itemmanagement.entity.Categories;
 import com.example.itemmanagement.entity.Items;
+import com.example.itemmanagement.entity.ShoppingListItem;
 import com.example.itemmanagement.form.AddItemForm;
+import com.example.itemmanagement.mapper.ShoppingListMapper;
 import com.example.itemmanagement.service.AddItemService;
+import com.example.itemmanagement.service.AddToShoppingListService;
 import com.example.itemmanagement.service.GetAllCategoriesService;
 import com.example.itemmanagement.service.GetAllItemsService;
 import com.example.itemmanagement.service.StopItemService;
@@ -40,6 +44,12 @@ public class HomeController {
 	
 	@Autowired
 	private  UpdateItemService updateItemService;
+	
+	@Autowired
+	private ShoppingListMapper shoppingListMapper;
+	
+	@Autowired
+	private  AddToShoppingListService addToShoppingListService;
 
 	
 	@GetMapping											//home画面をリクエストされた時
@@ -87,7 +97,8 @@ public class HomeController {
 
 	
 	@PostMapping											
-	public String create(@Validated @ModelAttribute("form") AddItemForm form, BindingResult result, Model model) {
+	public String create(@Validated @ModelAttribute("form") AddItemForm form, BindingResult result, Model model,
+			 RedirectAttributes redirectAttributes) {
 
 		List<Categories> categories = getAllCategoriesService.getAllCategories();
 
@@ -104,6 +115,9 @@ public class HomeController {
 
 		
 		addItemService.add(form);					// 食材追加処理実行
+		
+		// ✅ 一時的なメッセージを追加
+	    redirectAttributes.addFlashAttribute("successMessage", "食材を登録しました！");
 
 		return "redirect:/users";
 
@@ -111,9 +125,22 @@ public class HomeController {
 	}
 	
 	@PostMapping("/stop/{id}")										//使い切ったボタンを押した食品のIDを受け取る
-	public String stop(@PathVariable("id") int id, Model model) {
+	public String stop(@PathVariable("id") int id, Model model,RedirectAttributes redirectAttributes) {
  		
-		stopItemService.stopItem(id);								//食品の論理削除（）メソッド呼び出し。status=1→0 に。
+		
+	    // 🍀 IDで1件取得（お気に入りフラグ確認のため）
+	    Items item = getAllItemsService.getItemById(id);
+	    
+	    // ✅ お気に入り登録されているかチェック
+	    if (item.isFavorite()) {
+	        // ダイアログを出すためのフラグをセット
+	        redirectAttributes.addFlashAttribute("confirmAddToList", true);
+	        redirectAttributes.addFlashAttribute("targetItemId", id);
+	    }
+	    
+	    stopItemService.stopItem(id);								//食品の論理削除（）メソッド呼び出し。status=1→0 に。
+		
+		redirectAttributes.addFlashAttribute("successMessage", "食材を使い切りました！");
 		
 		 return "redirect:/users"; 
 		
@@ -145,6 +172,9 @@ public class HomeController {
 	
 	@GetMapping("/shoppingList")									//買い物リスト画面をリクエストされた時
 	public String shoppingList(Model model) {
+		
+		List<ShoppingListItem> listItems = shoppingListMapper.findAll();  // ← まず Mapper を作る
+	    model.addAttribute("listItems", listItems);
 
 		return "shoppingList";									
 
@@ -165,5 +195,19 @@ public class HomeController {
 	    // 一覧に戻る
 	    return "redirect:/users";
 	}
+	
+	@PostMapping("/add-to-shopping-list/{id}")   // ✅ JS fetchから呼ばれるPOSTエンドポイント
+	public String addToShoppingList(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+
+	    // 🍀 サービス呼び出しでShoppingListに追加
+	    addToShoppingListService.addItemToList(id);
+
+	    // ✅ フラッシュメッセージを追加（画面に出す場合）
+	    redirectAttributes.addFlashAttribute("successMessage", "買い物リストに追加しました！");
+
+	    // 🍀 JS側ではページ遷移しないので空文字でも問題なし
+	    return "redirect:/users";  
+	}
+
 
 }

@@ -35,7 +35,8 @@
 			deadline,
 			purchase_date,
 			others,
-			status
+			status,
+			favorite_flg 
 		) VALUES (
 			#{name},
 			#{categoryId},
@@ -43,7 +44,8 @@
 			#{deadline},
 			#{purchaseDate},
 			#{others},
-			#{status}
+			#{status},
+			#{favorite}
 		)
 	</insert>
 	
@@ -93,5 +95,21 @@
     WHERE id = #{id}
 	</update>
     
+<insert id="insert" parameterType="com.example.itemmanagement.entity.Items">
+  INSERT INTO shopping_list(
+    item_id,
+    name,
+    category_id,
+    amount,
+    purchase_date
+  ) VALUES (
+    #{id},
+    #{name},
+    #{categoryId},
+    #{amount},
+    #{purchaseDate}
+  )
+</insert>
+
 
 </mapper>	
