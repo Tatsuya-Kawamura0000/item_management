@@ -2,126 +2,166 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" th:href="@{/style.css}">
-<script  th:src="@{js/jquery-3.7.1.min.js}"></script>
-<script  th:src="@{js/script.js}"></script>
-
 <title>食材一覧</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Baloo 2', cursive;
+    background-color: #f0f8ff; /* 明るい冷蔵庫風 */
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* 食材一覧を囲む背景 */
+.table-wrapper {
+    background-color: #ffffff; /* 白背景 */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.table-container {
+    overflow-x: auto; /* 横スクロール対応 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-weight: 500;
+    white-space: nowrap; /* 折り返し禁止 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hidden {
+    display: none; /* 非表示 */
+}
+
+.button {
+    padding: 4px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #ffcc80;
+    font-weight: 600;
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
+}
+
+.button:hover { background-color: #ffb74d; }
+
+.heart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+}
+
+.selected-row { background-color: #ffe6e6; }
+
+a.button {
+    text-decoration: none;
+    color: #4a148c;
+}
+a.button:hover { color: #6a1b9a; }
+
+.popup-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 1000;
+    opacity: 0.95;
+    font-weight: bold;
+    transition: opacity 0.5s ease-out;
+}
+</style>
 </head>
 <body>
-	<h1>食材一覧</h1>
-	<a th:href="@{/users/add}">食材追加</a>
-	<a th:href="@{/users/shoppingList}">買い物リスト</a>
-	
-	<!-- ✅ 成功メッセージ表示部分 -->
-	<div id="popupMessage"
-	     th:if="${successMessage}"
-	     th:text="${successMessage}"
-	     class="popup-message">
-	</div>
-	
-	<table>
-		<tr>
-			<th></th>
-			<th>食材</th>
-			<th>カテゴリー</th>
-			<th>量</th>
-			<th>期限</th>
-			<th>購入日</th>
-			<th>その他</th>
-			<th></th>
-		</tr>
+	<h1 style="
+	    font-family: 'Baloo 2', cursive;
+	    font-weight: 700;
+	    font-size: 32px;
+	    text-align: center;
+	    background-color: #ffe0b2;  /* 薄いオレンジ色 */
+	    padding: 15px 30px;
+	    border-radius: 20px;
+	    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+	    display: inline-block;
+	">
+	    🥦食材一覧🥕
+	</h1>
 
-		<tr th:each="item : ${items}">
-		    <td><a th:href="@{/users/edit/{id}(id=${item.id})}">編集</a></td>
-		    <td th:text="${item.name}"></td>
-		    <td th:text="${item.categoryName}"></td>
-		    <td th:text="${item.amount}"></td>
-		    <td th:text="${item.deadline}"></td>
-		    <td th:text="${item.purchaseDate}"></td>
-		    <td th:text="${item.others}"></td>
-			<td>
-			    <form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post">
-			        <button type="submit"
-			                th:style="${item.favorite} ? 'color:pink; font-size:20px;' : 'color:gray; font-size:20px;'"
-			                style="background:none; border:none; cursor:pointer;">
-			            &#10084;
-			        </button>
-			    </form>
-			</td>
+<div style="text-align:right; margin-bottom:10px;">
+    <a th:href="@{/users/add}" class="button">食材追加</a>
+    <a th:href="@{/users/shoppingList}" class="button">買い物リスト</a>
+</div>
 
-		    <!-- stopボタン -->
-		    <td>
-		        <form th:action="@{/users/stop/{id}(id=${item.id})}" method="post"
-		              onsubmit="return confirm('使い切りましたか？');">
-		            <input type="submit" value="使い切った！" class="button">
-		        </form>
-		    </td>
+<div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
-		    <td th:if="${item.expiringSoon}" style="color:red;">気を付けて！</td>
-		    <td th:if="${!item.expiringSoon}"></td>
-		</tr>
-		
+<!-- 食材一覧を囲む -->
+<div class="table-wrapper">
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>編集</th>
+                <th>食材</th>
+                <th class="hidden">カテゴリー</th>
+                <th>量</th>
+                <th>期限</th>
+                <th>メモ</th>
+                <th>お気に入り</th>
+                <th>使い切ったボタン</th>
+                <th>注意</th>
+            </tr>
 
-		
-		<style>
-		  .popup-message {
-		    position: fixed;
-		    top: 20px;
-		    right: 20px;
-		    background-color: #4CAF50;
-		    color: white;
-		    padding: 10px 20px;
-		    border-radius: 8px;
-		    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-		    z-index: 1000;
-		    opacity: 0.95;
-		    font-weight: bold;
-		    transition: opacity 0.5s ease-out;
-		  }
-		</style>
+            <tr th:each="item : ${items}">
+                <td><a th:href="@{/users/edit/{id}(id=${item.id})}" class="button">編集</a></td>
+                <td th:text="${item.name}"></td>
+                <td class="hidden" th:text="${item.categoryName}"></td>
+                <td th:text="${item.amount}"></td>
+                <td th:text="${item.deadline}"></td>
+                <td th:text="${item.others}"></td>
+                <td>
+                    <form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post">
+                        <button type="submit" class="heart-btn"
+                            th:style="${item.favorite} ? 'color:pink;' : 'color:gray;'">&#10084;</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/users/stop/{id}(id=${item.id})}" method="post"
+                          onsubmit="return confirm('使い切りましたか？');">
+                        <input type="submit" value="使い切った！" class="button">
+                    </form>
+                </td>
+                <td th:text="${item.expiringSoon} ? '気を付けて！' : ''" style="color:red;"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-		<script th:inline="javascript">
-		  // ページ読み込み時にポップアップを2.5秒後に消す
-		  window.addEventListener('DOMContentLoaded', function() {
-		    const popup = document.getElementById('popupMessage');
-		    if (popup) {
-		      setTimeout(() => {
-		        popup.style.opacity = '0';
-		        setTimeout(() => popup.remove(), 500); // フェードアウト後に削除
-		      }, 2500);
-		    }
-			
-			const confirmAdd = /*[[${confirmAddToList}]]*/ false;
-			const targetItemId = /*[[${targetItemId}]]*/ 0;
-			
-			
-			// --- ここから追加 ---
-			console.log("confirmAdd:", confirmAdd);
-			console.log("targetItemId:", targetItemId);
-			// --- ここまで追加 ---
-
-			    if (confirmAdd) {
-			      const result = confirm('お気に入り登録されています。\n買い物リストに追加しますか？');
-				  
-				  // --- ここから追加 ---
-				  console.log("User clicked 'はい'? ", result);
-				  // --- ここまで追加 ---
-				  
-			      if (result) {
-			        // 「はい」→ 買い物リスト追加リクエストを送信
-			        fetch(`/users/add-to-shopping-list/${targetItemId}`, {
-			          method: 'POST'
-			        }).then(() => {
-			          alert('買い物リストに追加しました！');
-			        });
-			      }
-			    }
-			
-		  });
-		</script>
-			
-		
-	</table>
 </body>
 </html>

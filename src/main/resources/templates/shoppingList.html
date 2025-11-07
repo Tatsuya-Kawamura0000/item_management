@@ -2,70 +2,150 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/style.css}">
-
-    <!-- jQuery -->
-    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-
-    <!-- DatepickerのCSS/JS -->
-    <link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
-    <script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
-    <script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
-
     <title>買い物リスト</title>
 
 	<style>
-	  table {
-	    width: 60%; /* テーブル全体の幅を画面の60%に */
-	    margin: 0 auto; /* 中央寄せ */
-	    border-collapse: collapse; /* 枠線をくっつける */
-	  }
+	.memo-container {
+	    width: 60%;
+	    margin: 20px auto;
+	    background: #fff9c4; /* 薄い黄色でメモ紙風 */
+	    padding: 20px;
+	    border: 2px dashed #fbc02d;
+	    border-radius: 10px;
+	    box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+	    font-family: 'Comic Sans MS', cursive;
+	}
 
-	  th, td {
+	table {
+	    width: 100%;
+	    border-collapse: collapse;
+	}
+
+	th, td {
 	    padding: 8px 12px;
 	    text-align: left;
-	    border-bottom: 1px solid #ddd;
-	  }
+	    border-bottom: 1px dashed #fbc02d;
+	}
 
-	  th {
-	    background-color: #f2f2f2;
-	  }
+	th {
+	    background-color: #fff3e0;
+	}
 
-	  /* 列ごとの幅を固定したい場合 */
-	  th:first-child, td:first-child { 
-	    width: 70%; /* 食材名の列 */
-	  }
+	td span.pencil {
+	    margin-left: 5px;
+	    font-size: 16px;
+	    cursor: pointer;
+	}
 
-	  th:nth-child(2), td:nth-child(2) { 
-	    width: 30%; /* 量の列 */
-	  }
+	.button {
+	    padding: 6px 12px;
+	    font-size: 14px;
+	    cursor: pointer;
+	    margin: 5px;
+	    border-radius: 6px;
+	    border: none;
+	    background-color: #ffcc80;
+	    box-shadow: 1px 2px 4px rgba(0,0,0,0.2);
+	}
+
+	.button:hover {
+	    background-color: #ffb74d;
+	}
+
+	.selected-row {
+	    background-color: #ffe6e6; /* チェックしたら薄い赤 */
+	}
+	.hidden {
+	    display: none;
+	}
+
+	.back-container {
+	    text-align: center;
+	    margin-top: 20px;
+	}
 	</style>
 
 </head>
 <body>
-    <h1 style="font-size:18px;">買い物リスト</h1>
+	<h1 style="text-align:center; font-family: 'Comic Sans MS', cursive;">📝 買い物リスト</h1>
 
-	<table>
-	    <tr>
-	        <th>食材名</th>
-	        <th>量</th>
-	    </tr>
+	<div class="memo-container">
+	    <div class="control-buttons" style="text-align:right;">
+	        <button onclick="checkAll()" class="button">全てチェック</button>
+	        <button onclick="uncheckAll()" class="button">全て解除</button>
+	    </div>
 
-	    <tr th:each="item : ${listItems}">
-	        <td th:text="${item.name}"></td>
-	        <td th:text="${item.amount}"></td>
+	    <table>
+	        <tr>
+	            <th>✔</th>
+	            <th>食材</th>
+	            <th>量</th>
+	            <th class="hidden">カテゴリ</th>
+	            <th class="hidden">購入日</th>
+	            <th class="hidden">購入済み</th>
+	            <th>操作</th>
+	        </tr>
 
-	        <!-- hidden でデータを保持 -->
-	        <input type="hidden" th:name="'categoryName'" th:value="${item.categoryName}" />
-	        <input type="hidden" th:name="'purchaseDate'" th:value="${item.purchaseDate}" />
-	        <input type="hidden" th:name="'purchasedFlg'" th:value="${item.purchasedFlg}" />
-	        <input type="hidden" th:name="'addedAt'" th:value="${item.addedAt}" />
-	    </tr>
-	</table>
+	        <tr th:each="item : ${listItems}">
+	            <td><input type="checkbox" name="selectedItems"></td>
+	            <td>
+	                <span th:text="${item.name}"></span>
+	                <span class="pencil">✏️</span>
+	            </td>
+	            <td th:text="${item.amount}"></td>
+	            <td class="hidden" th:text="${item.categoryName}"></td>
+	            <td class="hidden" th:text="${item.purchaseDate}"></td>
+	            <td class="hidden" th:text="${item.purchasedFlg}"></td>
+	            <td>
+	                <!-- 使い切ったボタン -->
+	                <form th:action="@{/users/stop/{id}(id=${item.id})}" method="post"
+	                      onsubmit="return confirm('使い切りましたか？');" style="display:inline;">
+	                    <input type="submit" value="購入済みにする" class="button">
+	                </form>
+	            </td>
+	        </tr>
+	    </table>
+	</div>
 
+	<!-- 戻るボタン -->
+	<div class="back-container">
+	    <a th:href="@{/users}" class="button">← 戻る</a>
+	</div>
 
+	<script>
+	    // 全チェック・全解除
+	    function checkAll() {
+	        document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
+	            cb.checked = true;
+	            highlightRow(cb);
+	        });
+	    }
 
-    <input type="submit" value="購入済" class="button">
-    <a th:href="@{/users}" class="button">戻る</a>
+	    function uncheckAll() {
+	        document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
+	            cb.checked = false;
+	            highlightRow(cb);
+	        });
+	    }
+
+	    // 行の背景色をチェック状態に応じて変更
+	    function highlightRow(checkbox) {
+	        const row = checkbox.closest('tr');
+	        if (checkbox.checked) {
+	            row.classList.add('selected-row');
+	        } else {
+	            row.classList.remove('selected-row');
+	        }
+	    }
+
+	    // ページ読み込み時にチェックボックスの状態に応じて背景色を設定
+	    window.addEventListener('DOMContentLoaded', function() {
+	        document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
+	            cb.addEventListener('change', () => highlightRow(cb));
+	            highlightRow(cb); // 初期状態チェック
+	        });
+	    });
+	</script>
+
 </body>
 </html>
