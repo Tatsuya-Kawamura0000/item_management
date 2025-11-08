@@ -106,7 +106,7 @@ a.button:hover { color: #6a1b9a; }
 	    font-weight: 700;
 	    font-size: 32px;
 	    text-align: center;
-	    background-color: #ffe0b2;  /* 薄いオレンジ色 */
+	    background-color: #ffe5b4;  /* うすいオレンジ色 */
 	    padding: 15px 30px;
 	    border-radius: 20px;
 	    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
@@ -152,8 +152,9 @@ a.button:hover { color: #6a1b9a; }
                     </form>
                 </td>
                 <td>
+                    <!-- ✅ お気に入り時に確認＆買い物リスト追加 -->
                     <form th:action="@{/users/stop/{id}(id=${item.id})}" method="post"
-                          onsubmit="return confirm('使い切りましたか？');">
+                          th:onsubmit="'return handleStop(event,' + ${item.favorite} + ',' + ${item.id} + ');'">
                         <input type="submit" value="使い切った！" class="button">
                     </form>
                 </td>
@@ -162,19 +163,50 @@ a.button:hover { color: #6a1b9a; }
         </table>
     </div>
 </div>
+
 <script th:inline="javascript">
+/* ✅ ポップアップの自動フェードアウト */
 window.addEventListener('DOMContentLoaded', function() {
     const popup = document.getElementById('popupMessage');
     if (popup) {
-        // 2.5秒後にフェードアウト
         setTimeout(() => {
             popup.style.transition = "opacity 0.5s ease-out";
             popup.style.opacity = '0';
-            // フェードアウト後に完全削除
             setTimeout(() => popup.remove(), 500);
         }, 2500);
     }
 });
+
+/* ✅ お気に入りなら「買い物リスト追加」確認 */
+function handleStop(event, isFavorite, itemId) {
+    event.preventDefault();
+	
+	// 🟡 まず確認ダイアログを表示
+	const confirmed = confirm("使い切りましたか？");
+	if (!confirmed) {
+	    return; // キャンセルした場合、処理を中断
+	}
+
+    if (isFavorite) {
+        const addToList = confirm("この食材はお気に入りです。買い物リストに追加しますか？");
+        if (addToList) {
+            fetch(`/users/add-to-shopping-list/${itemId}`, {
+                method: "POST"
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("買い物リストに追加しました！");
+                } else {
+                    alert("追加に失敗しました。");
+                }
+            })
+            .catch(() => alert("通信エラーが発生しました。"));
+        }
+    }
+
+    // ✅ 「使い切った」フォームを送信
+    event.target.submit();
+}
 </script>
 </body>
 </html>
