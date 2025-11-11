@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.itemmanagement.entity.Categories;
@@ -23,6 +24,7 @@ import com.example.itemmanagement.service.AddItemService;
 import com.example.itemmanagement.service.AddToShoppingListService;
 import com.example.itemmanagement.service.GetAllCategoriesService;
 import com.example.itemmanagement.service.GetAllItemsService;
+import com.example.itemmanagement.service.GetFilterItemsService;
 import com.example.itemmanagement.service.StopItemService;
 import com.example.itemmanagement.service.UpdateItemService;
 
@@ -51,35 +53,39 @@ public class HomeController {
 	@Autowired
 	private  AddToShoppingListService addToShoppingListService;
 
+	@Autowired
+	private GetFilterItemsService getFilterItemsService;
+
 	
-	@GetMapping											//home画面をリクエストされた時
+	@GetMapping
 	public String index(Model model) {
 
-		
-		List<Items> items = getAllItemsService.getAllItems();
-		
-		
-	    for (Items item : items) {						// 期限3日以内かどうかのフラグをセット
-	    	
-	        if (item.getDeadline() != null) {
-	        	
-	            boolean expiringSoon = java.time.temporal.ChronoUnit.DAYS.between(
-	            		
-	                    java.time.LocalDate.now(), item.getDeadline()) <= 3;
-	            
-	            item.setExpiringSoon(expiringSoon);
-	            
-	        } else {
-	        	
-	            item.setExpiringSoon(false);
-	            
-	        }
-	        
-	    }
-		
-		model.addAttribute("items", items);
+	    List<Items> items = getAllItemsService.getAllItems();
 
-		return "home"; 									
+	    for (Items item : items) {
+	        if (item.getDeadline() != null) {
+	            long days = java.time.temporal.ChronoUnit.DAYS.between(
+	                    java.time.LocalDate.now(), item.getDeadline());
+
+	            if (days < 0) {
+	                item.setMessage("期限切れです、、");
+	            } else if (days <= 3) {
+	                item.setMessage("気を付けて！");
+	            } else {
+	                item.setMessage("");
+	            }
+	        } else {
+	            item.setMessage("");
+	        }
+	    }
+	    
+	    // ✅ カテゴリー一覧も追加
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
+	    model.addAttribute("categories", categories);
+
+	    model.addAttribute("items", items);
+
+	    return "home";
 	}
 
 	@GetMapping("/add")									//食材登録画面をリクエストされた時
@@ -181,7 +187,8 @@ public class HomeController {
 	}
 	
 	@PostMapping("/favorite/{id}")
-	public String toggleFavorite(@PathVariable("id") int id) {
+	public String toggleFavorite(@PathVariable("id") int id,@RequestParam(required = false) Integer category,
+	        @RequestParam(required = false) Boolean expiringSoon) {
 
 	    // IDでアイテム取得
 	    Items item = getAllItemsService.getItemById(id);
@@ -191,6 +198,14 @@ public class HomeController {
 
 	    // 更新
 	    updateItemService.updateFavorite(item);
+	    
+	    // ✅ フィルター条件がある場合は、その条件付きでリダイレクト
+	    if (category != null || expiringSoon != null) {
+	        StringBuilder url = new StringBuilder("redirect:/users/filter?");
+	        if (category != null) url.append("category=").append(category).append("&");
+	        if (expiringSoon != null && expiringSoon) url.append("expiringSoon=true");
+	        return url.toString();
+	    }
 
 	    // 一覧に戻る
 	    return "redirect:/users";
@@ -209,5 +224,40 @@ public class HomeController {
 	    return "redirect:/users";  
 	}
 
+	@GetMapping("/filter")
+	public String filterItems(
+	        @RequestParam(required = false) Integer category,
+	        @RequestParam(required = false) Boolean expiringSoon,
+	        Model model) {
 
+	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon);
+	    
+	    // ✅ メッセージ生成を追加
+	    for (Items item : filteredItems) {
+	        if (item.getDeadline() != null) {
+	            long days = java.time.temporal.ChronoUnit.DAYS.between(
+	                    java.time.LocalDate.now(), item.getDeadline());
+	            if (days < 0) {
+	                item.setMessage("期限切れです、、");
+	            } else if (days <= 3) {
+	                item.setMessage("気を付けて！");
+	            } else {
+	                item.setMessage("");
+	            }
+	        } else {
+	            item.setMessage("");
+	        }
+	    }
+
+	    // カテゴリー一覧（今後拡張しやすいようにDBやEnumから取得）
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
+
+	    model.addAttribute("items", filteredItems);
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("selectedCategory", category);
+	    model.addAttribute("expiringSoon", expiringSoon);
+
+	    return "home"; // 一覧ページのテンプレート名
+	}
+	
 }

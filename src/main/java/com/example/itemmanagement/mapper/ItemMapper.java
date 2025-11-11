@@ -3,6 +3,7 @@ package com.example.itemmanagement.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.itemmanagement.entity.Items;
 
@@ -21,5 +22,8 @@ public interface ItemMapper {
 	
 	int updateFavorite(Items item);
 
+    // 複数条件でフィルター
+    List<Items> filterItems(@Param("category") Integer category,
+                           @Param("expiringSoon") Boolean expiringSoon);
 	
 }

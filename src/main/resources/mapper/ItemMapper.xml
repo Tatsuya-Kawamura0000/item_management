@@ -111,5 +111,34 @@
   )
 </insert>
 
+    <!-- 複数条件でフィルター -->
+<select id="filterItems" parameterType="map" resultType="com.example.itemmanagement.entity.Items">
+<![CDATA[
+SELECT
+    items.id,
+    items.name,
+    items.category_id AS categoryId,
+    items.amount,
+    items.deadline,
+    items.purchase_date AS purchaseDate,
+    items.others,
+    items.status,
+    items.favorite_flg AS favorite,
+    categories.name AS categoryName
+FROM items
+INNER JOIN categories ON items.category_id = categories.id
+WHERE items.status <> 0
+]]>
+  <if test="category != null">
+    <![CDATA[ AND items.category_id = #{category} ]]>
+  </if>
+  
+  <if test="expiringSoon != null and expiringSoon">
+    <![CDATA[ AND (items.deadline - CURRENT_DATE) <= 3 ]]>
+  </if>
+  
+<![CDATA[ ORDER BY items.deadline ASC ]]>
+</select>
+
 
 </mapper>	

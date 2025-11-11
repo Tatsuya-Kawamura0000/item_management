@@ -33,4 +33,6 @@ public class Items {
 	
 	private boolean favorite;
 	
+	private String message; // 期限切れや注意メッセージ用
+	
 }
