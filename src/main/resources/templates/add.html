@@ -40,7 +40,7 @@
 
 		<div class="form-row">
 			<label for="deadline">期限</label>
-				<input type="text" th:field="*{deadline}"class="form-control"id="deadlineDate" />
+				<input type="text" th:field="*{deadline}"class="form-control"id="deadline" />
 		</div>
 
 		<div class="form-row">
@@ -78,17 +78,14 @@
 	</div>
 	
 	<script>
+	    // ページ読み込み後に実行
 	    $(function () {
-	        $('#deadlineDate').datepicker({
-	            format: 'yyyy/mm/dd',
-	            language: 'ja',
-	            autoclose: true
-	        });
-
-	        $('#purchaseDate').datepicker({
-	            format: 'yyyy/mm/dd',
-	            language: 'ja',
-	            autoclose: true
+	        // 期限と購入日の両方にカレンダーを設定
+	        $('#deadline, #purchaseDate').datepicker({
+	            format: 'yyyy/mm/dd',  // ← データベースに合わせて「-」でも「/」でもOK
+	            language: 'ja',         // 日本語カレンダー
+	            autoclose: true,        // 日付選択後に自動で閉じる
+	            todayHighlight: true    // 今日をハイライト表示
 	        });
 	    });
 	</script>
