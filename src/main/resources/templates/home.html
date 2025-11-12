@@ -6,99 +6,9 @@
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/style.css}">
 
-<style>
-body {
-    font-family: 'Baloo 2', cursive;
-    background-color: #f0f8ff; /* 明るい冷蔵庫風 */
-    margin: 0;
-    padding: 20px;
-}
 
-h1 {
-    text-align: center;
-    font-weight: 600;
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-/* 食材一覧を囲む背景 */
-.table-wrapper {
-    background-color: #ffffff; /* 白背景 */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.table-container {
-    overflow-x: auto; /* 横スクロール対応 */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
-}
-
-th, td {
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-weight: 500;
-    white-space: nowrap; /* 折り返し禁止 */
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.hidden {
-    display: none; /* 非表示 */
-}
-
-.button {
-    padding: 4px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 10px;
-    border: none;
-    background-color: #ffcc80;
-    font-weight: 600;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
-}
-
-.button:hover { background-color: #ffb74d; }
-
-.heart-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 22px;
-}
-
-.selected-row { background-color: #ffe6e6; }
-
-a.button {
-    text-decoration: none;
-    color: #4a148c;
-}
-a.button:hover { color: #6a1b9a; }
-
-.popup-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    z-index: 1000;
-    opacity: 0.95;
-    font-weight: bold;
-    transition: opacity 0.5s ease-out;
-}
-</style>
 </head>
 <body>
 	<h1 style="
@@ -121,23 +31,24 @@ a.button:hover { color: #6a1b9a; }
 </div>
 
 <!-- ✅ フィルターフォーム -->
-<form th:action="@{/users/filter}" method="get" style="margin-bottom: 15px;">
+<form th:action="@{/users/filter}" method="get" class="filter-form">
     <label>カテゴリー：</label>
-    <select name="category">
+    <select name="category" id="categoryFilter" class="category-select">
         <option value="">-- 全て --</option>
         <option th:each="cat : ${categories}" 
                 th:value="${cat.id}" 
                 th:text="${cat.name}"
-				th:selected="${cat.id == selectedCategory}"></option>
+                th:selected="${cat.id == selectedCategory}"></option>
     </select>
 
-    <label style="margin-left:10px;">
+    <label>
         <input type="checkbox" name="expiringSoon" value="true"
                th:checked="${param.expiringSoon}"> 期限が近いもの
     </label>
 
     <button type="submit" class="button">フィルター適用</button>
 </form>
+
 
 <div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
