@@ -2,7 +2,10 @@ package com.example.itemmanagement.controller;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -177,7 +180,11 @@ public class HomeController {
 	}
 	
 	@GetMapping("/shoppingList")									//買い物リスト画面をリクエストされた時
-	public String shoppingList(Model model) {
+	public String shoppingList(Model model, HttpServletRequest request) {
+	
+	    // CSRFトークンを取得してモデルに追加
+	    CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+	    model.addAttribute("_csrf", csrfToken);
 		
 		List<ShoppingListItem> listItems = shoppingListMapper.findAll();  // ← まず Mapper を作る
 	    model.addAttribute("listItems", listItems);
