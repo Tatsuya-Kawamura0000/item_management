@@ -140,5 +140,11 @@ WHERE items.status <> 0
 <![CDATA[ ORDER BY items.deadline ASC ]]>
 </select>
 
+<!-- ItemMapper.xml 内 -->
+<delete id="deleteFromShoppingList" parameterType="int">
+    DELETE FROM shopping_list
+    WHERE id = #{id}
+</delete>
+
 
 </mapper>	

@@ -79,6 +79,8 @@
 	        <button onclick="checkAll()" class="button">全てチェック</button>
 	        <button onclick="uncheckAll()" class="button">全て解除</button>
 	    </div>
+		
+	<div id="message" style="text-align:center; margin:10px 0; color:green;"></div>	
 
 	    <table>
 	        <tr>
@@ -114,9 +116,14 @@
 	</div>
 
 	<!-- 戻るボタン -->
-	<div class="back-container">
-	    <a th:href="@{/users}" class="button">← 戻る</a>
-	</div>
+	<button type="button" onclick="goBack()" class="button">食材一覧へ戻る</button>
+
+	<script>
+	    function goBack() {
+	        // /users に遷移して最新の一覧を取得
+	        window.location.href = '/users';
+	    }
+	</script>
 
 	<script>
 	    // 全チェック・全解除
@@ -172,29 +179,27 @@
 		    const deadline = document.getElementById("deadline").value;
 		    const others = document.getElementById("others").value;
 		    const favorite = document.getElementById("favorite").checked;
+			const categoryId = document.getElementById("categoryId").value; // ← ここで取得
 
 		    const data = {
-		        shoppingListId: id,
+		        id: id,
 		        name: name,
 		        amount: amount,
 		        deadline: deadline,
 		        others: others,
-		        favorite: favorite
+		        favorite: favorite,
+				categoryId: categoryId  // ← 追加
 		    };
-
-			// ★ CSRF無効化の場合、以下3行は削除またはコメントアウト
-			 /*
-			 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-			 const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-			 */
+			
+			// 必須チェック（任意）
+			    if (!categoryId) {
+			        alert("カテゴリーを選択してください");
+			        return;
+			    }
 
 		    fetch('/users/add-to-shopping-list', {
 		        method: 'POST',
-		        headers: {
-		            'Content-Type': 'application/json',
-					// ★ CSRF無効化の場合、この行も不要
-					//[header]: token
-		        },
+		        headers: { 'Content-Type': 'application/json' },
 		        body: JSON.stringify(data)
 		    })
 		    .then(response => {
@@ -202,28 +207,24 @@
 		        return response.json();
 		    })
 		    .then(item => {
-		        // テーブルに追加
-		        const table = document.querySelector('.memo-container table');
-		        const newRow = table.insertRow(-1);
+		        // 成功メッセージを表示
+		        const msgDiv = document.getElementById("message");
+		        msgDiv.style.color = "green";
+		        msgDiv.textContent = "食材一覧に追加しました！";
 
-				newRow.innerHTML = `
-				    <td><input type="checkbox" name="selectedItems"></td>
-				    <td><span>${item.name}</span><span class="pencil">✏️</span></td>
-				    <td>${item.amount}</td>
-				    <td class="hidden">${item.categoryName || ''}</td>
-				    <td class="hidden">${item.purchaseDate || ''}</td>
-				    <td class="hidden">${item.purchasedFlg || false}</td>
-				    <td>
-				        <button type="button" class="button"
-				                onclick="openPurchasedModal('${item.id}', '${item.name}')">
-				            購入済みにする
-				        </button>
-				    </td>
-				`;
-
+		        // モーダルを閉じる
 		        closeModal();
+
+		        // 追加した行は買い物リストから非表示に（オプション）
+		        const row = document.querySelector(`button[data-id='${id}']`)?.closest('tr');
+		        if (row) row.remove();
 		    })
-		    .catch(error => console.error('Error:', error));
+		    .catch(error => {
+		        console.error('Error:', error);
+		        const msgDiv = document.getElementById("message");
+		        msgDiv.style.color = "red";
+		        msgDiv.textContent = "失敗しました";
+		    });
 		}
 		
 	</script>
@@ -241,6 +242,17 @@
 					<!-- ★JSでセット -->
 					 <input type="text" id="itemName" name="itemName" readonly>
 	            </div>
+				
+				<div>
+				    <label>カテゴリー：</label>
+				    <select id="categoryId" name="categoryId" required>
+				        <option value="">-- 選択してください --</option>
+				        <option th:each="cat : ${categories}" 
+				                th:value="${cat.id}" 
+				                th:text="${cat.name}">
+				        </option>
+				    </select>
+				</div>
 
 	            <div>
 	                <label>量：</label>

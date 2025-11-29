@@ -188,6 +188,10 @@ public class HomeController {
 		
 		List<ShoppingListItem> listItems = shoppingListMapper.findAll();  // ← まず Mapper を作る
 	    model.addAttribute("listItems", listItems);
+	    
+	 // ← ここでカテゴリ一覧も追加
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
+	    model.addAttribute("categories", categories);
 
 		return "shoppingList";									
 
@@ -266,5 +270,7 @@ public class HomeController {
 
 	    return "home"; // 一覧ページのテンプレート名
 	}
+	
+	
 	
 }
