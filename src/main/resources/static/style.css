@@ -201,4 +201,67 @@ input[type="submit"]:hover,
 /* ボタンの統一スタイル（既存の.buttonをそのまま利用可） */
 
 
+/*shoppingList */
+
+.memo-container {
+	    width: 60%;
+	    margin: 20px auto;
+	    background: #fff9c4; 
+	    padding: 20px;
+	    border: 2px dashed #fbc02d;
+	    border-radius: 10px;
+	    box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+	    font-family: 'Comic Sans MS', cursive;
+	}
+
+	table {
+	    width: 100%;
+	    border-collapse: collapse;
+	}
+
+	th, td {
+	    padding: 8px 12px;
+	    text-align: left;
+	    border-bottom: 1px dashed #fbc02d;
+	}
+
+	th {
+	    background-color: #fff3e0;
+	}
+
+	td span.pencil {
+	    margin-left: 5px;
+	    font-size: 16px;
+	    cursor: pointer;
+	}
+
+	.button {
+	    padding: 6px 12px;
+	    font-size: 14px;
+	    cursor: pointer;
+	    margin: 5px;
+	    border-radius: 6px;
+	    border: none;
+	    background-color: #ffcc80;
+	    box-shadow: 1px 2px 4px rgba(0,0,0,0.2);
+	}
+
+	.button:hover {
+	    background-color: #ffb74d;
+	}
+
+	.selected-row {
+	    background-color: #ffe6e6; /* チェックしたら薄い赤 */
+	}
+	.hidden {
+	    display: none;
+	}
+
+	.back-container {
+	    text-align: center;
+	    margin-top: 20px;
+	}
+
+
+
 
