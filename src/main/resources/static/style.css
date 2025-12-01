@@ -263,5 +263,38 @@ input[type="submit"]:hover,
 	}
 
 
+	/* --- datepicker を小さくする --- */
+	.datepicker {
+	    font-size: 1000px !important;  /* 全体の縮小 */
+	}
+
+	.datepicker table tr td,
+	.datepicker table tr th {
+	    width: 20px !important;
+	    height: 20px !important;
+	    font-size: 12px !important;
+	    padding: 2px !important;
+	}
+	
+	.form-row {
+	    position: relative;
+	}	
+
+	/* 日付入力とカレンダーを横並びにする */
+	.date-row {
+	    display: flex;
+	    align-items: flex-start;
+	    gap: 10px; /* 入力欄とカレンダーの距離 */
+	    position: relative;
+	}
+	
+	/* 期限・購入日入力行を横並びにする */
+	.date-row {
+	    display: flex;
+	    align-items: flex-start;
+	    position: relative; /* カレンダー位置の基準にする */
+	}
+
+	
 
 

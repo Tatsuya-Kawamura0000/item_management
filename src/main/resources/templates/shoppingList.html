@@ -18,10 +18,6 @@
 	<h1 style="text-align:center; font-family: 'Comic Sans MS', cursive;">📝 買い物リスト</h1>
 
 	<div class="memo-container">
-	    <div class="control-buttons" style="text-align:right;">
-	        <button onclick="checkAll()" class="button">全てチェック</button>
-	        <button onclick="uncheckAll()" class="button">全て解除</button>
-	    </div>
 		
 	<div id="message" style="text-align:center; margin:10px 0; color:green;"></div>	
 
@@ -33,7 +29,7 @@
 	            <th class="hidden">カテゴリ</th>
 	            <th class="hidden">購入日</th>
 	            <th class="hidden">購入済み</th>
-	            <th>操作</th>
+				<th></th>
 	        </tr>
 
 	        <tr th:each="item : ${listItems}">
