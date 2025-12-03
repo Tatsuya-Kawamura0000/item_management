@@ -18,6 +18,10 @@
 <body>
 	<h1 style="text-align:center; font-family: 'Comic Sans MS', cursive;">📝 買い物リスト</h1>
 
+	<!-- 新規追加ボタン -->
+	<button type="button" class="button" onclick="openNewItemModal()">買い物リストに新規追加</button>
+
+	
 	<div class="memo-container">
 		
 	<div id="message" style="text-align:center; margin:10px 0; color:green;"></div>	
@@ -110,6 +114,31 @@
 	        </form>
 	    </div>
 	</div>
+	
+	<!-- 新規追加用モーダル -->
+	<div id="newItemModal" class="modal-overlay" style="display:none;">
+	    <div class="modal-content">
+	        <h2>新しい食材を追加</h2>
+
+	        <form id="newItemForm">
+	            <div>
+	                <label>食材名：</label>
+	                <input type="text" id="newItemName" name="name" required>
+	            </div>
+
+	            <div>
+	                <label>量：</label>
+	                <input type="text" id="newItemAmount" name="amount" required>
+	            </div>
+
+	            <div class="modal-buttons">
+	                <button type="button" onclick="submitNewItem()">追加</button>
+	                <button type="button" onclick="closeNewItemModal()">キャンセル</button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
+
 	
 	<script src="/js/shoppingList.js"></script>
 

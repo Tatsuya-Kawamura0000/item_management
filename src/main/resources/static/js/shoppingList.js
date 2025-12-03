@@ -37,31 +37,26 @@ function submitPurchased() {
 
     const data = { id, name, amount, deadline, others, favorite, categoryId };
 
-    fetch('/users/add-to-shopping-list', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-    })
-    .then(item => {
-        const msgDiv = document.getElementById("message");
-        msgDiv.style.color = "green";
-        msgDiv.textContent = "食材一覧に追加しました！";
-        closeModal();
+	fetch('/users/add-to-shopping-list', {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify(data)
+	})
+	.then(response => {
+	    if (!response.ok) throw new Error('Network response was not ok');
+	    return response.json(); // または response.text() でもOK
+	})
+	.then(item => {
+	    // 追加成功後に JS でリダイレクト
+	    window.location.href = '/users/shoppingList';
+	})
+	.catch(error => {
+	    console.error('Error:', error);
+	    const msgDiv = document.getElementById("message");
+	    msgDiv.style.color = "red";
+	    msgDiv.textContent = "失敗しました";
+	});
 
-        // 買い物リストの行を非表示
-        const row = document.querySelector(`button[data-id='${id}']`)?.closest('tr');
-        if (row) row.remove();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const msgDiv = document.getElementById("message");
-        msgDiv.style.color = "red";
-        msgDiv.textContent = "失敗しました";
-    });
 }
 
 // ------------------------------
@@ -111,12 +106,55 @@ function highlightRow(checkbox) {
     }
 }
 
+// ------------------------------
+// 新規追加モーダル操作（★グローバルスコープに出す）
+// ------------------------------
+function openNewItemModal() {
+    document.getElementById("newItemName").value = "";
+    document.getElementById("newItemAmount").value = "";
+    const modal = document.getElementById("newItemModal");
+    modal.style.display = "block";
+}
+
+function closeNewItemModal() {
+    const modal = document.getElementById("newItemModal");
+    modal.style.display = "none";
+}
+
+function submitNewItem() {
+    const name = document.getElementById("newItemName").value;
+    const amount = document.getElementById("newItemAmount").value;
+
+    if (!name || !amount) {
+        alert("食材名と量を入力してください");
+        return;
+    }
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/users/add-new-item-to-shopping-list";
+
+    form.innerHTML = `
+        <input type="hidden" name="name" value="${name}">
+        <input type="hidden" name="amount" value="${amount}">
+    `;
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// ------------------------------
+// DOM読み込み後にやること
+// ------------------------------
 window.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
         cb.addEventListener('change', () => highlightRow(cb));
         highlightRow(cb);
     });
 });
+
+
+
 
 
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.entity.ShoppingListItem;
+import com.example.itemmanagement.form.AddShoppingListItemForm;
 import com.example.itemmanagement.mapper.ItemMapper;
 import com.example.itemmanagement.mapper.ShoppingListMapper;
 
@@ -40,4 +41,19 @@ public class AddToShoppingListService {
             shoppingListMapper.insert(slItem);
         }
     }
+    
+    public ShoppingListItem addNewItem(AddShoppingListItemForm form) {
+        ShoppingListItem item = new ShoppingListItem();
+        item.setItemId(null);  // ← NEW（items に存在しないので null）
+        item.setUserId(0);
+        item.setName(form.getName());
+        item.setAmount(form.getAmount());
+        item.setStatus(true);
+        item.setPurchasedFlg(false);
+        item.setAddedAt(LocalDateTime.now());
+
+        shoppingListMapper.insert(item);
+        return item;
+    }
+
 }
