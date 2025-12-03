@@ -64,7 +64,9 @@ th, td {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 22px;   /* home.html と同じサイズ */
+    color: gray;       /* 初期色 */
+    transition: color 0.3s ease;
 }
 
 .selected-row { background-color: #ffe6e6; }
@@ -265,7 +267,7 @@ input[type="submit"]:hover,
 
 	/* --- datepicker を小さくする --- */
 	.datepicker {
-	    font-size: 1000px !important;  /* 全体の縮小 */
+	    font-size: 12px !important;  /* 全体の縮小 */
 	}
 
 	.datepicker table tr td,
@@ -294,7 +296,56 @@ input[type="submit"]:hover,
 	    align-items: flex-start;
 	    position: relative; /* カレンダー位置の基準にする */
 	}
-
 	
+	/* モーダルの背景 */
+	.modal-overlay {
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
 
+	    display: none;           /* 初期は非表示 */
+	    justify-content: center; /* 横中央 */
+	    align-items: center;     /* 縦中央 */
+	    z-index: 1000;
+	}
 
+	/* モーダル表示用クラス */
+	.modal-overlay.show {
+	    display: flex;           /* 表示時に flex を効かせる */
+	}
+
+	/* モーダルの中身 */
+	.modal-content {
+	    background-color: #fff;
+	    padding: 20px 30px;
+	    border-radius: 12px;
+	    max-width: 500px;     /* 最大幅 */
+	    width: 90%;           /* 画面幅に応じて可変 */
+	    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	    position: relative;
+	}
+
+	#favoriteHeart {
+	    color: gray;                /* 初期色 */
+	    transition: color 0.3s ease; /* 色変更を滑らかに */
+	}
+	
+	/* home.html と同じ薄ピンクハート用クラス */
+	.heart-home {
+	    color: #ffb6c1;      /* 薄ピンク */
+	    font-size: 22px;
+	    background: none;
+	    border: none;
+	    cursor: pointer;
+	    transition: color 0.3s ease;
+	}
+
+	/* ハートアイコン用 */
+	.heart-home i {
+	    color: #ffb6c1; /* home.html と同じ薄ピンク */
+	    font-size: 22px;
+	    transition: color 0.3s ease;
+	}

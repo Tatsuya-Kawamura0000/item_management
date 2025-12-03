@@ -6,11 +6,16 @@
 function openModal(shoppingListId, itemName) {
     document.getElementById("shoppingListId").value = shoppingListId;
     document.getElementById("itemName").value = itemName;
-    document.getElementById("purchasedModal").style.display = "block";
+
+    const modal = document.getElementById("purchasedModal");
+    modal.style.display = "block";   // ← これが絶対必要
+    modal.classList.add("show");
 }
 
 function closeModal() {
-    document.getElementById("purchasedModal").style.display = "none";
+    const modal = document.getElementById("purchasedModal");
+    modal.style.display = "none";    // ← 非表示
+    modal.classList.remove("show");
 }
 
 // ------------------------------
@@ -112,6 +117,9 @@ window.addEventListener('DOMContentLoaded', function() {
         highlightRow(cb);
     });
 });
+
+
+
 
 
 

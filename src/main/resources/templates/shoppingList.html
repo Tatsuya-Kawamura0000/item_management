@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
 	<link rel="stylesheet" th:href="@{/style.css}">
+
     <title>買い物リスト</title>
 
 	
@@ -46,7 +47,7 @@
 					<!-- ★JSに値を渡す -->
 					<button type="button" class="button"
 					        th:attr="data-id=${item.id}, data-name=${item.name}"
-					        onclick="openPurchasedModal(this.dataset.id, this.dataset.name)">
+							onclick="openModal(this.dataset.id, this.dataset.name)">
 					    購入済みにする
 					</button>
 	            </td>
