@@ -45,20 +45,23 @@
             </select>
         </div>
 
-        <div class="form-row date-row">
-            <div>
-                <label for="deadline">期限</label>
-                <input type="text" th:field="*{deadline}" class="form-control" id="deadline" />
-            </div>
-        </div>
+		
+		<div class="form-row date-row">
+		    <div>
+		        <label for="deadline">期限</label>
+		        <input type="date" th:field="*{deadline}" class="form-control" id="deadline" />
+		    </div>
+		</div>
 
-        <div class="form-row date-row">
-            <div>
-                <label for="purchaseDate">購入日</label>
-                <input type="text" th:field="*{purchaseDate}" class="form-control" id="purchaseDate" />
-                <div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
-            </div>
-        </div>
+	
+		<div class="form-row date-row">
+		    <div>
+		        <label for="purchaseDate">購入日</label>
+		        <input type="date" th:field="*{purchaseDate}" class="form-control" id="purchaseDate" />
+		        <div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
+		    </div>
+		</div>
+
 
         <div class="form-row">
             <label for="amount">量</label>

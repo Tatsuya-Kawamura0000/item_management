@@ -14,12 +14,4 @@ $(function () {
         heartBtn.css('color', fav ? '#ffb6c1' : 'gray');
     });
 
-    // 日付ピッカー初期化
-    $('#deadline, #purchaseDate').datepicker({
-        format: 'yyyy/mm/dd',
-        language: 'ja',
-        autoclose: true,
-        todayHighlight: true,
-        orientation: "bottom right"
-    });
 });

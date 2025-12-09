@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
 	<link rel="stylesheet" th:href="@{/style.css}">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" 
+	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
     <title>買い物リスト</title>
 
@@ -102,10 +106,17 @@
 	                <input type="text" id="others" name="others">
 	            </div>
 
-	            <div>
-	                <label>お気に入り：</label>
-	                <input type="checkbox" id="favorite" name="favorite">
-	            </div>
+				<div class="form-row">
+				    <label>お気に入り：</label>
+				    <div style="display:flex; align-items:center; gap:8px;">
+				        <button type="button" id="modalFavoriteButton" class="heart-btn heart-home">
+				            <i class="fa-solid fa-heart"></i>
+				        </button>
+				        <input type="hidden" id="modalFavoriteField" name="favoriteFlg" value="0">
+				    </div>
+				</div>
+
+
 
 	            <div class="modal-buttons">
 	                <button type="button" onclick="submitPurchased()">食材一覧へ追加</button>

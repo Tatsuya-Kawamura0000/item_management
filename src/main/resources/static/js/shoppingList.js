@@ -27,7 +27,10 @@ function submitPurchased() {
     const amount = document.getElementById("amount").value;
     const deadline = document.getElementById("deadline").value;
     const others = document.getElementById("others").value;
-    const favorite = document.getElementById("favorite").checked;
+
+    // ★ hidden を読む（0 / 1）
+    const favorite = document.getElementById("modalFavoriteField").value;
+
     const categoryId = document.getElementById("categoryId").value;
 
     if (!categoryId) {
@@ -37,27 +40,41 @@ function submitPurchased() {
 
     const data = { id, name, amount, deadline, others, favorite, categoryId };
 
-	fetch('/users/add-to-shopping-list', {
-	    method: 'POST',
-	    headers: { 'Content-Type': 'application/json' },
-	    body: JSON.stringify(data)
-	})
-	.then(response => {
-	    if (!response.ok) throw new Error('Network response was not ok');
-	    return response.json(); // または response.text() でもOK
-	})
-	.then(item => {
-	    // 追加成功後に JS でリダイレクト
-	    window.location.href = '/users/shoppingList';
-	})
-	.catch(error => {
-	    console.error('Error:', error);
-	    const msgDiv = document.getElementById("message");
-	    msgDiv.style.color = "red";
-	    msgDiv.textContent = "失敗しました";
-	});
-
+    fetch('/users/add-to-shopping-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+    })
+    .then(item => {
+        window.location.href = '/users/shoppingList';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("登録に失敗しました");
+    });
 }
+
+
+$(function () {
+
+    const modalHeartBtn = $('#modalFavoriteButton i');
+    const modalField = $('#modalFavoriteField');
+
+    // 初期色（0ならグレー、1ならピンク）
+    modalHeartBtn.css('color', modalField.val() === "1" ? '#ffb6c1' : 'gray');
+
+    // クリックで切り替え
+    $('#modalFavoriteButton').click(function () {
+        let fav = modalField.val() === "1" ? "0" : "1";  // 0 ⇄ 1
+        modalField.val(fav);
+        modalHeartBtn.css('color', fav === "1" ? '#ffb6c1' : 'gray');
+    });
+
+});
 
 // ------------------------------
 // 食材一覧へ戻る
@@ -142,6 +159,9 @@ function submitNewItem() {
     document.body.appendChild(form);
     form.submit();
 }
+
+
+
 
 // ------------------------------
 // DOM読み込み後にやること

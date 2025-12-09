@@ -42,15 +42,17 @@
                 <input type="text" name="amount" th:value="${item.amount}">
             </div>
 
-            <div class="form-row">
-                <label for="deadline">期限</label>
-                <input type="text" id="deadline" name="deadline" th:value="${item.deadline}">
-            </div>
+			<div class="form-row">
+			    <label for="deadline">期限</label>
+			    <!-- name はそのまま。初期値は JavaScript で必要なら変換してセット -->
+			    <input type="date" id="deadline" name="deadline" th:value="${item.deadline}" />
+			</div>
 
-            <div class="form-row">
-                <label for="purchaseDate">購入日</label>
-                <input type="text" id="purchaseDate" name="purchaseDate" th:value="${item.purchaseDate}">
-            </div>
+			<!-- 購入日 -->
+			<div class="form-row">
+			    <label for="purchaseDate">購入日</label>
+			    <input type="date" id="purchaseDate" name="purchaseDate" th:value="${item.purchaseDate}" />
+			</div>
 
             <div class="form-row">
                 <label for="others">その他</label>
@@ -64,15 +66,5 @@
         </form>
     </div>
 
-    <script>
-    $(function () {
-        $('#deadline, #purchaseDate').datepicker({
-            format: 'yyyy/mm/dd',
-            language: 'ja',
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
-    </script>
 </body>
 </html>
