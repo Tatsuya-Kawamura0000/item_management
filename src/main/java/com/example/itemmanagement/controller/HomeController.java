@@ -58,6 +58,16 @@ public class HomeController {
 
 	@Autowired
 	private GetFilterItemsService getFilterItemsService;
+	
+	@Controller
+	public class RootController {
+
+	    @GetMapping("/")
+	    public String root() {
+	        return "redirect:/users";
+	    }
+	}
+
 
 	
 	@GetMapping
