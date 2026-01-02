@@ -7,6 +7,9 @@
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" th:href="@{/style.css}">
+<!-- Font Awesome 読み込み -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 
 
 </head>
@@ -91,7 +94,33 @@
                         <input type="submit" value="使い切った！" class="button">
                     </form>
                 </td>
-				<td th:text="${item.message}" style="color:red;"></td>
+				<td
+				    th:style="
+				        ${item.message == '期限切れです、、'} ? 'color:red;' :
+				        (${item.message == '気を付けて！'} ? 'color:orange;' : '')
+				    "
+				>
+
+				    <!-- 🔥 期限切れ（赤） -->
+				    <span th:if="${item.message == '期限切れです、、'}">
+				        <i class="fa-solid fa-circle-exclamation" style="margin-right:6px;"></i>
+				        <span th:text="${item.message}"></span>
+				    </span>
+
+				    <!-- ⚠ 期限間近（オレンジ） -->
+				    <span th:if="${item.message == '気を付けて！'}">
+				        <i class="fa-solid fa-exclamation" style="margin-right:6px;"></i>
+				        <span th:text="${item.message}"></span>
+				    </span>
+
+				    <!-- メッセージなし -->
+				    <span th:if="${item.message == ''}"></span>
+				</td>
+
+
+
+
+
 
 
             </tr>
