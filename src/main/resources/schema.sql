@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE categories (
+    id serial PRIMARY KEY,
+    name varchar(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE items (
     id serial PRIMARY KEY,
     name varchar(50) NOT NULL,
