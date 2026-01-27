@@ -4,14 +4,14 @@ $(function () {
 
     // 初期表示
     const isFavorite = field.val() === "true";
-    heartBtn.css('color', isFavorite ? '#ffb6c1' : 'gray');
+    heartBtn.css('color', isFavorite ? '#d81b60' : 'gray');
 
     // クリックで色切替
     $('#favoriteButton').click(function() {
         let fav = field.val() === "true";
         fav = !fav;
         field.val(fav.toString());
-        heartBtn.css('color', fav ? '#ffb6c1' : 'gray');
+        heartBtn.css('color', fav ? '#d81b60' : 'gray');
     });
 
 });

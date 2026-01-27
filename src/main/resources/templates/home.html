@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -14,24 +15,25 @@
 
 </head>
 <body>
-	<h1 style="
-	    font-family: 'Baloo 2', cursive;
-	    font-weight: 700;
-	    font-size: 32px;
-	    text-align: center;
-	    background-color: #ffe5b4;  /* うすいオレンジ色 */
-	    padding: 15px 30px;
-	    border-radius: 20px;
-	    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-	    display: inline-block;
-	">
-	    🥦食材一覧🥕
-	</h1>
+	<div class="top-actions-container">
+	    <!-- 左：食材一覧 -->
+	    <div class="left-section">
+	        <h1 class="page-title">🥦食材一覧🥕</h1>
+	    </div>
 
-<div style="text-align:right; margin-bottom:10px;">
-    <a th:href="@{/users/add}" class="button">食材追加</a>
-    <a th:href="@{/users/shoppingList}" class="button">買い物リスト</a>
-</div>
+	    <!-- 右：ボタン群 -->
+	    <div class="right-section">
+	        <a th:href="@{/users/add}" class="add-btn">
+	            <i class="fa-solid fa-plus"></i>
+	            <span>食材追加</span>
+	        </a>
+
+	        <a th:href="@{/users/shoppingList}" class="basket-btn with-text">
+	            <i class="fa-solid fa-basket-shopping"></i>
+	            <span>買い物リスト</span>
+	        </a>
+	    </div>
+	</div>
 
 <!-- ✅ フィルターフォーム -->
 <form th:action="@{/users/filter}" method="get" class="filter-form">
@@ -71,9 +73,15 @@
                 <th></th>
             </tr>
 
-            <tr th:each="item : ${items}">
+            <tr th:each="item : ${items}" >
                 <td><a th:href="@{/users/edit/{id}(id=${item.id})}" class="button">編集</a></td>
-                <td th:text="${item.name}"></td>
+				<td class="food-cell">
+				  <span
+				    class="food-label"
+				    th:text="${item.name}"
+				    th:classappend="' category-' + ${item.categoryId}">
+				  </span>
+				</td>
                 <td class="hidden" th:text="${item.categoryName}"></td>
                 <td th:text="${item.amount}"></td>
                 <td th:text="${item.deadline}"></td>
@@ -83,8 +91,10 @@
 						<!-- ✅ 現在のフィルター条件を保持する hidden -->
 						<input type="hidden" name="category" th:value="${selectedCategory}">
 						<input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
-                        <button type="submit" class="heart-btn"
-                            th:style="${item.favorite} ? 'color:pink;' : 'color:gray;'">&#10084;</button>
+						<button type="submit" class="heart-btn">
+						    <i class="fa-solid fa-heart"
+						       th:classappend="${item.favorite} ? 'active' : ''"></i>
+						</button>
                     </form>
                 </td>
                 <td>
@@ -95,23 +105,23 @@
                     </form>
                 </td>
 				<td
-				    th:style="
-				        ${item.message == '期限切れです、、'} ? 'color:red;' :
-				        (${item.message == '気を付けて！'} ? 'color:orange;' : '')
+				    th:class="
+				        ${item.message == '期限切れです'} ? 'danger' :
+				        (${item.message == '気を付けて'} ? 'warning' : '')
 				    "
 				>
 
 				    <!-- 🔥 期限切れ（赤） -->
-				    <span th:if="${item.message == '期限切れです、、'}">
-				        <i class="fa-solid fa-circle-exclamation" style="margin-right:6px;"></i>
-				        <span th:text="${item.message}"></span>
+				    <span th:if="${item.message == '期限切れです'}">
+				        <i class="fa-solid fa-circle-exclamation" style="margin-right:6px; color: #c27a7a;"></i>
+						<span th:text="${item.message}" style="color: #c27a7a;"></span>
 				    </span>
 
-				    <!-- ⚠ 期限間近（オレンジ） -->
-				    <span th:if="${item.message == '気を付けて！'}">
-				        <i class="fa-solid fa-exclamation" style="margin-right:6px;"></i>
-				        <span th:text="${item.message}"></span>
-				    </span>
+					<!-- ⚠ 期限間近（オレンジ/黄色） -->
+					<span th:if="${item.message == '気を付けて'}">
+					    <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px; color: #cfa87c;"></i>
+					    <span th:text="${item.message}"></span>
+					</span>
 
 				    <!-- メッセージなし -->
 				    <span th:if="${item.message == ''}"></span>
@@ -172,5 +182,7 @@ function handleStop(event, isFavorite, itemId) {
     event.target.submit();
 }
 </script>
+
+
 </body>
 </html>

@@ -11,7 +11,7 @@
 
     <title>買い物リスト</title>
 
-	
+
 	
 	<!-- ★ CSRF無効化の場合、コメントアウト -->
 	    <!--
@@ -20,7 +20,7 @@
 	-->
 </head>
 <body>
-	<h1 style="text-align:center; font-family: 'Comic Sans MS', cursive;">📝 買い物リスト</h1>
+	<h1 class="shopping-title">📝 買い物リスト</h1>
 
 	<!-- 新規追加ボタン -->
 	<button type="button" class="button" onclick="openNewItemModal()">買い物リストに新規追加</button>
@@ -28,7 +28,7 @@
 	
 	<div class="memo-container">
 		
-	<div id="message" style="text-align:center; margin:10px 0; color:green;"></div>	
+	<div id="message" class="message-success"></div>	
 
 	    <table>
 	        <tr>
@@ -67,7 +67,7 @@
 	<button type="button" onclick="goBack()" class="button">食材一覧へ戻る</button>
 	
 	<!-- ★購入済みポップアップ -->
-	<div id="purchasedModal" class="modal-overlay" style="display:none;">
+	<div id="purchasedModal" class="modal-overlay hidden">
 	    <div class="modal-content">
 	        <h2> 食材一覧へ登録</h2>
 
@@ -108,7 +108,7 @@
 
 				<div class="form-row">
 				    <label>お気に入り：</label>
-				    <div style="display:flex; align-items:center; gap:8px;">
+					<div class="favorite-row">
 				        <button type="button" id="modalFavoriteButton" class="heart-btn heart-home">
 				            <i class="fa-solid fa-heart"></i>
 				        </button>
@@ -127,18 +127,18 @@
 	</div>
 	
 	<!-- 新規追加用モーダル -->
-	<div id="newItemModal" class="modal-overlay" style="display:none;">
+	<div id="newItemModal" class="modal-overlay hidden">
 	    <div class="modal-content">
 	        <h2>新しい食材を追加</h2>
 
 	        <form id="newItemForm">
-	            <div>
-	                <label>購入するもの：</label>
+	            <div class="form-row">
+	                <label for="newItemName">購入するもの：</label>
 	                <input type="text" id="newItemName" name="name" required>
 	            </div>
 
-	            <div>
-	                <label>量：</label>
+	            <div class="form-row">
+	                <label for="newItemAmount">量：</label>
 	                <input type="text" id="newItemAmount" name="amount" required>
 	            </div>
 
@@ -150,7 +150,7 @@
 	    </div>
 	</div>
 
-	
+	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 	<script src="/js/shoppingList.js"></script>
 
 </body>

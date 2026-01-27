@@ -30,8 +30,9 @@
 
         <div class="form-row">
             <label for="name">食材</label>
-            <input type="text" th:field="*{name}" />
-            <div class="feedback-area invalid-feedback" id="rawPassword-error"></div>
+			<input type="text" th:field="*{name}"
+			       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+			       class="form-control"/>
             <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
         </div>
         
@@ -65,15 +66,17 @@
 
         <div class="form-row">
             <label for="amount">量</label>
-            <input type="text" th:field="*{amount}" />
-            <div class="feedback-area invalid-feedback" id="amount-error"></div>
-            <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
+			<input type="text" th:field="*{amount}"
+			           th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"
+			           class="form-control"/>
+           <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
         </div>
 
         <div class="form-row">
             <label for="others">その他</label>
-            <input type="text" th:field="*{others}" />
-            <div class="feedback-area invalid-feedback" id="others-error"></div>
+			<input type="text" th:field="*{others}"
+			           th:classappend="${#fields.hasErrors('others')} ? 'is-invalid' : ''"
+			           class="form-control"/>
             <div th:if="${#fields.hasErrors('others')}" th:errors="*{others}" class="invalid-feedback"></div>
         </div>
               

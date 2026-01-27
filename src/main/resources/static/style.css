@@ -1,7 +1,9 @@
-
+/* =========================
+   ベース
+========================= */
 body {
     font-family: 'Baloo 2', cursive;
-    background-color: #f0f8ff; /* 明るい冷蔵庫風 */
+    background-color: #f5f7f9; /* 少し落ち着いた白 */
     margin: 0;
     padding: 20px;
 }
@@ -11,341 +13,869 @@ h1 {
     font-weight: 600;
     font-size: 28px;
     margin-bottom: 20px;
+    color: #333;
 }
 
-/* 食材一覧を囲む背景 */
+/* =========================
+   テーブル外枠
+========================= */
 .table-wrapper {
-    background-color: #ffffff; /* 白背景 */
+    background-color: #ffffff;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .table-container {
-    overflow-x: auto; /* 横スクロール対応 */
+    overflow-x: auto;
 }
 
+/* =========================
+   テーブル
+========================= */
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto;
+    table-layout: fixed; /* ★ 右端安定の要 */
 }
 
 th, td {
     padding: 10px 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
     font-weight: 500;
-    white-space: nowrap; /* 折り返し禁止 */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #333;
 }
 
-.hidden {
-    display: none; /* 非表示 */
-}
-
-.button {
-    padding: 4px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 10px;
-    border: none;
-    background-color: #ffcc80;
+th {
+    background-color: #f3f3f3;
     font-weight: 600;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
 }
 
-.button:hover { background-color: #ffb74d; }
+/* 右端2列を締める */
+table th:last-child,
+table td:last-child {
+    width: 140px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+}
 
-.heart-btn {
-    background: none;
+table th:nth-last-child(2),
+table td:nth-last-child(2) {
+    width: 140px;
+    text-align: center;
+}
+
+/* =========================
+   行の状態
+========================= */
+.selected-row {
+    background-color: #f9f9f9;
+}
+
+/* =========================
+   ボタン共通
+========================= */
+.button,
+input[type="submit"] {
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 16px;
     border: none;
-    cursor: pointer;
-    font-size: 22px;   /* home.html と同じサイズ */
-    color: gray;       /* 初期色 */
-    transition: color 0.3s ease;
-}
-
-.selected-row { background-color: #ffe6e6; }
-
-a.button {
-    text-decoration: none;
-    color: #4a148c;
-}
-a.button:hover { color: #6a1b9a; }
-
-.popup-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    z-index: 1000;
-    opacity: 0.95;
-    font-weight: bold;
-    transition: opacity 0.5s ease-out;
-}
-
-/* フォーム画面（追加・編集用） */
-
-.form-body {
-    display: inline-block;
-    text-align: left;
-    background-color: #ffffff;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 0 auto;
-}
-
-.form-row {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-textarea,
-select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-input[type="submit"], 
-.button {
-    background-color: #ffcc80;
-    border: none;
-    color: #4a148c;
-    padding: 8px 16px;
-    border-radius: 10px;
+    background-color: #e0e0e0;
+    color: #333;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
-input[type="submit"]:hover, 
-.button:hover {
-    background-color: #ffb74d;
+.button:hover,
+input[type="submit"]:hover {
+    background-color: #d5d5d5;
 }
 
+/* 使い切った！ボタンは主張を弱める */
+.memo-container .button {
+    padding: 5px 12px;
+    font-size: 12px;
+}
 
-/* 一覧画面カテゴリ選択ボックス */
+/* =========================
+   フィルター
+========================= */
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
 .category-select {
-    width: auto;
-    min-width: 160px; /* ある程度の幅を確保 */
+    min-width: 160px;
     padding: 6px 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     background-color: #fff;
-    margin-right: 10px;
 }
 
-/* 一覧画面のフィルターフォーム横並び */
-.filter-form {
-    display: flex;
-    align-items: center;  /* 縦方向を中央揃え */
-    gap: 10px;            /* 要素間の間隔 */
-    margin-bottom: 20px;  /* フォーム下に余白 */
-}
-
-.filter-form select,
-.filter-form input[type="checkbox"],
-.filter-form button {
-    vertical-align: middle;
-}
-
-/* 食材追加・編集画面用の中央ボックス */
+/* =========================
+   フォーム（追加・編集）
+========================= */
 .form-wrapper {
-    background-color: #ffffff;    /* 白背景 */
-    padding: 20px 30px;           /* 内側の余白 */
-    border-radius: 12px;           /* 角丸 */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* 軽い影 */
-    max-width: 600px;             /* 最大幅 */
-    margin: 40px auto;            /* 上下40px, 左右自動で中央寄せ */
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    max-width: 600px;
+    margin: 40px auto;
 }
 
-/* 各フォーム行の余白 */
 .form-row {
     margin-bottom: 15px;
 }
 
-/* ラベルと入力欄を縦並びで少し見やすく */
 .form-row label {
     display: block;
     font-weight: 600;
     margin-bottom: 5px;
+    color: #444;
 }
 
 .form-row input[type="text"],
-.form-row select,
-.form-row textarea {
+.form-row textarea,
+.form-row select {
     width: 100%;
     padding: 6px 8px;
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
-    box-sizing: border-box;
 }
 
-/* ボタンの統一スタイル（既存の.buttonをそのまま利用可） */
-
-
-/*shoppingList */
-
+/* =========================
+   メモ風（shoppingList）
+========================= */
 .memo-container {
-	    width: 60%;
-	    margin: 20px auto;
-	    background: #fff9c4; 
-	    padding: 20px;
-	    border: 2px dashed #fbc02d;
-	    border-radius: 10px;
-	    box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-	    font-family: 'Comic Sans MS', cursive;
-	}
+    width: 70%;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
 
-	table {
-	    width: 100%;
-	    border-collapse: collapse;
-	}
+/* メモ風テーブル */
+.memo-container table th,
+.memo-container table td {
+    border-bottom: 1px solid #e0e0e0;
+}
 
-	th, td {
-	    padding: 8px 12px;
-	    text-align: left;
-	    border-bottom: 1px dashed #fbc02d;
-	}
+/* =========================
+   注意メッセージ（右端）
+========================= */
+.danger {
+    color: #c62828;
+    font-weight: 600;
+}
 
-	th {
-	    background-color: #fff3e0;
-	}
+.warning {
+    color: #888;
+    font-weight: 500;
+    font-style: italic;
+}
 
-	td span.pencil {
-	    margin-left: 5px;
-	    font-size: 16px;
-	    cursor: pointer;
-	}
+/* =========================
+   モーダル（壊さない）
+========================= */
 
-	.button {
-	    padding: 6px 12px;
-	    font-size: 14px;
-	    cursor: pointer;
-	    margin: 5px;
-	    border-radius: 6px;
-	    border: none;
-	    background-color: #ffcc80;
-	    box-shadow: 1px 2px 4px rgba(0,0,0,0.2);
-	}
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
 
-	.button:hover {
-	    background-color: #ffb74d;
-	}
+    display: none;          /* ← 常に非表示が基本 */
+    justify-content: center;
+    align-items: center;
 
-	.selected-row {
-	    background-color: #ffe6e6; /* チェックしたら薄い赤 */
-	}
-	.hidden {
-	    display: none;
-	}
+    z-index: 1000;
+}
 
-	.back-container {
-	    text-align: center;
-	    margin-top: 20px;
-	}
+.modal-overlay.show {
+    display: flex;          /* ← 表示したいときだけ */
+}
 
 
-	/* --- datepicker を小さくする --- */
-	.datepicker {
-	    font-size: 12px !important;  /* 全体の縮小 */
-	}
+.modal-content {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 14px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
 
-	.datepicker table tr td,
-	.datepicker table tr th {
-	    width: 20px !important;
-	    height: 20px !important;
-	    font-size: 12px !important;
-	    padding: 2px !important;
-	}
-	
-	.form-row {
-	    position: relative;
-	}	
+/* =========================
+   その他
+========================= */
+.hidden {
+    display: none;
+}
 
-	/* 日付入力とカレンダーを横並びにする */
-	.date-row {
-	    display: flex;
-	    align-items: flex-start;
-	    gap: 10px; /* 入力欄とカレンダーの距離 */
-	    position: relative;
-	}
-	
-	/* 期限・購入日入力行を横並びにする */
-	.date-row {
-	    display: flex;
-	    align-items: flex-start;
-	    position: relative; /* カレンダー位置の基準にする */
-	}
-	
-	/* モーダルの背景 */
-	.modal-overlay {
-	    position: fixed;
-	    top: 0;
-	    left: 0;
-	    width: 100%;
-	    height: 100%;
-	    background-color: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+.top-actions {
+    text-align: right;
+    margin-bottom: 10px;
+}
 
-	    display: none;           /* 初期は非表示 */
-	    justify-content: center; /* 横中央 */
-	    align-items: center;     /* 縦中央 */
-	    z-index: 1000;
-	}
 
-	/* モーダル表示用クラス */
-	.modal-overlay.show {
-	    display: flex;           /* 表示時に flex を効かせる */
-	}
 
-	/* モーダルの中身 */
-	.modal-content {
-	    background-color: #fff;
-	    padding: 20px 30px;
-	    border-radius: 12px;
-	    max-width: 500px;     /* 最大幅 */
-	    width: 90%;           /* 画面幅に応じて可変 */
-	    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-	    position: relative;
-	}
+/* ================================
+   ページタイトル（食材一覧 / 買い物リスト / 食材追加）
+   シンプル・シック・大人メモ風
+================================ */
 
-	#favoriteHeart {
-	    color: gray;                /* 初期色 */
-	    transition: color 0.3s ease; /* 色変更を滑らかに */
-	}
-	
-	/* home.html と同じ薄ピンクハート用クラス */
-	.heart-home {
-	    color: #ffb6c1;      /* 薄ピンク */
-	    font-size: 22px;
-	    background: none;
-	    border: none;
-	    cursor: pointer;
-	    transition: color 0.3s ease;
-	}
+/* 共通タイトル */
+.page-title,
+.shopping-title,
+h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.12em;   /* 大人感の決め手 */
+    color: #333;
+    text-align: center;
+    margin: 20px 0 30px;
+    background: none;        /* 既存の装飾を無効化 */
+    box-shadow: none;
+    border-radius: 0;
+}
 
-	/* ハートアイコン用 */
-	.heart-home i {
-	    color: #ffb6c1; /* home.html と同じ薄ピンク */
-	    font-size: 22px;
-	    transition: color 0.3s ease;
-	}
+/* ================================
+   くすみパステル配色（大人・シック）
+   ベース：グレー
+================================ */
+
+/* 全体トーン調整 */
+body {
+    background-color: #f5f6f7;
+    color: #333;
+}
+
+/* ----------------
+   ボタン（共通）
+----------------- */
+.button {
+    background-color: #cfd8d3; /* 野菜：セージグリーン */
+    color: #333;
+    border-radius: 10px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.button:hover {
+    background-color: #bcc9c3;
+    transform: translateY(-1px);
+}
+
+/* 編集ボタン（魚イメージ） */
+.memo-container .button:first-child,
+.edit-button {
+    background-color: #c9d4df; /* ダスティブルー */
+}
+
+.memo-container .button:first-child:hover {
+    background-color: #b7c5d4;
+}
+
+/* 使い切った！ボタン（卵寄り） */
+.memo-container .button {
+    background-color: #efe6c8; /* ペールイエロー */
+}
+
+.memo-container .button:hover {
+    background-color: #e6dab5;
+}
+
+/* ----------------
+   メモ用紙（買い物リスト）
+----------------- */
+.memo-container {
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    font-family: inherit; /* Comic Sans を解除 */
+}
+
+/* テーブルヘッダ */
+th {
+    background-color: #f0f0f0;
+    color: #444;
+}
+
+/* 行ホバー */
+.memo-container tr:hover {
+    background-color: #f7f7f7;
+}
+
+
+/* ----------------
+   期限警告
+----------------- */
+.warning {
+    color: #cfa87c; /* くすみオレンジ */
+}
+
+.danger {
+    color: #c27a7a; /* くすみレッド */
+}
+
+/* ----------------
+   モーダル
+----------------- */
+.modal-content {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
+
+/* フォーム入力 */
+input[type="text"],
+select,
+textarea {
+    background-color: #fafafa;
+}
+
+/* ----------------
+   フィルター周り
+----------------- */
+.filter-form {
+    background-color: #f1f2f3;
+    padding: 10px 15px;
+    border-radius: 12px;
+}
+
+/* ================================
+   カテゴリ別 行カラー（彩度やや高め）
+================================ */
+
+/* 野菜：グリーン */
+.category-3 {
+    background-color: #e3f1e8;
+}
+
+/* 魚：ブルー */
+.category-2 {
+    background-color: #e4eef7;
+}
+
+/* 肉：ピンク */
+.category-1 {
+    background-color: #f3e3e6;
+}
+
+/* その他：イエロー */
+.category-7 {
+    background-color: #f6f1dc;
+}
+
+/* ホバー時 少し濃く */
+.category-3:hover { background-color: #d3eadc; }
+.category-2:hover   { background-color: #d6e5f2; }
+.category-1:hover   { background-color: #ecd0d6; }
+.category-7:hover   { background-color: #efe7c6; }
+
+
+/* =========================
+   お気に入りハート（追加画面と統一）
+========================= */
+
+/* ボタン自体 */
+.heart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* ハート（通常OFF） */
+.heart-btn i {
+    font-size: 22px;
+    color: #cfcfcf; /* 薄いグレー */
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+/* ホバー */
+.heart-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* お気に入りON（追加・一覧 共通） */
+.heart-btn i.active {
+    color: #d81b60; /* 食材追加ページ基準のピンク */
+}
+
+/* =========================
+   操作ボタン：白ベースで統一
+========================= */
+
+.button,
+input[type="submit"] {
+    background-color: #ffffff;     /* 白 */
+    color: #333;
+    border: 1px solid #d0d0d0;     /* 薄グレー枠 */
+    border-radius: 18px;
+    font-weight: 600;
+    padding: 6px 14px;
+    transition: 
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+/* ホバー時：ほんのり色づけ */
+.button:hover,
+input[type="submit"]:hover {
+    background-color: #f5f5f5;
+    border-color: #bdbdbd;
+    transform: translateY(-1px);
+}
+
+/* 編集ボタン（少しだけブルー寄り） */
+a.button[href*="edit"]:hover {
+    background-color: #eef3f9;
+    border-color: #b6c6dd;
+}
+
+/* 使い切った！ボタン（少しだけグリーン寄り） */
+input[value*="使い切"]:hover {
+    background-color: #eef6f0;
+    border-color: #b7d3c1;
+}
+
+/* フィルター適用 */
+.filter-form .button:hover {
+    background-color: #f2f2f2;
+}
+/* =========================
+   食品名セルだけカテゴリ色
+========================= */
+
+/* 肉 */
+.food-name.category-1 {
+    background-color: #f3e3e6;
+}
+
+/* 魚 */
+.food-name.category-2 {
+    background-color: #e4eef7;
+}
+
+/* 野菜 */
+.food-name.category-3 {
+    background-color: #e3f1e8;
+}
+
+/* その他 */
+.food-name.category-7 {
+    background-color: #f6f1dc;
+}
+
+/* 角を少し丸めると上品 */
+.food-name {
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+/* ホバー時 */
+.food-name:hover {
+    filter: brightness(0.96);
+}
+/* 食材ラベル（food-label）調整 */
+.food-label {
+    display: inline-flex;           /* 横並び & flex */
+    align-items: center;            /* 縦中央 */
+    justify-content: center;        /* 横中央 */
+    padding: 6px 12px;              /* 縦横の余白で高さを作る */
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;               /* padding で高さ確保してるので小さめでOK */
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    word-break: break-word;
+    max-width: 100%;
+    text-align: center;             /* 念のため中央 */
+}
+
+/* 肉 */
+.food-label.category-1 {
+    background-color: #f3cfd6;
+}
+
+/* 魚 */
+.food-label.category-2 {
+    background-color: #cfe3f3;
+}
+
+/* 野菜 */
+.food-label.category-3 {
+    background-color: #d6f0e0;
+}
+
+/* その他 */
+.food-label.category-7 {
+    background-color: #f4e7b8;
+}
+
+.food-label {
+    border-radius: 10px;   /* ← 999px やめる */
+}
+
+.food-label {
+    padding: 6px 12px;
+    line-height: 1.4;
+}
+
+.food-label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+td {
+    vertical-align: middle;
+}
+
+
+
+/* 食材列だけ縦中央揃え */
+th:nth-child(2),
+td:nth-child(2) {
+    vertical-align: middle;
+}
+
+
+/* 食材列（2列目）を中央寄せ */
+th:nth-child(2),
+td:nth-child(2) {
+    text-align: center;
+}
+
+.food-label {
+    display: inline-flex;
+    align-items: center;       /* 縦中央 */
+    justify-content: center;   /* 横中央 */
+    padding: 0 12px;           /* 上下paddingは0にして横だけ残す */
+    min-height: 32px;          /* ラベルの高さを確保 */
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;       /* 文字高さは自動 */
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    word-break: break-word;
+    max-width: 100%;
+    text-align: center;
+}
+
+
+
+
+/* td の設定も確認 */
+td.food-cell {
+    vertical-align: middle;        /* td内中央 */
+    text-align: center;            /* 横中央 */
+    padding: 4px 0;                /* 上下余白を少し減らす */
+}
+
+
+
+/* =========================
+   テーブル：列ごとの揃え統一
+========================= */
+
+/* 編集 */
+th:nth-child(1),
+td:nth-child(1) {
+    text-align: center;
+}
+
+/* 食材 */
+th:nth-child(2),
+td:nth-child(2) {
+    text-align: center;
+}
+
+/* 量 */
+th:nth-child(3),
+td:nth-child(3) {
+    text-align: center;
+}
+
+/* 期限 */
+th:nth-child(4),
+td:nth-child(4) {
+    text-align: center;
+}
+
+/* メモ */
+th:nth-child(5),
+td:nth-child(5) {
+    text-align: left;
+}
+
+/* お気に入り */
+th:nth-child(6),
+td:nth-child(6) {
+    text-align: center;
+}
+
+/* 操作（使い切った！） */
+th:nth-child(7),
+td:nth-child(7) {
+    text-align: center;
+}
+
+/* 注意メッセージ */
+th:nth-child(8),
+td:nth-child(8) {
+    text-align: center;
+}
+
+.food-name {
+    text-align: center;
+    white-space: normal;   /* ← 改行を許可 */
+    overflow: visible;     /* ← はみ出しOK */
+    text-overflow: clip;   /* ← …を使わない */
+}
+/* =========================
+   食品名セル（…対策）
+========================= */
+td.food-cell {
+    white-space: normal;        /* td の … を無効化 */
+    overflow: visible;
+    text-overflow: clip;
+    text-align: center;         /* 見出しと中央を揃える */
+}
+
+/* =========================
+   食品名ラベル（色の範囲）
+========================= */
+.food-label {
+    display: inline-block;      /* 色の範囲を文字だけに */
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    max-width: 100%;
+    word-break: break-word;     /* 長い名前は折り返す */
+}
+
+/* =========================
+   カテゴリ色（くっきり版）
+========================= */
+.category-1 { background-color: #f8c9d3; } /* 肉 */
+.category-2 { background-color: #cfe3ff; } /* 魚 */
+.category-3 { background-color: #cdeed6; } /* 野菜 */
+.category-7 { background-color: #fff0c9; } /* その他 */
+
+.basket-btn.with-text {
+    width: auto;
+    padding: 0 14px;
+    gap: 8px;
+    border-radius: 22px;
+}
+
+.basket-btn.with-text span {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================
+   食材追加ボタン（＋アイコン付き）
+========================= */
+.add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 22px;
+    background-color: #ffffff;
+    border: 1.5px solid #d0d0d0;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.add-btn i {
+    font-size: 14px;
+}
+
+.add-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #bdbdbd;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   食品名ラベル（food-label）中央揃え・統一幅
+========================= */
+.food-label {
+    display: inline-flex;           /* 横並び & flex */
+    align-items: center;            /* 縦中央 */
+    justify-content: center;        /* 横中央 */
+    padding: 0 12px;                /* 横padding */
+    width: 120px;                   /* ★横幅を統一 */
+    min-height: 32px;               /* 高さを統一 */
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    word-break: break-word;
+    text-align: center;             /* 念のため中央 */
+}
+
+/* カテゴリ色 */
+.food-label.category-1 { background-color: #f3cfd6; } /* 肉 */
+.food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
+.food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
+.food-label.category-7 { background-color: #f4e7b8; } /* その他 */
+
+/* =========================
+   買い物リストボタン（大きく）
+========================= */
+.basket-btn.with-text {
+    font-size: 16px;          /* 文字を2倍に */
+    padding: 18px 36px;       /* 高さと左右の余白も2倍に */
+    border-radius: 36px;      /* 丸みも大きく */
+}
+
+/* アイコンと文字の間隔 */
+.basket-btn.with-text span {
+    font-size: 26px;          /* 文字サイズ統一 */
+    font-weight: 600;
+}
+
+/* =========================
+   食材追加ボタン（＋アイコン付き）大きく
+========================= */
+.add-btn {
+    font-size: 16px;          /* 文字を大きく */
+    padding: 10px 24px;       /* 高さと横幅を増やす */
+    border-radius: 24px;
+}
+
+/* アイコンも大きく */
+.add-btn i {
+    font-size: 18px;          /* +アイコンを大きく */
+}
+
+.page-title {
+    font-size: 50px;   /* 3倍サイズ */
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #333;
+    text-align: center;
+    margin: 20px 0 30px;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* top-actions-container をフレックスで横並び */
+.top-actions-container {
+    display: flex;
+    justify-content: space-between; /* 左右に分ける */
+    align-items: center;            /* 縦中央揃え */
+    margin-bottom: 20px;
+}
+
+/* 左側（タイトル） */
+.left-section {
+    flex: 1; /* 必要に応じて幅調整 */
+}
+
+/* 右側（ボタン群） */
+.right-section {
+    display: flex;
+    gap: 10px; /* ボタン間の間隔 */
+}
+
+/* ポップアップメッセージを右上固定 */
+#popupMessage {
+    position: fixed;        /* 画面に固定 */
+    top: 20px;              /* 上から20px */
+    right: 20px;            /* 右から20px */
+    background-color: #ffd700; /* 黄色（お好みで変更） */
+    color: #000;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 1000;          /* 上に重ねる */
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* モーダル全体（背景） */
+.modal-overlay {
+    display: none; /* hiddenクラスで非表示 */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+/* モーダルの中身を左上に表示 */
+.modal-content {
+    background-color: #fff;
+    margin: 20px;       /* 左上から少し余白 */
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;       /* 固定幅 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* 各フォーム行 */
+.modal-content .form-row {
+    display: flex;
+    flex-direction: column; /* ラベルと入力欄を縦並び */
+    margin-bottom: 15px;
+}
+
+/* ラベルの下に入力欄 */
+.modal-content label {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* 入力欄の幅を揃える */
+.modal-content input[type="text"],
+.modal-content select,
+.modal-content input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box; /* パディング込みで幅100% */
+}
+
+/* モーダルのボタンを横並び */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-start; /* 左揃え */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.page-title {
+    font-family: 'Baloo 2', cursive;  /* 丸くて柔らかいフォント */
+    font-size: 2.5rem;                /* 大きさ調整 */
+    color: #6b4c3b;                   /* 優しいブラウン */
+    text-align: center;               /* 中央寄せ */
+    margin-bottom: 20px;              /* 下に余白 */
+}
+

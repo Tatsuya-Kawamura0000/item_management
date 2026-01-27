@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/style.css}">
-
-    <!-- jQuery -->
     <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-
-    <!-- Datepicker -->
     <link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
     <script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
     <script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
+	<link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css}">
 
     <title>食材編集</title>
 </head>
@@ -18,53 +15,73 @@
     <div class="form-wrapper">
         <h1>食材編集</h1>
 
-        <form th:action="@{/users/update/{id}(id=${item.id})}" method="post">
+        <form th:action="@{/users/update/{id}(id=${item.id})}" th:object="${item}" method="post">
 
+            <!-- 食材名 -->
             <div class="form-row">
                 <label for="name">食材</label>
-                <input type="text" name="name" th:value="${item.name}" required>
+				<input type="text" th:field="*{name}" 
+				           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+				           class="form-control"/>
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
             </div>
 
+            <!-- カテゴリー -->
             <div class="form-row">
                 <label for="categoryId">カテゴリー</label>
-                <select name="categoryId" required>
+                <select th:field="*{categoryId}"
+                        th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''"
+                        class="form-control">
                     <option value="">--選択してください--</option>
                     <option th:each="category : ${categories}"
                             th:value="${category.id}"
-                            th:text="${category.name}"
-                            th:selected="${category.id == item.categoryId}">
+                            th:text="${category.name}">
                     </option>
                 </select>
+                <div th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" class="invalid-feedback"></div>
             </div>
 
+            <!-- 量 -->
             <div class="form-row">
                 <label for="amount">量</label>
-                <input type="text" name="amount" th:value="${item.amount}">
+                <input type="text" th:field="*{amount}"
+                       th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"
+                       class="form-control"/>
+                <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
             </div>
 
-			<div class="form-row">
-			    <label for="deadline">期限</label>
-			    <!-- name はそのまま。初期値は JavaScript で必要なら変換してセット -->
-			    <input type="date" id="deadline" name="deadline" th:value="${item.deadline}" />
-			</div>
+            <!-- 期限 -->
+            <div class="form-row">
+                <label for="deadline">期限</label>
+                <input type="date" th:field="*{deadline}"
+                       th:classappend="${#fields.hasErrors('deadline')} ? 'is-invalid' : ''"
+                       class="form-control"/>
+                <div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" class="invalid-feedback"></div>
+            </div>
 
-			<!-- 購入日 -->
-			<div class="form-row">
-			    <label for="purchaseDate">購入日</label>
-			    <input type="date" id="purchaseDate" name="purchaseDate" th:value="${item.purchaseDate}" />
-			</div>
+            <!-- 購入日 -->
+            <div class="form-row">
+                <label for="purchaseDate">購入日</label>
+                <input type="date" th:field="*{purchaseDate}"
+                       th:classappend="${#fields.hasErrors('purchaseDate')} ? 'is-invalid' : ''"
+                       class="form-control"/>
+                <div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
+            </div>
 
+            <!-- その他 -->
             <div class="form-row">
                 <label for="others">その他</label>
-                <textarea name="others" rows="3" th:text="${item.others}"></textarea>
+                <textarea th:field="*{others}" rows="3"
+                          th:classappend="${#fields.hasErrors('others')} ? 'is-invalid' : ''"
+                          class="form-control"></textarea>
+                <div th:if="${#fields.hasErrors('others')}" th:errors="*{others}" class="invalid-feedback"></div>
             </div>
 
-            <div style="margin-top: 20px;">
+            <div class="form-actions">
                 <input type="submit" value="更新する" class="button">
                 <a th:href="@{/users}" class="button">戻る</a>
             </div>
         </form>
     </div>
-
 </body>
 </html>

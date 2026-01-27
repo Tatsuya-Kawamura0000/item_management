@@ -2,6 +2,8 @@ package com.example.itemmanagement.entity;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,16 +15,19 @@ public class Items {
 
 	private int id;
 
+	 @Size(max = 50, message = "食材は50文字以内で入力してください")
 	private String name;
 
 	private Integer categoryId;
 
+	@Size(max = 20, message = "量は20文字以内で入力してください")
 	private String amount;
 
 	private LocalDate deadline;
 
 	private LocalDate purchaseDate;
 
+	 @Size(max = 100, message = "その他は100文字以内で入力してください")
 	private String others;
 
 	private Integer status;

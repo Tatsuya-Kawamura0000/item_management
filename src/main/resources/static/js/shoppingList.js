@@ -3,20 +3,20 @@
 // ------------------------------
 // モーダル操作
 // ------------------------------
-function openModal(shoppingListId, itemName) {
-    document.getElementById("shoppingListId").value = shoppingListId;
-    document.getElementById("itemName").value = itemName;
-
+function openModal(id, name) {
     const modal = document.getElementById("purchasedModal");
-    modal.style.display = "block";   // ← これが絶対必要
+
+    document.getElementById("shoppingListId").value = id;
+    document.getElementById("itemName").value = name;
+
     modal.classList.add("show");
 }
 
 function closeModal() {
-    const modal = document.getElementById("purchasedModal");
-    modal.style.display = "none";    // ← 非表示
-    modal.classList.remove("show");
+    document.getElementById("purchasedModal")
+        .classList.remove("show");
 }
+
 
 // ------------------------------
 // 食材一覧に追加
@@ -38,24 +38,33 @@ function submitPurchased() {
         return;
     }
 
-    const data = { id, name, amount, deadline, others, favorite, categoryId };
+    const data = { id, name, amount, deadline, others, favorite: favorite === "1", categoryId };
 
-    fetch('/users/add-to-shopping-list', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Network error');
-        return response.json();
-    })
-    .then(item => {
-        window.location.href = '/users/shoppingList';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("登録に失敗しました");
-    });
+	fetch('/users/add-to-shopping-list', {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify(data)
+	})
+	.then(async response => {
+	    const resJson = await response.json();
+	    if (!response.ok) {
+	        // 文字数オーバーの場合
+	        if(resJson.error === "length") {
+	            throw new Error("量は20文字以内,メモは100文字以内で入力してください");
+	        } else {
+	            throw new Error("登録に失敗しました 　※文字数オーバーしていませんか？");
+	        }
+	    }
+	    return resJson;
+	})
+	.then(item => {
+	    window.location.href = '/users/shoppingList';
+	})
+	.catch(error => {
+	    console.error('Error:', error);
+	    alert(error.message);
+	});
+
 }
 
 
@@ -65,13 +74,13 @@ $(function () {
     const modalField = $('#modalFavoriteField');
 
     // 初期色（0ならグレー、1ならピンク）
-    modalHeartBtn.css('color', modalField.val() === "1" ? '#ffb6c1' : 'gray');
+    modalHeartBtn.css('color', modalField.val() === "1" ? '#d81b60' : 'gray');
 
     // クリックで切り替え
     $('#modalFavoriteButton').click(function () {
         let fav = modalField.val() === "1" ? "0" : "1";  // 0 ⇄ 1
         modalField.val(fav);
-        modalHeartBtn.css('color', fav === "1" ? '#ffb6c1' : 'gray');
+        modalHeartBtn.css('color', fav === "1" ? '#d81b60' : 'gray');
     });
 
 });
@@ -147,6 +156,17 @@ function submitNewItem() {
         return;
     }
 
+    // ★ 文字数チェック
+    if (name.length > 50) {
+        alert("購入するものは50文字以内で入力してください");
+        return;
+    }
+
+    if (amount.length > 20) {
+        alert("量は20文字以内で入力してください");
+        return;
+    }
+
     const form = document.createElement("form");
     form.method = "POST";
     form.action = "/users/add-new-item-to-shopping-list";
@@ -159,6 +179,7 @@ function submitNewItem() {
     document.body.appendChild(form);
     form.submit();
 }
+
 
 
 

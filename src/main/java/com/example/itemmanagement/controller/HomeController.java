@@ -76,7 +76,7 @@ public class HomeController {
 	            if (days < 0) {
 	                item.setMessage("期限切れです、、");
 	            } else if (days <= 3) {
-	                item.setMessage("気を付けて！");
+	                item.setMessage("気を付けて");
 	            } else {
 	                item.setMessage("");
 	            }
@@ -117,11 +117,9 @@ public class HomeController {
 
 			if (result.hasErrors()) {							//バリデーションでエラーを捕まえたとき
 
-				model.addAttribute("categoryId", categories);
-				
-				model.addAttribute("form", form);
+				model.addAttribute("categories", categories);
 
-				return "add";							//ユーザ登録画面を返す
+				return "add";							//食材登録画面を返す
 
 			}
 
@@ -175,12 +173,24 @@ public class HomeController {
 
 
 	@PostMapping("/update/{id}")
-	public String update(@PathVariable("id") int id, @ModelAttribute Items item) {
+	public String update(
+	        @PathVariable("id") int id,
+	        @Validated @ModelAttribute("item") Items item,
+	        BindingResult result,
+	        Model model) {
 
-		updateItemService.updateItem(id, item);
+	    if (result.hasErrors()) {
+	        // カテゴリー一覧を再設定
+	        List<Categories> categories = getAllCategoriesService.getAllCategories();
+	        model.addAttribute("categories", categories);
+	        return "edit";  // エラー時は edit.html に戻す
+	    }
 
-		return "redirect:/users";
+	    updateItemService.updateItem(id, item);
+	    return "redirect:/users";
 	}
+
+
 	
 	@GetMapping("/shoppingList")									//買い物リスト画面をリクエストされた時
 	public String shoppingList(Model model, HttpServletRequest request) {
