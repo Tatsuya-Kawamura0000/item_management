@@ -462,25 +462,6 @@ input[value*="使い切"]:hover {
    食品名セルだけカテゴリ色
 ========================= */
 
-/* 肉 */
-.food-name.category-1 {
-    background-color: #f3e3e6;
-}
-
-/* 魚 */
-.food-name.category-2 {
-    background-color: #e4eef7;
-}
-
-/* 野菜 */
-.food-name.category-3 {
-    background-color: #e3f1e8;
-}
-
-/* その他 */
-.food-name.category-7 {
-    background-color: #f6f1dc;
-}
 
 /* 角を少し丸めると上品 */
 .food-name {
@@ -508,25 +489,6 @@ input[value*="使い切"]:hover {
     text-align: center;             /* 念のため中央 */
 }
 
-/* 肉 */
-.food-label.category-1 {
-    background-color: #f3cfd6;
-}
-
-/* 魚 */
-.food-label.category-2 {
-    background-color: #cfe3f3;
-}
-
-/* 野菜 */
-.food-label.category-3 {
-    background-color: #d6f0e0;
-}
-
-/* その他 */
-.food-label.category-7 {
-    background-color: #f4e7b8;
-}
 
 .food-label {
     border-radius: 10px;   /* ← 999px やめる */
@@ -740,11 +702,6 @@ td.food-cell {
     text-align: center;             /* 念のため中央 */
 }
 
-/* カテゴリ色 */
-.food-label.category-1 { background-color: #f3cfd6; } /* 肉 */
-.food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
-.food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
-.food-label.category-7 { background-color: #f4e7b8; } /* その他 */
 
 /* =========================
    買い物リストボタン（大きく）
