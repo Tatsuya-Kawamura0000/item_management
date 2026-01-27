@@ -879,3 +879,7 @@ td.food-cell {
     margin-bottom: 20px;              /* 下に余白 */
 }
 
+.food-label.category-1 { background-color: #f3cfd6; } /* 肉 */
+.food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
+.food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
+.food-label.category-7 { background-color: #f4e7b8; } /* その他 */
