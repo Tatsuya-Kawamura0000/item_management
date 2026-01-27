@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS shopping_list;
-DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS categories;
 
 
 CREATE TABLE categories (

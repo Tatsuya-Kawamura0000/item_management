@@ -74,7 +74,7 @@ public class HomeController {
 	                    java.time.LocalDate.now(), item.getDeadline());
 
 	            if (days < 0) {
-	                item.setMessage("期限切れです、、");
+	                item.setMessage("期限切れです");
 	            } else if (days <= 3) {
 	                item.setMessage("気を付けて");
 	            } else {
