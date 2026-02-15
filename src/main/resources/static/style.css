@@ -840,3 +840,19 @@ td.food-cell {
 .food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
 .food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
 .food-label.category-7 { background-color: #f4e7b8; } /* その他 */
+
+.logout-btn {
+    background-color: #6b4c3b; 
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;
+}
+
