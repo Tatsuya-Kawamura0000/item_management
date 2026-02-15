@@ -19,6 +19,12 @@
 	    <!-- 左：食材一覧 -->
 	    <div class="left-section">
 	        <h1 class="page-title">🥦食材一覧🥕</h1>
+			
+		<!-- ログアウトフォーム -->
+			    <form th:action="@{/logout}" method="post" style="display:inline;">
+			        <button type="submit" class="logout-btn">ログアウト</button>
+			    </form>
+				
 	    </div>
 
 	    <!-- 右：ボタン群 -->
