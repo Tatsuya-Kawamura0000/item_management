@@ -2,7 +2,6 @@ package com.example.itemmanagement.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,9 @@ public class SecurityConfig {
          .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()   // 認証必須に変更
                         )
-                  .formLogin(Customizer.withDefaults()); // ログイン画面を有効化          
+         .formLogin(form -> form
+                 .defaultSuccessUrl("/users", true)
+         );         
         return http.build();
     }
 	
