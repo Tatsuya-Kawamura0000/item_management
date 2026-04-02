@@ -15,40 +15,37 @@ public class AddItemService {
 	private ItemMapper mapper;
 
 	@Transactional
-	public int add(AddItemForm form) {
+	public int add(AddItemForm form, Integer userId) {
 
-		Items entity = new Items();
-		
-		entity.setName(form.getName());
+	    Items entity = new Items();
 
-		entity.setCategoryId(form.getCategoryId());
+	    entity.setName(form.getName());
+	    entity.setCategoryId(form.getCategoryId());
+	    entity.setDeadline(form.getDeadline());
+	    entity.setPurchaseDate(form.getPurchaseDate());
+	    entity.setAmount(form.getAmount());
+	    entity.setOthers(form.getOthers());
+	    entity.setStatus(1);                // 初期状態は「有効」
+	    entity.setFavorite(form.isFavorite());
+	    entity.setUserId(userId);           // ここでログインユーザーIDをセット
 
-		entity.setDeadline(form.getDeadline());
-
-		entity.setPurchaseDate(form.getPurchaseDate());
-
-		entity.setAmount(form.getAmount());
-		
-		entity.setOthers(form.getOthers());
-
-		entity.setStatus(1);
-		
-		entity.setFavorite(form.isFavorite());
-
-		return mapper.add(entity); //UserMapperのcreateメソッド
-		
+	    return mapper.add(entity);          // ItemMapperのaddメソッドを呼び出す
 	}
 	
 	@Transactional
-    public Items addAndReturn(AddItemForm form) {
-        Items entity = createEntityFromForm(form);
+	public Items addAndReturn(AddItemForm form, Integer userId) {
+	    // form から Items エンティティを生成
+	    Items entity = createEntityFromForm(form);
 
-        // DBに insert
-        mapper.add(entity);
+	    // ログインユーザーIDをセット
+	    entity.setUserId(userId);
 
-        // MyBatis の設定で auto-generated keys が有効なら entity に ID がセットされます
-        return entity;
-    }
+	    // DBに insert
+	    mapper.add(entity);
+
+	    // MyBatis の設定で auto-generated keys が有効なら entity に ID がセットされます
+	    return entity;
+	}
 
     /**
      * 共通の変換処理
@@ -67,7 +64,8 @@ public class AddItemService {
     }
     
     @Transactional
-    public void deleteFromShoppingList(int id) {
-        mapper.deleteFromShoppingList(id);
+    public void deleteFromShoppingList(int id, Integer userId) {
+        // Mapper に userId を渡して削除
+        mapper.deleteFromShoppingList(id, userId);
     }
 }

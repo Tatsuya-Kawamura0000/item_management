@@ -33,6 +33,7 @@
     <select id="findAll" resultType="com.example.itemmanagement.entity.ShoppingListItem">
     SELECT *
     FROM shopping_list
+    WHERE user_id = #{userId}
     ORDER BY added_at DESC
 </select>
 

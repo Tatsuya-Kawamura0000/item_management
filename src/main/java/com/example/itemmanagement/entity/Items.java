@@ -40,4 +40,6 @@ public class Items {
 	
 	private String message; // 期限切れや注意メッセージ用
 	
+	private Integer userId;
+	
 }

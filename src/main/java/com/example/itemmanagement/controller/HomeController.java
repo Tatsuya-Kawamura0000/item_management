@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.entity.ShoppingListItem;
 import com.example.itemmanagement.form.AddItemForm;
 import com.example.itemmanagement.mapper.ShoppingListMapper;
+import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.AddItemService;
 import com.example.itemmanagement.service.AddToShoppingListService;
 import com.example.itemmanagement.service.GetAllCategoriesService;
@@ -64,12 +66,21 @@ public class HomeController {
 
 	
 	@GetMapping
-	public String index(Model model) {
+	public String index(Model model,
+	        @AuthenticationPrincipal LoginUser loginUser) {
 
-	    List<Items> items = getAllItemsService.getAllItems();
+	    // ログインユーザー情報取得
+	    String username = loginUser.getUsername();
+	    Integer userId = loginUser.getId();
+
+	    model.addAttribute("username", username);
+
+	    // ユーザーごとの食材一覧取得
+	    List<Items> items = getAllItemsService.getAllItems(userId);
 
 	    for (Items item : items) {
 	        if (item.getDeadline() != null) {
+
 	            long days = java.time.temporal.ChronoUnit.DAYS.between(
 	                    java.time.LocalDate.now(), item.getDeadline());
 
@@ -80,15 +91,15 @@ public class HomeController {
 	            } else {
 	                item.setMessage("");
 	            }
+
 	        } else {
 	            item.setMessage("");
 	        }
 	    }
-	    
-	    // ✅ カテゴリー一覧も追加
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-	    model.addAttribute("categories", categories);
 
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
+
+	    model.addAttribute("categories", categories);
 	    model.addAttribute("items", items);
 
 	    return "home";
@@ -108,67 +119,74 @@ public class HomeController {
 	}
 
 	
-	@PostMapping											
-	public String create(@Validated @ModelAttribute("form") AddItemForm form, BindingResult result, Model model,
-			 RedirectAttributes redirectAttributes) {
+	@PostMapping
+	public String create(
+	        @Validated @ModelAttribute("form") AddItemForm form,
+	        BindingResult result,
+	        Model model,
+	        RedirectAttributes redirectAttributes,
+	        @AuthenticationPrincipal LoginUser loginUser) {
 
-		List<Categories> categories = getAllCategoriesService.getAllCategories();
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
+	    if (result.hasErrors()) {
 
-			if (result.hasErrors()) {							//バリデーションでエラーを捕まえたとき
+	        model.addAttribute("categories", categories);
+	        return "add";
+	    }
 
-				model.addAttribute("categories", categories);
+	    // ログインユーザーID取得
+	    Integer userId = loginUser.getId();
 
-				return "add";							//食材登録画面を返す
+	    // userIdを渡して登録
+	    addItemService.add(form, userId);
 
-			}
-
-		
-		addItemService.add(form);					// 食材追加処理実行
-		
-		// ✅ 一時的なメッセージを追加
 	    redirectAttributes.addFlashAttribute("successMessage", "食材を登録しました！");
 
-		return "redirect:/users";
-
-		
+	    return "redirect:/users";
 	}
 	
-	@PostMapping("/stop/{id}")										//使い切ったボタンを押した食品のIDを受け取る
-	public String stop(@PathVariable("id") int id, Model model,RedirectAttributes redirectAttributes) {
- 		
-		
-	    // 🍀 IDで1件取得（お気に入りフラグ確認のため）
-	    Items item = getAllItemsService.getItemById(id);
-	    
-	    // ✅ お気に入り登録されているかチェック
+	@PostMapping("/stop/{id}")
+	public String stop(
+	        @PathVariable("id") int id,
+	        RedirectAttributes redirectAttributes,
+	        @AuthenticationPrincipal LoginUser loginUser) {
+
+	    Integer userId = loginUser.getId();
+
+	    // ユーザーID込みで取得
+	    Items item = getAllItemsService.getItemById(id, userId);
+
 	    if (item.isFavorite()) {
-	        // ダイアログを出すためのフラグをセット
 	        redirectAttributes.addFlashAttribute("confirmAddToList", true);
 	        redirectAttributes.addFlashAttribute("targetItemId", id);
 	    }
-	    
-	    stopItemService.stopItem(id);								//食品の論理削除（）メソッド呼び出し。status=1→0 に。
-		
-		redirectAttributes.addFlashAttribute("successMessage", "食材を使い切りました！");
-		
-		 return "redirect:/users"; 
-		
+
+	    // ユーザーID込みで削除
+	    stopItemService.stopItem(id, userId);
+
+	    redirectAttributes.addFlashAttribute("successMessage", "食材を使い切りました！");
+
+	    return "redirect:/users";
 	}
 	
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") int id, Model model) {
+	public String edit(
+	        @PathVariable("id") int id,
+	        Model model,
+	        @AuthenticationPrincipal LoginUser loginUser) {
 
-		// IDで食材情報を1件取得
-		Items item = getAllItemsService.getItemById(id);
+	    Integer userId = loginUser.getId();
 
-		// カテゴリー一覧を取得
-		List<Categories> categories = getAllCategoriesService.getAllCategories();
+	    // id + userId で取得
+	    Items item = getAllItemsService.getItemById(id, userId);
 
-		model.addAttribute("item", item);
-		model.addAttribute("categories", categories);
+	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
-		return "edit";
+	    model.addAttribute("item", item);
+	    model.addAttribute("categories", categories);
+
+	    return "edit";
 	}
 
 
@@ -177,53 +195,69 @@ public class HomeController {
 	        @PathVariable("id") int id,
 	        @Validated @ModelAttribute("item") Items item,
 	        BindingResult result,
-	        Model model) {
+	        Model model,
+	        @AuthenticationPrincipal LoginUser loginUser) {
 
 	    if (result.hasErrors()) {
-	        // カテゴリー一覧を再設定
+
 	        List<Categories> categories = getAllCategoriesService.getAllCategories();
 	        model.addAttribute("categories", categories);
-	        return "edit";  // エラー時は edit.html に戻す
+
+	        return "edit";
 	    }
 
-	    updateItemService.updateItem(id, item);
+	    Integer userId = loginUser.getId();
+
+	    updateItemService.updateItem(id, userId, item);
+
 	    return "redirect:/users";
 	}
 
 
 	
-	@GetMapping("/shoppingList")									//買い物リスト画面をリクエストされた時
-	public String shoppingList(Model model, HttpServletRequest request) {
-	
-	    // CSRFトークンを取得してモデルに追加
+	@GetMapping("/shoppingList")
+	public String shoppingList(
+	        Model model,
+	        HttpServletRequest request,
+	        @AuthenticationPrincipal LoginUser loginUser) {
+
+	    // ログインユーザーID取得
+	    Integer userId = loginUser.getId();
+
+	    // CSRFトークン
 	    CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 	    model.addAttribute("_csrf", csrfToken);
-		
-		List<ShoppingListItem> listItems = shoppingListMapper.findAll();  // ← まず Mapper を作る
+
+	    // ユーザーごとの買い物リスト取得
+	    List<ShoppingListItem> listItems = shoppingListMapper.findAll(userId);
 	    model.addAttribute("listItems", listItems);
-	    
-	 // ← ここでカテゴリ一覧も追加
+
+	    // カテゴリー一覧
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 	    model.addAttribute("categories", categories);
 
-		return "shoppingList";									
-
+	    return "shoppingList";
 	}
 	
 	@PostMapping("/favorite/{id}")
-	public String toggleFavorite(@PathVariable("id") int id,@RequestParam(required = false) Integer category,
-	        @RequestParam(required = false) Boolean expiringSoon) {
+	public String toggleFavorite(
+	        @PathVariable("id") int id,
+	        @RequestParam(required = false) Integer category,
+	        @RequestParam(required = false) Boolean expiringSoon,
+	        @AuthenticationPrincipal LoginUser loginUser) {
 
-	    // IDでアイテム取得
-	    Items item = getAllItemsService.getItemById(id);
+	    Integer userId = loginUser.getId();
 
-	    // favoriteを反転
+	    // id + userId で取得
+	    Items item = getAllItemsService.getItemById(id, userId);
+
+	    // favorite反転
 	    item.setFavorite(!item.isFavorite());
 
 	    // 更新
-	    updateItemService.updateFavorite(item);
-	    
-	    // ✅ フィルター条件がある場合は、その条件付きでリダイレクト
+	    updateItemService.updateFavorite(item, userId);
+
+	    // フィルター条件がある場合
 	    if (category != null || expiringSoon != null) {
 	        StringBuilder url = new StringBuilder("redirect:/users/filter?");
 	        if (category != null) url.append("category=").append(category).append("&");
@@ -231,20 +265,23 @@ public class HomeController {
 	        return url.toString();
 	    }
 
-	    // 一覧に戻る
 	    return "redirect:/users";
 	}
 	
-	@PostMapping("/add-to-shopping-list/{id}")   // ✅ JS fetchから呼ばれるPOSTエンドポイント
-	public String addToShoppingList(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+	@PostMapping("/add-to-shopping-list/{id}")
+	public String addToShoppingList(
+	        @PathVariable("id") int id,
+	        @AuthenticationPrincipal LoginUser loginUser,
+	        RedirectAttributes redirectAttributes) {
 
-	    // 🍀 サービス呼び出しでShoppingListに追加
-	    addToShoppingListService.addItemToList(id);
+	    Integer userId = loginUser.getId();
 
-	    // ✅ フラッシュメッセージを追加（画面に出す場合）
+	    // サービス呼び出しでShoppingListに追加
+	    addToShoppingListService.addItemToList(id, userId);
+
+	    // フラッシュメッセージ
 	    redirectAttributes.addFlashAttribute("successMessage", "買い物リストに追加しました！");
 
-	    // 🍀 JS側ではページ遷移しないので空文字でも問題なし
 	    return "redirect:/users";  
 	}
 
@@ -252,11 +289,14 @@ public class HomeController {
 	public String filterItems(
 	        @RequestParam(required = false) Integer category,
 	        @RequestParam(required = false) Boolean expiringSoon,
+	        @AuthenticationPrincipal LoginUser loginUser,
 	        Model model) {
 
-	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon);
-	    
-	    // ✅ メッセージ生成を追加
+	    Integer userId = loginUser.getId();  // ログインユーザーIDを取得
+
+	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, userId);
+
+	    // メッセージ生成
 	    for (Items item : filteredItems) {
 	        if (item.getDeadline() != null) {
 	            long days = java.time.temporal.ChronoUnit.DAYS.between(
@@ -273,7 +313,7 @@ public class HomeController {
 	        }
 	    }
 
-	    // カテゴリー一覧（今後拡張しやすいようにDBやEnumから取得）
+	    // カテゴリー一覧
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
 	    model.addAttribute("items", filteredItems);
@@ -281,7 +321,7 @@ public class HomeController {
 	    model.addAttribute("selectedCategory", category);
 	    model.addAttribute("expiringSoon", expiringSoon);
 
-	    return "home"; // 一覧ページのテンプレート名
+	    return "home";
 	}
 	
 	

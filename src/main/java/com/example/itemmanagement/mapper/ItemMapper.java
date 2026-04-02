@@ -10,23 +10,27 @@ import com.example.itemmanagement.entity.Items;
 @Mapper						
 public interface ItemMapper {
 	
-	List<Items> findAll();  //items一覧を返すメソッド
+	List<Items> findAll(@Param("userId") Integer userId);  //items一覧を返すメソッド
 
 	int add(Items entity);
 	
-	int stop(int id); //statsを0に変更（消費済み）するメソッド
+	int stop(@Param("id") Integer id,@Param("userId") Integer userId); //statsを0に変更（消費済み）するメソッド
+	         
 	
-	Items findById(int id);
+	Items findById(@Param("id") Integer id,@Param("userId") Integer userId);
+		    
 	
 	int update (Items item);
 	
 	int updateFavorite(Items item);
 
     // 複数条件でフィルター
-    List<Items> filterItems(@Param("category") Integer category,
-                           @Param("expiringSoon") Boolean expiringSoon);
+    List<Items> filterItems(@Param("userId") Integer userId,
+    	    @Param("category") Integer category,
+    	    @Param("expiringSoon") Boolean expiringSoon);
     
     // shopping_list から削除
-    int deleteFromShoppingList(int id);
+    int deleteFromShoppingList(@Param("id") Integer id,@Param("userId") Integer userId);
+    	    
 	
 }
