@@ -9,5 +9,8 @@ import com.example.itemmanagement.entity.Users;
 public interface UsersMapper {
 
     Users findByLoginId(@Param("loginId") String loginId);
+    
+ // 追加：ユーザー登録用
+    void insertUser(Users user);
 
 }

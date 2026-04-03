@@ -15,5 +15,15 @@
     WHERE
         user_name = #{loginId}
   </select>
+  
+  <insert id="insertUser" parameterType="com.example.itemmanagement.entity.Users">
+    INSERT INTO users (
+        user_name,
+        password
+    ) VALUES (
+        #{loginId},
+        #{password}
+    )
+</insert>
 
 </mapper>
