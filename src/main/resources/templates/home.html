@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>食材一覧</title>
@@ -19,6 +19,14 @@
 	    <!-- 左：食材一覧 -->
 	    <div class="left-section">
 	        <h1 class="page-title">🥦食材一覧🥕</h1>
+			
+			
+			
+		<!-- ログインユーザ表示 -->	
+		<p class="welcome-message">
+		    <i class="fa-solid fa-user"></i>
+		    <span sec:authentication="name"></span> さん、ようこそ
+		</p>
 			
 		<!-- ログアウトフォーム -->
 			    <form th:action="@{/logout}" method="post" style="display:inline;">
