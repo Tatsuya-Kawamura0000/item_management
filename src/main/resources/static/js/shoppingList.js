@@ -148,6 +148,7 @@ function closeNewItemModal() {
 }
 
 function submitNewItem() {
+
     const name = document.getElementById("newItemName").value;
     const amount = document.getElementById("newItemAmount").value;
 
@@ -156,7 +157,6 @@ function submitNewItem() {
         return;
     }
 
-    // ★ 文字数チェック
     if (name.length > 50) {
         alert("購入するものは50文字以内で入力してください");
         return;
@@ -167,20 +167,24 @@ function submitNewItem() {
         return;
     }
 
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/users/add-new-item-to-shopping-list";
-
-    form.innerHTML = `
-        <input type="hidden" name="name" value="${name}">
-        <input type="hidden" name="amount" value="${amount}">
-    `;
-
-    document.body.appendChild(form);
-    form.submit();
+    fetch("/users/add-new-item-to-shopping-list", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            amount: amount
+        })
+    })
+    .then(() => {
+        location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+        alert("登録に失敗しました");
+    });
 }
-
-
 
 
 

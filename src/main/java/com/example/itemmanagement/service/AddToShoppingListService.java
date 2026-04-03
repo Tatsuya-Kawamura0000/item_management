@@ -21,7 +21,7 @@ public class AddToShoppingListService {
     private ShoppingListMapper shoppingListMapper; // 買い物リストへ追加するため
 
     public void addItemToList(int id, Integer userId) {
-        // ① 食品情報を取得（ユーザー単位は不要でOK）
+       
         Items item = itemMapper.findById(id, userId);
 
         if (item != null) {
@@ -42,10 +42,11 @@ public class AddToShoppingListService {
         }
     }
     
-    public ShoppingListItem addNewItem(AddShoppingListItemForm form) {
+    public ShoppingListItem addNewItem(AddShoppingListItemForm form, Integer userId) {
+
         ShoppingListItem item = new ShoppingListItem();
-        item.setItemId(null);  // ← NEW（items に存在しないので null）
-        item.setUserId(0);
+        item.setItemId(null);
+        item.setUserId(userId);   // ← ログインユーザー
         item.setName(form.getName());
         item.setAmount(form.getAmount());
         item.setStatus(true);
@@ -53,6 +54,7 @@ public class AddToShoppingListService {
         item.setAddedAt(LocalDateTime.now());
 
         shoppingListMapper.insert(item);
+
         return item;
     }
 
