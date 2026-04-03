@@ -7,15 +7,16 @@ import com.example.itemmanagement.mapper.ItemMapper;
 
 @Service
 public class StopItemService {
-	
-	@Autowired 
-	private ItemMapper mapper;
 
-	@Transactional 
-	public void stopItem(int id) {
+    @Autowired 
+    private ItemMapper mapper;
 
-		 mapper.stop(id); 			//mapper.stop(id)メソッドで,引数に渡したidを持つ食品のstatusを0に更新
-
-	}
+    /**
+     * 指定IDかつユーザーIDのアイテムを論理削除（status=0）する
+     */
+    @Transactional 
+    public void stopItem(int id, Integer userId) {
+        mapper.stop(id, userId); // Mapper の stop(id, userId) を呼び出す
+    }
 
 }

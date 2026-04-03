@@ -16,15 +16,15 @@ public class GetAllItemsService {
 	private ItemMapper mapper;
 
 	@Transactional 
-	public List<Items> getAllItems() {
+	public List<Items> getAllItems(Integer userId) {
 
-		return mapper.findAll(); //mapper.findAll()メソッドで取得したitems一覧をItems型のリストで返却
+		return mapper.findAll(userId); //mapper.findAll()メソッドで取得したitems一覧をItems型のリストで返却
 
 	}
 	
-	public Items getItemById(int id) {
+	public Items getItemById(int id, Integer userId) {
 		
-        return mapper.findById(id);
+        return mapper.findById(id, userId);
     }
 
 }

@@ -22,6 +22,8 @@
       ON items.category_id = categories.id
     WHERE
       items.status <> 0
+    AND 
+      items.user_id = #{userId}
     ORDER BY 
       items.id ASC
   ]]>
@@ -36,7 +38,8 @@
 			purchase_date,
 			others,
 			status,
-			favorite_flg 
+			favorite_flg,
+			user_id
 		) VALUES (
 			#{name},
 			#{categoryId},
@@ -45,7 +48,8 @@
 			#{purchaseDate},
 			#{others},
 			#{status},
-			#{favorite}
+			#{favorite},
+			#{userId}
 		)
 	</insert>
 	
@@ -56,9 +60,10 @@
 			status = 0
    		 WHERE 
    		 	id = #{id}			<!-- #{id} が Mapper 引数の id に置き換わる -->
+   		 AND user_id = #{userId}
 	</update>
 	
-	<select id="findById" parameterType="int" resultType="com.example.itemmanagement.entity.Items">
+	<select id="findById" resultType="com.example.itemmanagement.entity.Items">
     SELECT 
         i.id,
         i.name,
@@ -72,7 +77,10 @@
         i.favorite_flg AS favorite
     FROM items i
    		 LEFT JOIN categories c ON i.category_id = c.id
-    WHERE i.id = #{id}
+    WHERE 
+        i.id = #{id}
+    AND i.user_id = #{userId}
+    
 	</select>
 
  	<update id="update" parameterType="com.example.itemmanagement.entity.Items">
@@ -86,6 +94,7 @@
             others = #{others},
             favorite_flg = #{favorite}
         WHERE id = #{id}
+        AND user_id = #{userId}
         
     </update>
     
@@ -93,17 +102,20 @@
     UPDATE items
     SET favorite_flg = #{favorite}
     WHERE id = #{id}
+    AND user_id = #{userId}
 	</update>
     
 <insert id="insert" parameterType="com.example.itemmanagement.entity.Items">
   INSERT INTO shopping_list(
     item_id,
+    user_id,
     name,
     category_id,
     amount,
     purchase_date
   ) VALUES (
     #{id},
+    #{userId},
     #{name},
     #{categoryId},
     #{amount},
@@ -128,6 +140,7 @@ SELECT
 FROM items
 INNER JOIN categories ON items.category_id = categories.id
 WHERE items.status <> 0
+AND items.user_id = #{userId}
 ]]>
   <if test="category != null">
     <![CDATA[ AND items.category_id = #{category} ]]>
@@ -141,9 +154,10 @@ WHERE items.status <> 0
 </select>
 
 <!-- ItemMapper.xml 内 -->
-<delete id="deleteFromShoppingList" parameterType="int">
+<delete id="deleteFromShoppingList">
     DELETE FROM shopping_list
     WHERE id = #{id}
+    AND user_id = #{userId}
 </delete>
 
 
