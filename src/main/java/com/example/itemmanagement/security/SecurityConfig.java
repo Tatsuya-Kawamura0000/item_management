@@ -18,7 +18,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated()   // 認証必須
             )
             .formLogin(form -> form
-                .defaultSuccessUrl("/users", true)
+            	    .loginPage("/login")
+            	    .defaultSuccessUrl("/users", true)
+            	    .permitAll()
+          
             );
         return http.build();
     }
