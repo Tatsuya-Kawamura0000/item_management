@@ -34,16 +34,13 @@ public class AddItemService {
 	
 	@Transactional
 	public Items addAndReturn(AddItemForm form, Integer userId) {
-	    // form から Items エンティティを生成
+
 	    Items entity = createEntityFromForm(form);
 
-	    // ログインユーザーIDをセット
 	    entity.setUserId(userId);
 
-	    // DBに insert
 	    mapper.add(entity);
 
-	    // MyBatis の設定で auto-generated keys が有効なら entity に ID がセットされます
 	    return entity;
 	}
 

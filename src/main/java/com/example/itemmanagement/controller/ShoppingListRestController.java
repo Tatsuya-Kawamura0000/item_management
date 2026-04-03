@@ -22,16 +22,13 @@ public class ShoppingListRestController {
             @RequestBody AddItemForm form,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        // ログインユーザーID取得
         Integer userId = loginUser.getId();
 
-        // items に追加（userId を渡す）
         Items savedItem = addItemService.addAndReturn(form, userId);
-
-        // shopping_list から削除（userId を渡す）
+        
         addItemService.deleteFromShoppingList(form.getId(), userId);
 
-        return savedItem; // JS に返す
+        return savedItem;
     }
 	
 
