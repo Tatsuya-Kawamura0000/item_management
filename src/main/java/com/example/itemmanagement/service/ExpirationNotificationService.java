@@ -20,12 +20,8 @@ public class ExpirationNotificationService {
     private final MailService mailService;
 
     
-
- //テスト実行用   
-@Scheduled(cron = "0 */1 * * * *")  
-    
- // 毎日9時に実行
-@Scheduled(cron = "0 0 9 * * *")
+//@Scheduled(cron = "0 */1 * * * *")     
+@Scheduled(cron = "0 0 9 * * *")  // 毎日9時に実行
     public void notifyExpiringItems() {
 
         List<Items> items = itemMapper.findExpiringItems();
