@@ -12,5 +12,9 @@ public interface UsersMapper {
     
  // 追加：ユーザー登録用
     void insertUser(Users user);
+    
+ //mail送信   
+    String findEmailById(@Param("id") Integer id);
+    
 
 }

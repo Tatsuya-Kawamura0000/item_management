@@ -31,6 +31,9 @@ public interface ItemMapper {
     
     // shopping_list から削除
     int deleteFromShoppingList(@Param("id") Integer id,@Param("userId") Integer userId);
+    
+    //mail送信用
+    List<Items> findExpiringItems();
     	    
 	
 }

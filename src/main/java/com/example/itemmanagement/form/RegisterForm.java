@@ -19,5 +19,7 @@ public class RegisterForm {
     @NotBlank(message = "パスワードは必須です")
     @Size(min = 4, max = 20, message = "パスワードは4〜20文字で入力してください")
     private String password;
+    
+    private String email;
 
 }

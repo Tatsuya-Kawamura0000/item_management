@@ -19,11 +19,23 @@
   <insert id="insertUser" parameterType="com.example.itemmanagement.entity.Users">
     INSERT INTO users (
         user_name,
-        password
+        password,
+        email
     ) VALUES (
         #{loginId},
-        #{password}
+        #{password},
+        #{email}
     )
 </insert>
+
+  <select id="findEmailById" resultType="string">
+    SELECT 
+        email
+    FROM 
+        users
+    WHERE 
+        id = #{id}
+  </select>
+
 
 </mapper>

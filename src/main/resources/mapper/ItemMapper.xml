@@ -161,4 +161,25 @@ AND items.user_id = #{userId}
 </delete>
 
 
+
+
+<select id="findExpiringItems" resultType="com.example.itemmanagement.entity.Items">
+<![CDATA[
+SELECT
+    items.id,
+    items.name,
+    items.deadline,
+    items.user_id AS userId
+FROM
+    items
+WHERE
+    items.status <> 0
+AND
+    items.deadline BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '3 days'
+ORDER BY
+    items.user_id
+]]>
+</select>
+
+
 </mapper>	
