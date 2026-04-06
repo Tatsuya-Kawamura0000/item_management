@@ -12,6 +12,7 @@ public class Users {
     private Integer id;  //user_id と紐づく
     private String loginId;
     private String password;
+    private String email;   
 
     
 }

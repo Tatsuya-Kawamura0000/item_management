@@ -26,6 +26,7 @@ public class RegisterService {
 	        Users user = new Users();
 	        user.setLoginId(form.getLoginId());
 	        user.setPassword(encodedPassword);
+	        user.setEmail(form.getEmail());
 
 	        // DB保存
 	        usersMapper.insertUser(user);
