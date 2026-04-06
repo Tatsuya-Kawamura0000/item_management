@@ -8,26 +8,38 @@
 
 <h2>ユーザー登録</h2>
 
-<form th:action="@{/register}" method="post">
+<form th:action="@{/register}"th:object="${registerForm}" method="post">
 
-    <div>
-        <label>ユーザー名</label>
-        <input type="text" name="loginId" required>
-    </div>
-
-    <div>
-        <label>パスワード</label>
-        <input type="password" name="password" required>
-    </div>
-	
 	<div>
-	    <label>メールアドレス</label>
-	    <input type="email" name="email" required>
+	    <label>ユーザー名</label>
+	    <input type="text" th:field="*{loginId}">
+	    <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" style="color:red"></p>
 	</div>
 
-    <div>
-        <button type="submit">登録</button>
-    </div>
+	<div>
+	    <label>パスワード</label>
+	    <input type="password" th:field="*{password}">
+	    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></p>
+	</div>
+
+	<div>
+	    <label>確認用パスワード</label>
+	    <input type="password" th:field="*{confirmPassword}">
+	    <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color:red"></p>
+		<p th:if="${confirmPassworderrorMessage}" th:text="${confirmPassworderrorMessage}" style="color:red;"></p>
+	</div>
+
+	<div>
+	    <label>メールアドレス</label>
+	    <input type="email" th:field="*{email}">
+	    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></p>
+	</div>
+	
+	<div>
+	    <button type="submit">登録</button>
+	</div>
+	
+	<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
 
 </form>
 
