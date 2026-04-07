@@ -310,34 +310,48 @@ public class HomeController {
 	        @AuthenticationPrincipal LoginUser loginUser,
 	        Model model) {
 
-	    Integer userId = loginUser.getId();  // ログインユーザーIDを取得
+	    Integer userId = loginUser.getId();
 
 	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, userId);
 
-	    // メッセージ生成
+	    int expiredCount = 0;
+	    int warningCount = 0;
+
 	    for (Items item : filteredItems) {
+
 	        if (item.getDeadline() != null) {
+
 	            long days = java.time.temporal.ChronoUnit.DAYS.between(
 	                    java.time.LocalDate.now(), item.getDeadline());
+
 	            if (days < 0) {
-	                item.setMessage("期限切れです、、");
+	                item.setMessage("期限切れです");
+	                expiredCount++;
 	            } else if (days <= 3) {
-	                item.setMessage("気を付けて！");
+	                item.setMessage("気を付けて");
+	                warningCount++;
 	            } else {
 	                item.setMessage("");
 	            }
+
 	        } else {
 	            item.setMessage("");
 	        }
 	    }
 
-	    // カテゴリー一覧
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
 	    model.addAttribute("items", filteredItems);
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("selectedCategory", category);
 	    model.addAttribute("expiringSoon", expiringSoon);
+
+	    // これを追加
+	    model.addAttribute("expiredCount", expiredCount);
+	    model.addAttribute("warningCount", warningCount);
+
+	    int shoppingCount = addToShoppingListService.getShoppingListCount(userId);
+	    model.addAttribute("shoppingCount", shoppingCount);
 
 	    return "home";
 	}
