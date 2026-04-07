@@ -35,6 +35,14 @@
     FROM shopping_list
     WHERE user_id = #{userId}
     ORDER BY added_at DESC
-</select>
+    </select>
+
+    <select id="countByUserId" resultType="int">
+    SELECT COUNT(*)
+    FROM shopping_list
+    WHERE user_id = #{userId}
+    AND status = true
+    AND purchased_flg = false
+    </select>
 
 </mapper>

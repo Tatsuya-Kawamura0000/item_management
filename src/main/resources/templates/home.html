@@ -15,80 +15,146 @@
 
 </head>
 <body>
-	<div class="top-actions-container">
-	    <!-- 左：食材一覧 -->
-	    <div class="left-section">
-	        <h1 class="page-title">🥦食材一覧🥕</h1>
-			
-			
-			
-		<!-- ログインユーザ表示 -->	
-		<p class="welcome-message">
-		    <i class="fa-solid fa-user"></i>
-		    <span sec:authentication="name"></span> さん、ようこそ
-		</p>
-			
-		<!-- ログアウトフォーム -->
-			    <form th:action="@{/logout}" method="post" style="display:inline;">
-			        <button type="submit" class="logout-btn">ログアウト</button>
-			    </form>
-				
-	    </div>
+	
+	<header class="page-header">
 
-	    <!-- 右：ボタン群 -->
-	    <div class="right-section">
-	        <a th:href="@{/users/add}" class="add-btn">
-	            <i class="fa-solid fa-plus"></i>
-	            <span>食材追加</span>
-	        </a>
+	    <h1 class="page-title">🥦 食材一覧 🥕</h1>
 
-	        <a th:href="@{/users/shoppingList}" class="basket-btn with-text">
-	            <i class="fa-solid fa-basket-shopping"></i>
-	            <span>買い物リスト</span>
-	        </a>
-	    </div>
+	    <!-- ログインユーザ表示 -->
+	    <p class="welcome-message">
+	        <i class="fa-solid fa-user"></i>
+	        <span sec:authentication="name"></span> さん、ようこそ！
+	    </p>
+
+	</header>
+	
+	<div class="deadline-alert">
+
+	    <span class="expired">
+	        <i class="fa-solid fa-circle-exclamation"></i>
+	        今日の期限切れ: <span th:text="${expiredCount}"></span>件
+	    </span>
+
+	    <span class="warning">
+	        期限間近: <span th:text="${warningCount}"></span>件
+	    </span>
+
+	</div>
+	
+	<div>
+
+	    <!-- すべて -->
+	    <a th:href="@{/users}" 
+	       th:classappend="${selectedCategory == null} ? 'active'"
+	       class="tab">
+	       すべて
+	    </a>
+
+	    <!-- DBカテゴリ -->
+	    <a th:each="cat : ${categories}"
+	       th:href="@{/users/filter(category=${cat.id})}"
+	       th:text="${cat.name}"
+	       th:classappend="${selectedCategory == cat.id} ? 'active'"
+	       class="tab">
+	    </a>
+
 	</div>
 
-<!-- ✅ フィルターフォーム -->
-<form th:action="@{/users/filter}" method="get" class="filter-form">
-    <label>カテゴリー：</label>
-    <select name="category" id="categoryFilter" class="category-select">
-        <option value="">-- 全て --</option>
-        <option th:each="cat : ${categories}" 
-                th:value="${cat.id}" 
-                th:text="${cat.name}"
-                th:selected="${cat.id == selectedCategory}"></option>
-    </select>
+	    
+	</div>
 
-    <label>
-        <input type="checkbox" name="expiringSoon" value="true"
-               th:checked="${param.expiringSoon}"> 期限が近いもの
-    </label>
+	<div class="search-bar">
 
-    <button type="submit" class="button">フィルター適用</button>
-</form>
+	<form th:action="@{/users/filter}" method="get" class="search-form">
+
+	    <!-- 🔍 名前検索 -->
+	    <input type="text"
+	           name="keyword"
+	           placeholder="食材を検索"
+	           class="search-input">
+
+	    <!-- カテゴリ -->
+	    <select name="category" class="category-select">
+	        <option value="">すべて</option>
+	        <option th:each="cat : ${categories}"
+	                th:value="${cat.id}"
+	                th:text="${cat.name}">
+	        </option>
+	    </select>
+
+	    <!-- 期限間近 -->
+	    <label class="expiring-check">
+	        <input type="checkbox" name="expiringSoon" value="true">
+	        期限間近
+	    </label>
+
+	    <!-- 検索ボタン -->
+	    <button type="submit" class="search-btn">
+	        <i class="fa-solid fa-magnifying-glass"></i>
+	    </button>
+
+	</form>
+
+	<!-- 右側ボタン -->
+	<div class="action-buttons">
+
+	    <a th:href="@{/users/shoppingList}" class="basket-btn">
+	        <i class="fa-solid fa-basket-shopping"></i>
+	        買い物リスト (<span th:text="${shoppingCount}"></span>)
+	    </a>
+
+	    <a th:href="@{/users/add}" class="add-btn">
+	        <i class="fa-solid fa-plus"></i>
+	        食材追加
+	    </a>
+
+	</div>
+
+	</div>
 
 
 <div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
+
+<div class="bulk-actions">
+
+    <button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
+        <i class="fa-solid fa-trash"></i>
+        まとめて削除
+    </button>
+
+    <button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
+        <i class="fa-solid fa-basket-shopping"></i>
+        買い物リストへ追加
+    </button>
+
+</div>
 
 <!-- 食材一覧を囲む -->
 <div class="table-wrapper">
     <div class="table-container">
         <table>
-            <tr>
-                <th>編集</th>
-                <th>食材</th>
-                <th class="hidden">カテゴリー</th>
-                <th>量</th>
-                <th>期限</th>
-                <th>メモ</th>
-                <th>お気に入り</th>
-                <th></th>
-                <th></th>
-            </tr>
+			<tr>
+			    <th>
+			        <input type="checkbox" id="selectAll">
+			    </th>
+				<th>食材</th>
+			    <th class="hidden">カテゴリー</th>
+			    <th>量</th>
+			    <th>期限</th>
+			    <th>メモ</th>
+			    <th>お気に入り</th>
+				<th>編集</th>
+			    <th></th>
+			    <th></th>
+			</tr>
 
             <tr th:each="item : ${items}" >
-                <td><a th:href="@{/users/edit/{id}(id=${item.id})}" class="button">編集</a></td>
+				<td>
+				    <input type="checkbox"
+				           class="item-checkbox"
+				           th:value="${item.id}">
+				</td>
+                
 				<td class="food-cell">
 				  <span
 				    class="food-label"
@@ -111,6 +177,11 @@
 						</button>
                     </form>
                 </td>
+				<td>				
+					<a th:href="@{/users/edit/{id}(id=${item.id})}" class="edit-btn">
+						<i class="fa-solid fa-pen"></i>
+					</a>
+				</td>
                 <td>
                     <!-- ✅ お気に入り時に確認＆買い物リスト追加 -->
                     <form th:action="@{/users/stop/{id}(id=${item.id})}" method="post"
@@ -195,6 +266,95 @@ function handleStop(event, isFavorite, itemId) {
     // ✅ 「使い切った」フォームを送信
     event.target.submit();
 }
+
+// 選択されたIDを取得
+function getSelectedItems() {
+
+    const checkboxes = document.querySelectorAll(".item-checkbox:checked");
+
+    const ids = [];
+
+    checkboxes.forEach(cb => {
+        ids.push(cb.value);
+    });
+
+    return ids;
+}
+
+document.getElementById("bulkDeleteBtn").addEventListener("click", function() {
+
+    const ids = getSelectedItems();
+
+    if (ids.length === 0) {
+        alert("食材を選択してください");
+        return;
+    }
+
+    if (!confirm("選択した食材を削除しますか？")) {
+        return;
+    }
+
+    fetch("/users/bulk-delete", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ids)
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("削除に失敗しました");
+        }
+    });
+
+});
+
+// 全選択チェックボックス
+document.getElementById("selectAll").addEventListener("change", function() {
+
+    const checked = this.checked;
+
+    const checkboxes = document.querySelectorAll(".item-checkbox");
+
+    checkboxes.forEach(cb => {
+        cb.checked = checked;
+    });
+
+});
+
+document.getElementById("bulkShoppingBtn").addEventListener("click", function() {
+
+    const ids = getSelectedItems();
+
+    if (ids.length === 0) {
+        alert("食材を選択してください");
+        return;
+    }
+
+    if (!confirm("選択した食材を買い物リストに追加しますか？")) {
+        return;
+    }
+
+    fetch("/users/bulk-add-shopping-list", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ids)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("買い物リストに追加しました！");
+            location.reload();
+        } else {
+            alert("追加に失敗しました");
+        }
+    });
+
+});
+
 </script>
 
 

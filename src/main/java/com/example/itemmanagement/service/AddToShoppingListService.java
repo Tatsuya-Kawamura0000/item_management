@@ -57,5 +57,11 @@ public class AddToShoppingListService {
 
         return item;
     }
+    
+    public int getShoppingListCount(Integer userId) {
+    	
+        return shoppingListMapper.countByUserId(userId);
+        
+    }
 
 }
