@@ -1,5 +1,7 @@
 package com.example.itemmanagement.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,14 @@ public class UpdateItemService {
     public void updateFavorite(Items item, Integer userId) {
         item.setUserId(userId);
         mapper.updateFavorite(item);
+    }
+    
+    public void bulkDelete(List<Integer> ids, Integer userId) {
+
+        for(Integer id : ids){
+            mapper.stop(id, userId);
+        }
+
     }
 
 }

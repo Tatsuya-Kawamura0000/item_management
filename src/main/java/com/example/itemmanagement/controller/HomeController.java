@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.itemmanagement.entity.Categories;
@@ -78,6 +81,11 @@ public class HomeController {
 	    // ユーザーごとの食材一覧取得
 	    List<Items> items = getAllItemsService.getAllItems(userId);
 
+	    int expiredCount = 0;
+	    
+	    int warningCount = 0;
+	    
+	    
 	    for (Items item : items) {
 	        if (item.getDeadline() != null) {
 
@@ -86,8 +94,10 @@ public class HomeController {
 
 	            if (days < 0) {
 	                item.setMessage("期限切れです");
+	                expiredCount++;						//期限切れ食材をカウント
 	            } else if (days <= 3) {
 	                item.setMessage("気を付けて");
+	                warningCount++;						//期限間近食材をカウント
 	            } else {
 	                item.setMessage("");
 	            }
@@ -97,11 +107,19 @@ public class HomeController {
 	        }
 	    }
 
+	    //カテゴリー情報取得
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("items", items);
-
+	    model.addAttribute("expiredCount", expiredCount);	//期限切れ食材数を渡す
+	    model.addAttribute("warningCount", warningCount);	//期限間近食材をカウント
+	    
+	    int shoppingCount = addToShoppingListService.getShoppingListCount(userId); //買い物リストのアイテム数を取得
+	    model.addAttribute("shoppingCount", shoppingCount);
+	    
+	    model.addAttribute("selectedCategory", null);
+	    
 	    return "home";
 	}
 
@@ -324,6 +342,30 @@ public class HomeController {
 	    return "home";
 	}
 	
+	@PostMapping("/bulk-delete")
+	@ResponseBody
+	public ResponseEntity<?> bulkDelete(@RequestBody List<Integer> ids,
+	        @AuthenticationPrincipal LoginUser loginUser){
+
+	    Integer userId = loginUser.getId();
+
+	    updateItemService.bulkDelete(ids, userId);
+
+	    return ResponseEntity.ok().build();
+	}
 	
+	@PostMapping("/bulk-add-shopping-list")
+	@ResponseBody
+	public ResponseEntity<?> bulkAddShoppingList(@RequestBody List<Integer> ids,
+	        @AuthenticationPrincipal LoginUser loginUser){
+
+	    Integer userId = loginUser.getId();
+
+	    for(Integer id : ids){
+	        addToShoppingListService.addItemToList(id, userId);
+	    }
+
+	    return ResponseEntity.ok().build();
+	}
 	
 }
