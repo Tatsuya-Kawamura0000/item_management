@@ -17,5 +17,7 @@ public interface ShoppingListMapper {
     
     //// ユーザー単位で買い物リストのアイテム数を取得
     int countByUserId(Integer userId);
+    
+    int stop(@Param("id") Integer id,@Param("userId") Integer userId);
 
 }

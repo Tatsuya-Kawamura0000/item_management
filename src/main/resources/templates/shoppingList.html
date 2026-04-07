@@ -29,10 +29,26 @@
 	<div class="memo-container">
 		
 	<div id="message" class="message-success"></div>	
+	
+	<div class="bulk-actions">
+
+	<button type="button" id="bulkDeleteBtn" class="button">
+	<i class="fa-solid fa-trash"></i>
+	削除
+	</button>
+
+	<button type="button" id="bulkPurchaseBtn" class="button">
+	<i class="fa-solid fa-cart-shopping"></i>
+	購入済み
+	</button>
+
+	</div>
 
 	    <table>
 	        <tr>
-	            <th>✔</th>
+				<th>
+				  <input type="checkbox" id="selectAllShopping">
+				</th>
 	            <th>食材</th>
 	            <th>量</th>
 	            <th class="hidden">カテゴリ</th>
@@ -42,7 +58,12 @@
 	        </tr>
 
 	        <tr th:each="item : ${listItems}">
-	            <td><input type="checkbox" name="selectedItems"></td>
+				<td>
+				  <input type="checkbox"
+				         class="shopping-checkbox"
+				         th:value="${item.id}"
+				         th:data-name="${item.name}">
+				</td>
 	            <td>
 	                <span th:text="${item.name}"></span>
 	                <span class="pencil">✏️</span>
@@ -51,14 +72,6 @@
 	            <td class="hidden" th:text="${item.categoryName}"></td>
 	            <td class="hidden" th:text="${item.purchaseDate}"></td>
 	            <td class="hidden" th:text="${item.purchasedFlg}"></td>
-	            <td>
-					<!-- ★JSに値を渡す -->
-					<button type="button" class="button"
-					        th:attr="data-id=${item.id}, data-name=${item.name}"
-							onclick="openModal(this.dataset.id, this.dataset.name)">
-					    購入済みにする
-					</button>
-	            </td>
 	        </tr>
 	    </table>
 	</div>

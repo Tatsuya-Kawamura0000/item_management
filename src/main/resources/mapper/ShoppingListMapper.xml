@@ -33,7 +33,10 @@
     <select id="findAll" resultType="com.example.itemmanagement.entity.ShoppingListItem">
     SELECT *
     FROM shopping_list
-    WHERE user_id = #{userId}
+    WHERE 
+     user_id = #{userId}
+    AND
+     status = true
     ORDER BY added_at DESC
     </select>
 
@@ -44,5 +47,16 @@
     AND status = true
     AND purchased_flg = false
     </select>
+
+    <update id="stop">
+    UPDATE
+   		shopping_list
+   	SET 
+		status = false
+   	WHERE 
+   		id = #{id}			
+   	AND 
+   		user_id = #{userId}
+	</update>
 
 </mapper>
