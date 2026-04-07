@@ -8,12 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.mapper.ItemMapper;
+import com.example.itemmanagement.mapper.ShoppingListMapper;
 
 @Service
 public class UpdateItemService {
 
     @Autowired
     private ItemMapper mapper;
+    
+    @Autowired
+    private ShoppingListMapper shoppingListMapper;
 
     @Transactional
     public void updateItem(int id, Integer userId, Items item) {
@@ -30,10 +34,11 @@ public class UpdateItemService {
         mapper.updateFavorite(item);
     }
     
+    @Transactional
     public void bulkDelete(List<Integer> ids, Integer userId) {
 
         for(Integer id : ids){
-            mapper.stop(id, userId);
+        	shoppingListMapper.stop(id, userId);
         }
 
     }

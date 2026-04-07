@@ -1,5 +1,8 @@
 // shoppingList.js
 
+let purchaseQueue = [];
+let currentIndex = 0;
+
 // ------------------------------
 // モーダル操作
 // ------------------------------
@@ -58,7 +61,19 @@ function submitPurchased() {
 	    return resJson;
 	})
 	.then(item => {
-	    window.location.href = '/users/shoppingList';
+
+	    currentIndex++;
+
+	    if(currentIndex < purchaseQueue.length){
+
+	        openPurchaseModal();
+
+	    }else{
+
+	        window.location.href = '/users/shoppingList';
+
+	    }
+
 	})
 	.catch(error => {
 	    console.error('Error:', error);
@@ -199,18 +214,96 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// ------------------------------
+// 全選択操作
+// ------------------------------
 
 
+document.getElementById("selectAllShopping").addEventListener("change", function(){
 
+    const checked = this.checked;
 
+    const checkboxes = document.querySelectorAll(".shopping-checkbox");
 
+    checkboxes.forEach(cb=>{
+        cb.checked = checked;
+    });
 
+});
 
+function getSelectedShoppingItems(){
 
+    const checkboxes = document.querySelectorAll(".shopping-checkbox:checked");
 
+    const items = [];
 
+    checkboxes.forEach(cb => {
 
+        items.push({
+            id: cb.value,
+            name: cb.dataset.name
+        });
 
+    });
+
+    return items;
+}
+
+document.getElementById("bulkPurchaseBtn").addEventListener("click", function(){
+
+    purchaseQueue = getSelectedShoppingItems();
+
+    if(purchaseQueue.length === 0){
+        alert("選択してください");
+        return;
+    }
+
+    currentIndex = 0;
+
+    openPurchaseModal();
+
+});
+
+	
+	
+function openPurchaseModal(){
+
+    const item = purchaseQueue[currentIndex];
+
+    document.getElementById("shoppingListId").value = item.id;
+    document.getElementById("itemName").value = item.name;
+
+    document.getElementById("purchasedModal").classList.add("show");
+
+}
+
+document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
+
+    const items = getSelectedShoppingItems();
+
+    if(items.length === 0){
+        alert("選択してください");
+        return;
+    }
+
+    const ids = items.map(i => i.id);
+
+    fetch("/users/bulk-delete-shopping-list",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(ids)
+    })
+    .then(()=>{
+        location.reload();
+    })
+    .catch(error=>{
+        console.error(error);
+        alert("削除に失敗しました");
+    });
+
+});
 
 
 
