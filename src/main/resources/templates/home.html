@@ -20,13 +20,13 @@
 
 	    <h1 class="page-title">🥦 食材一覧 🥕</h1>
 
-	    <!-- ログインユーザ表示 -->
-	    <p class="welcome-message">
-	        <i class="fa-solid fa-user"></i>
-	        <span sec:authentication="name"></span> さん、ようこそ！
-	    </p>
-
-	</header>
+		<p class="welcome-message">
+			        <i class="fa-solid fa-user"></i>
+			        <span sec:authentication="name"></span> さん、ようこそ！
+			    </p>
+		
+		    
+	
 	
 	<div class="deadline-alert">
 
@@ -61,7 +61,7 @@
 	</div>
 
 	    
-	</div>
+	</h3>
 
 	<div class="search-bar">
 
@@ -97,11 +97,11 @@
 
 	<!-- 右側ボタン -->
 	<div class="action-buttons">
-
-	    <a th:href="@{/users/shoppingList}" class="basket-btn">
-	        <i class="fa-solid fa-basket-shopping"></i>
-	        買い物リスト (<span th:text="${shoppingCount}"></span>)
-	    </a>
+		
+		<a th:href="@{/users/shoppingList}" class="basket-btn">
+				        <i class="fa-solid fa-basket-shopping"></i>
+				        買い物リスト (<span th:text="${shoppingCount}"></span>)
+		</a>
 
 	    <a th:href="@{/users/add}" class="add-btn">
 	        <i class="fa-solid fa-plus"></i>
@@ -142,8 +142,8 @@
 			    <th>量</th>
 			    <th>期限</th>
 			    <th>メモ</th>
-			    <th>お気に入り</th>
-				<th>編集</th>
+			    <th></th>
+				<th></th>
 			    <th></th>
 			</tr>
 

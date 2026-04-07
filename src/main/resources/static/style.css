@@ -971,14 +971,13 @@ body {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    width:80%;
-    margin:20px auto;
+    margin:15px 0;
 }
 
 .search-form{
     display:flex;
-    align-items:center;
     gap:10px;
+    align-items:center;
 }
 
 .search-input{
@@ -1023,11 +1022,9 @@ body {
 }
 
 .bulk-btn{
-    border:none;
+    border-radius:20px;
     padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
+    font-weight:600;
 }
 
 .bulk-btn.delete{
@@ -1040,18 +1037,62 @@ body {
     color:white;
 }
 
+/* =========================
+  一覧表示　項目調整
+========================= */
 
 
+table th:nth-child(7),
+table td:nth-child(7){
+    width:60px;
+    text-align:center;
+}
+
+table th:nth-child(8),
+table td:nth-child(8){
+    width:60px;
+    text-align:center;
+}
+
+table th:nth-child(9),
+table td:nth-child(9){
+    width:120px;
+}
+
+.heart-btn,
+.edit-btn {
+    display: flex;
+    justify-content: center;
+}
+
+table th:nth-child(6),
+table td:nth-child(6) {
+    min-width: 180px;
+}
+
+table {
+    table-layout: fixed;
+}
+
+table th,
+table td{
+    padding:10px 8px;
+}
+
+.container{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* =========================
+  買い物リスト表示　調整
+========================= */
 
 
-
-
-
-
-
-
-
-
-
-
-
+.basket-btn{
+    background:#f4f1fb;
+    padding:6px 12px;
+    border-radius:20px;
+    text-decoration:none;
+    font-weight:600;
+}
