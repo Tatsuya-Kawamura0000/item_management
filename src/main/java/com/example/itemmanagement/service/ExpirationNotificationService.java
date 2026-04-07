@@ -1,6 +1,9 @@
 package com.example.itemmanagement.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,24 +23,43 @@ public class ExpirationNotificationService {
     private final MailService mailService;
 
     
-//@Scheduled(cron = "0 */1 * * * *")     
-    @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Tokyo")  // 毎日9時に実行
+//@Scheduled(cron = "0 */1 * * * *")    テスト用 
+@Scheduled(cron = "0 0 9 * * *", zone = "Asia/Tokyo")
     public void notifyExpiringItems() {
 
         List<Items> items = itemMapper.findExpiringItems();
 
-        for (Items item : items) {
+        // ユーザーごとにアイテムをまとめる
+        Map<Integer, List<Items>> itemsByUser = new HashMap<>();
 
-            String email = usersMapper.findEmailById(item.getUserId());
+        for (Items item : items) {
+            itemsByUser
+                .computeIfAbsent(item.getUserId(), k -> new ArrayList<>())
+                .add(item);
+        }
+
+        // ユーザーごとにメール送信
+        for (Map.Entry<Integer, List<Items>> entry : itemsByUser.entrySet()) {
+
+            Integer userId = entry.getKey();
+            List<Items> userItems = entry.getValue();
+
+            String email = usersMapper.findEmailById(userId);
 
             String subject = "【期限通知】食品の期限が近づいています";
 
-            String text =
-                    "次の食品の期限が近づいています。\n\n" +
-                    "食品名: " + item.getName() + "\n" +
-                    "期限: " + item.getDeadline();
+            StringBuilder text = new StringBuilder();
+            text.append("次の食品の期限が近づいています。\n\n");
 
-            mailService.sendMail(email, subject, text);
+            for (Items item : userItems) {
+                text.append("食品名: ")
+                    .append(item.getName())
+                    .append("\n期限: ")
+                    .append(item.getDeadline())
+                    .append("\n\n");
+            }
+
+            mailService.sendMail(email, subject, text.toString());
         }
     }
 }
