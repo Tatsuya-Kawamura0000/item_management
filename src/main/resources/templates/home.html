@@ -25,8 +25,6 @@
 			        <span sec:authentication="name"></span> さん、ようこそ！
 			    </p>
 		
-		    
-	
 	
 	<div class="deadline-alert">
 
@@ -41,28 +39,6 @@
 
 	</div>
 	
-	<div>
-
-	    <!-- すべて -->
-	    <a th:href="@{/users}" 
-	       th:classappend="${selectedCategory == null} ? 'active'"
-	       class="tab">
-	       すべて
-	    </a>
-
-	    <!-- DBカテゴリ -->
-	    <a th:each="cat : ${categories}"
-	       th:href="@{/users/filter(category=${cat.id})}"
-	       th:text="${cat.name}"
-	       th:classappend="${selectedCategory == cat.id} ? 'active'"
-	       class="tab">
-	    </a>
-
-	</div>
-
-	    
-	</h3>
-
 	<div class="search-bar">
 
 	<form th:action="@{/users/filter}" method="get" class="search-form">
@@ -111,8 +87,26 @@
 	</div>
 
 	</div>
+	
+	<div>
 
+	    <!-- すべて -->
+	    <a th:href="@{/users}" 
+	       th:classappend="${selectedCategory == null} ? 'active'"
+	       class="tab">
+	       すべて
+	    </a>
 
+	    <!-- DBカテゴリ -->
+	    <a th:each="cat : ${categories}"
+	       th:href="@{/users/filter(category=${cat.id})}"
+	       th:text="${cat.name}"
+	       th:classappend="${selectedCategory == cat.id} ? 'active'"
+	       class="tab">
+	    </a>
+
+	</div>
+	
 <div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
 <div class="bulk-actions">
