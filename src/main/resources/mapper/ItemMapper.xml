@@ -175,7 +175,7 @@ FROM
 WHERE
     items.status <> 0
 AND
-    items.deadline BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '3 days'
+    items.deadline <= CURRENT_DATE + INTERVAL '3 days'
 ORDER BY
     items.user_id
 ]]>
