@@ -938,12 +938,12 @@ body {
 .category-tabs{
     display:flex;
     gap:10px;
-    margin-bottom:100px;
-	margin-top:30px;
+	margin-top:50px;
+	margin-bottom:20px;
 }
 
 .tab{
-    padding:8px 18px;
+    padding:17px 40px;
     border-radius:20px;
     background:#FFF6E5;
     text-decoration:none;
@@ -1017,14 +1017,19 @@ body {
 .bulk-actions{
     display:flex;
     gap:10px;
-    margin-bottom:30px;
-	margin-top:20px
+    margin-bottom:20px;
+	margin-top:40px
 }
 
 .bulk-btn{
     border-radius:30px;
-    padding:8px 14px;
-    font-weight:600;
+    padding:10px 25px;
+    font-weight:800;
+}
+
+.bulk-btn i{
+    font-size:30px;
+    margin-right:6px;
 }
 
 .bulk-btn.delete{
