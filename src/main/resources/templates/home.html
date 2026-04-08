@@ -107,21 +107,23 @@
 
 	</div>
 	
+	<div class="bulk-actions">
+
+	    <button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
+	        <i class="fa-solid fa-trash"></i>
+	        消費済み
+	    </button>
+
+	    <button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
+	        <i class="fa-solid fa-basket-shopping"></i>
+	        買い物リストへ追加
+	    </button>
+
+	</div>
+	
 <div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
-<div class="bulk-actions">
 
-    <button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
-        <i class="fa-solid fa-trash"></i>
-        消費済み
-    </button>
-
-    <button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
-        <i class="fa-solid fa-basket-shopping"></i>
-        買い物リストへ追加
-    </button>
-
-</div>
 
 <!-- 食材一覧を囲む -->
 <div class="table-wrapper">
