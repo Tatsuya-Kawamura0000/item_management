@@ -42,5 +42,14 @@ public class UpdateItemService {
         }
 
     }
+    
+    @Transactional
+    public void bulkDeleteFromItems(List<Integer> ids, Integer userId) {
+
+        for(Integer id : ids){
+        	mapper.stop(id, userId);
+        }
+
+    }
 
 }
