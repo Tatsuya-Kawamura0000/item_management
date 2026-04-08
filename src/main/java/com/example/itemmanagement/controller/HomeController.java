@@ -363,7 +363,7 @@ public class HomeController {
 
 	    Integer userId = loginUser.getId();
 
-	    updateItemService.bulkDelete(ids, userId);
+	    updateItemService.bulkDeleteFromItems(ids, userId);
 
 	    return ResponseEntity.ok().build();
 	}
