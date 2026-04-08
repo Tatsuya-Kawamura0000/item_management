@@ -938,18 +938,18 @@ body {
 .category-tabs{
     display:flex;
     gap:10px;
-    margin:20px auto;
-    width:80%;
+    margin-bottom:100px;
+	margin-top:30px;
 }
 
 .tab{
     padding:8px 18px;
     border-radius:20px;
-    background:#f3f3f3;
+    background:#FFF6E5;
     text-decoration:none;
-    color:#333;
+    color:#A8D5BA;
     font-size:14px;
-    transition:0.2s;
+    transition: all 0.2s;
 }
 
 .tab:hover{
@@ -957,9 +957,9 @@ body {
 }
 
 .tab.active{
-    background:#7dbb7d;
-    color:white;
-    font-weight:600;
+    background:#EADBC8;
+    color:#333;
+    font-weight:700;
 }
 
 
@@ -1015,14 +1015,14 @@ body {
 
 
 .bulk-actions{
-    width:80%;
-    margin:10px auto;
     display:flex;
     gap:10px;
+    margin-bottom:30px;
+	margin-top:20px
 }
 
 .bulk-btn{
-    border-radius:20px;
+    border-radius:30px;
     padding:8px 14px;
     font-weight:600;
 }
