@@ -2,10 +2,11 @@
    ベース
 ========================= */
 body {
-    font-family: 'Baloo 2', cursive;
-    background-color: #f5f7f9; /* 少し落ち着いた白 */
     margin: 0;
     padding: 20px;
+    background-color: #f5f6f7;
+    color: #4A2E1F;
+    font-family: 'BIZ UDP Gothic', sans-serif;
 }
 
 h1 {
@@ -15,6 +16,7 @@ h1 {
     margin-bottom: 20px;
     color: #333;
 }
+
 
 /* =========================
    テーブル外枠
@@ -49,7 +51,6 @@ th, td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #333;
 }
 
 th {
@@ -259,12 +260,6 @@ h1 {
    ベース：グレー
 ================================ */
 
-/* 全体トーン調整 */
-body {
-    background-color: #f5f6f7;
-    color: #333;
-}
-
 /* ----------------
    ボタン（共通）
 ----------------- */
@@ -312,7 +307,6 @@ body {
 /* テーブルヘッダ */
 th {
     background-color: #f0f0f0;
-    color: #444;
 }
 
 /* 行ホバー */
@@ -659,12 +653,12 @@ td.food-cell {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 16px;
-    border-radius: 22px;
-    background-color: #ffffff;
+    padding: 12px 24px;        /* 高さと横幅を増やす */
+    border-radius: 28px;
+    background-color: #f7d9b5;   /* パステルオレンジ */
     border: 1.5px solid #d0d0d0;
-    color: #333;
-    font-size: 13px;
+    color: #6b4c3b;              /* ブラウン文字 */
+    font-size: 16px;          /* 文字を大きく */
     font-weight: 600;
     text-decoration: none;
     transition: 
@@ -673,14 +667,14 @@ td.food-cell {
         transform 0.1s ease;
 }
 
-.add-btn i {
-    font-size: 14px;
+.add-btn:hover {
+    background-color: #f3cba0;   /* 少し濃く */
+    border-color: #e0b98d;
 }
 
-.add-btn:hover {
-    background-color: #f5f5f5;
-    border-color: #bdbdbd;
-    transform: translateY(-1px);
+/* アイコンも大きく */
+.add-btn i {
+    font-size: 18px;          /* +アイコンを大きく */
 }
 
 /* =========================
@@ -718,19 +712,6 @@ td.food-cell {
     font-weight: 600;
 }
 
-/* =========================
-   食材追加ボタン（＋アイコン付き）大きく
-========================= */
-.add-btn {
-    font-size: 16px;          /* 文字を大きく */
-    padding: 10px 24px;       /* 高さと横幅を増やす */
-    border-radius: 24px;
-}
-
-/* アイコンも大きく */
-.add-btn i {
-    font-size: 18px;          /* +アイコンを大きく */
-}
 
 .page-title {
     font-size: 50px;   /* 3倍サイズ */
@@ -859,11 +840,6 @@ td.food-cell {
 /* =========================
    ログイン画面
 ========================= */
-
-body {
-    margin: 0;
-}
-
 .login-page {
     background: #efefef;
     display: flex;
@@ -967,7 +943,7 @@ body {
     position: absolute;
     top: -2px;
     right: -2px;
-    background: linear-gradient(#ff5f5f, #d60000); /* 上が明るく下が濃い */
+    background: linear-gradient(#e8d8c8, #c9a98a);
     color: white;
     border-radius: 50%;
     font-size: 11px;
@@ -975,8 +951,8 @@ body {
     text-align: center;
     padding: 2px 5px;
     box-shadow:
-            0 2px 4px rgba(0,0,0,0.25),   /* 外側の影 */
-            inset 0 1px 2px rgba(255,255,255,0.6); /* 内側の光 */
+            0 1px 2px rgba(0,0,0,0.15),      /* 外側の影（弱め） */
+            inset 0 1px 1px rgba(255,255,255,0.35); /* 内側の光（ほんのり） */
 }
 
 /* =========================
@@ -1112,8 +1088,14 @@ table td{
 
 .basket-btn{
     background:#f4f1fb;
-    padding:6px 12px;
-    border-radius:20px;
+    background-color: #e8d8c8;
+    color: #4A2E1F;
+    padding: 12px 24px;        /* ← 高さを統一 */
+    border-radius: 28px;
     text-decoration:none;
     font-weight:600;
+}
+.basket-btn:hover {
+    background-color: #d9c7b5;   /* 少し濃く */
+    border-color: #bfa48c;
 }
