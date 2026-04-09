@@ -318,6 +318,7 @@ public class HomeController {
 
 	    Integer userId = loginUser.getId();
 
+		List<Items> items = getAllItemsService.getAllItems(userId);
 	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, userId);
 
 	    int expiredCount = 0;
@@ -347,7 +348,7 @@ public class HomeController {
 
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
-	    model.addAttribute("items", filteredItems);
+	    model.addAttribute("items", items);
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("selectedCategory", category);
 	    model.addAttribute("expiringSoon", expiringSoon);
