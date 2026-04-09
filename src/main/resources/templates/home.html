@@ -108,6 +108,8 @@
 		</a>
 
 	</div>
+
+	</header>
 	
 	<div class="bulk-actions">
 
@@ -145,7 +147,7 @@
 			    <th></th>
 			</tr>
 
-            <tr th:each="item : ${items}" >
+            <tr th:each="item : ${filteredItems}" >
 				<td>
 				<input type="checkbox"
 				       class="item-checkbox"
@@ -181,12 +183,8 @@
 						<i class="fa-solid fa-pen"></i>
 					</a>
 				</td>
-				<td
-				    th:class="
-				        ${item.message == '期限切れです'} ? 'danger' :
-				        (${item.message == '気を付けて'} ? 'warning' : '')
-				    "
-				>
+				<td th:classappend="${item.message == '期限切れです'} ? ' danger' :
+                    (${item.message == '気を付けて'} ? ' warning' : '')">
 
 				    <!-- 🔥 期限切れ（赤） -->
 				    <span th:if="${item.message == '期限切れです'}">
