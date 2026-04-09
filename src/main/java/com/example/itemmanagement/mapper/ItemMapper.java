@@ -1,6 +1,7 @@
 package com.example.itemmanagement.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -34,6 +35,7 @@ public interface ItemMapper {
     
     //mail送信用
     List<Items> findExpiringItems();
-    	    
-	
+
+	//カテゴリーごとのアイテム数をカウント
+	List<Map<String, Object>> countItemsByCategory(@Param("userId") Integer userId);
 }

@@ -87,23 +87,24 @@
 	</div>
 
 	</div>
-	
+
 	<div>
 
 	    <!-- すべて -->
-	    <a th:href="@{/users}" 
-	       th:classappend="${selectedCategory == null} ? 'active'"
-	       class="tab">
-	       すべて
-	    </a>
+		<a th:href="@{/users}" th:classappend="${selectedCategory == null} ? 'active'" class="tab">
+			すべて
+			<span class="badge" th:if="${#lists.size(items) > 0}" th:text="${#lists.size(items)}"></span>
+		</a>
 
 	    <!-- DBカテゴリ -->
-	    <a th:each="cat : ${categories}"
-	       th:href="@{/users/filter(category=${cat.id})}"
-	       th:text="${cat.name}"
-	       th:classappend="${selectedCategory == cat.id} ? 'active'"
-	       class="tab">
-	    </a>
+		<a th:each="cat : ${categories}"
+		   th:href="@{/users/filter(category=${cat.id})}"
+		   th:classappend="${selectedCategory == cat.id} ? 'active'"
+		   class="tab">
+			<span th:text="${cat.name}"></span>
+			<span class="badge" th:if="${categoryCounts[cat.id] != null and categoryCounts[cat.id] > 0}"
+			      th:text="${categoryCounts[cat.id]}"></span>
+		</a>
 
 	</div>
 	

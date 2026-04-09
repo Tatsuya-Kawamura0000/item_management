@@ -24,7 +24,7 @@ public class ExpirationNotificationService {
 
     
 //@Scheduled(cron = "0 */1 * * * *")    //テスト用 
-@Scheduled(cron = "0 0 9 * * *", zone = "Asia/Tokyo")
+@Scheduled(cron = "0 0 12 * * *", zone = "Asia/Tokyo")
     public void notifyExpiringItems() {
 
         List<Items> items = itemMapper.findExpiringItems();
