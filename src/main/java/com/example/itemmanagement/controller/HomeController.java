@@ -169,7 +169,7 @@ public class HomeController {
 
 	    redirectAttributes.addFlashAttribute("successMessage", "食材を登録しました！");
 
-	    return "redirect:/users";
+	    return "redirect:/users/add";
 	}
 	
 	@PostMapping("/stop/{id}")
