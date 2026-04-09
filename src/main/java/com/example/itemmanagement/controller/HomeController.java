@@ -1,6 +1,7 @@
 package com.example.itemmanagement.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -119,6 +120,11 @@ public class HomeController {
 	    model.addAttribute("shoppingCount", shoppingCount);
 	    
 	    model.addAttribute("selectedCategory", null);
+
+		Map<Integer, Integer> categoryCounts =
+				getAllCategoriesService.getCategoryCounts(userId);
+
+		model.addAttribute("categoryCounts", categoryCounts);
 	    
 	    return "home";
 	}
@@ -352,6 +358,11 @@ public class HomeController {
 
 	    int shoppingCount = addToShoppingListService.getShoppingListCount(userId);
 	    model.addAttribute("shoppingCount", shoppingCount);
+
+		Map<Integer, Integer> categoryCounts =
+				getAllCategoriesService.getCategoryCounts(userId);
+
+		model.addAttribute("categoryCounts", categoryCounts);
 
 	    return "home";
 	}

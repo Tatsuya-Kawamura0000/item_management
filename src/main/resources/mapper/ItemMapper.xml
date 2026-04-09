@@ -181,5 +181,14 @@ ORDER BY
 ]]>
 </select>
 
+<select id="countItemsByCategory" resultType="map">
+SELECT
+ category_id,
+COUNT(*) AS count
+FROM items
+WHERE user_id = #{userId}
+AND status = 1
+GROUP BY category_id
+</select>
 
 </mapper>	
