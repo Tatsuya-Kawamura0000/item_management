@@ -24,7 +24,13 @@
 </head>
 <body>
 <div class="form-wrapper">
-    <h1>食材追加</h1> 
+    <h1>食材追加</h1>
+
+	<div th:if="${successMessage}"
+	     id="successMessage"
+	     class="alert alert-success">
+		<span th:text="${successMessage}"></span>
+	</div>
 
     <form th:action="@{/users}" th:object="${form}" method="POST">
 

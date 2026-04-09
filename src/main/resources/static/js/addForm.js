@@ -14,4 +14,12 @@ $(function () {
         heartBtn.css('color', fav ? '#d81b60' : 'gray');
     });
 
+    // 成功メッセージ3秒で消す
+    const message = document.getElementById("successMessage");
+
+    if (message) {
+        setTimeout(function () {
+            $('#successMessage').fadeOut();
+        }, 3000);
+    }
 });
