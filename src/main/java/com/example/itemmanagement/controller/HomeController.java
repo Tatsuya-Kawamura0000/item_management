@@ -77,17 +77,18 @@ public class HomeController {
 	    String username = loginUser.getUsername();
 	    Integer userId = loginUser.getId();
 
-	    model.addAttribute("username", username);
-
 	    // ユーザーごとの食材一覧取得
 	    List<Items> items = getAllItemsService.getAllItems(userId);
+
+		//home.htmlが、th:each="item : ${filteredItems}"で表示しているため
+		List<Items> filteredItems = items;
 
 	    int expiredCount = 0;
 	    
 	    int warningCount = 0;
 	    
 	    
-	    for (Items item : items) {
+	    for (Items item : filteredItems) {
 	        if (item.getDeadline() != null) {
 
 	            long days = java.time.temporal.ChronoUnit.DAYS.between(
@@ -113,6 +114,7 @@ public class HomeController {
 
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("items", items);
+		model.addAttribute("filteredItems", filteredItems);
 	    model.addAttribute("expiredCount", expiredCount);	//期限切れ食材数を渡す
 	    model.addAttribute("warningCount", warningCount);	//期限間近食材をカウント
 	    
@@ -349,6 +351,7 @@ public class HomeController {
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
 	    model.addAttribute("items", items);
+		model.addAttribute("filteredItems", filteredItems);
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("selectedCategory", category);
 	    model.addAttribute("expiringSoon", expiringSoon);
