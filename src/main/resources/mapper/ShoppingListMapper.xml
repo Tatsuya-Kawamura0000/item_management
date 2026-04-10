@@ -59,4 +59,14 @@
    		user_id = #{userId}
 	</update>
 
+	<select id="existsByName" resultType="boolean">
+		SELECT EXISTS(
+			SELECT 1
+			FROM shopping_list
+			WHERE name = #{name}
+			  AND user_id = #{userId}
+			  AND status = true
+		)
+	</select>
+
 </mapper>

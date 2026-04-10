@@ -1,5 +1,6 @@
 package com.example.itemmanagement.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -382,19 +383,37 @@ public class HomeController {
 
 	    return ResponseEntity.ok().build();
 	}
-	
+
 	@PostMapping("/bulk-add-shopping-list")
 	@ResponseBody
-	public ResponseEntity<?> bulkAddShoppingList(@RequestBody List<Integer> ids,
-	        @AuthenticationPrincipal LoginUser loginUser){
+	public ResponseEntity<?> bulkAddShoppingList(
+			@RequestBody List<Integer> ids,
+			@AuthenticationPrincipal LoginUser loginUser){
 
-	    Integer userId = loginUser.getId();
+		Integer userId = loginUser.getId();
+		//重複していたアイテムのリスト
+		List<String> duplicatedItems = new ArrayList<>();
 
-	    for(Integer id : ids){
-	        addToShoppingListService.addItemToList(id, userId);
-	    }
+		for(Integer id : ids){
 
-	    return ResponseEntity.ok().build();
+			List<String> result = addToShoppingListService.addItemToList(id, userId);
+
+			if(!result.isEmpty()){
+				duplicatedItems.addAll(result);
+			}
+		}
+		// 重複が1つでもあればまとめて返す
+		if(!duplicatedItems.isEmpty()){
+			String message = String.join("、", duplicatedItems)
+					+ " はすでに買い物リストに存在しています";
+
+			return ResponseEntity
+						.badRequest()
+						.body(message);
+			}
+
+
+		return ResponseEntity.ok().build();
 	}
-	
 }
+	

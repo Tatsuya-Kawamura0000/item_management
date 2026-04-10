@@ -242,7 +242,7 @@ function getSelectedItems() {
     return ids;
 }
 
-//消費済み　ボタン押下時の処理
+//消費済みにする　ボタン押下時の処理
 document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 
     const checkboxes = document.querySelectorAll(".item-checkbox:checked");
@@ -301,22 +301,35 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
             },
             body: JSON.stringify(addIds)
         })
-        .then(response => {
+				.then(async response => {
 
-            if (response.ok) {
-                deleteItems(ids);
-            } else {
-                alert("買い物リスト追加に失敗しました");
-            }
+					if (response.ok) {
 
-        });
+						deleteItems(ids);
 
-    } else {
+					} else {
 
-        deleteItems(ids);
+						const message = await response.text();
 
-    }
+						if (message.includes("すでに")) {
+							alert(message);    //重複あった場合のメッセージ
+							deleteItems(ids);　//アイテムは削除
+						} else {
+							alert("買い物リスト追加に失敗しました");
+						}
 
+					}
+
+				})
+				.catch(error => {
+					console.error(error);
+					alert("通信エラーが発生しました");
+				});
+	} else {
+
+		deleteItems(ids);
+
+	}
 });
 
 function deleteItems(ids) {
@@ -355,32 +368,43 @@ document.getElementById("selectAll").addEventListener("change", function() {
 
 document.getElementById("bulkShoppingBtn").addEventListener("click", function() {
 
-    const ids = getSelectedItems();
+	const ids = getSelectedItems();
 
-    if (ids.length === 0) {
-        alert("食材を選択してください");
-        return;
-    }
+	if (ids.length === 0) {
+		alert("食材を選択してください");
+		return;
+	}
 
-    if (!confirm("選択した食材を買い物リストに追加しますか？")) {
-        return;
-    }
+	if (!confirm("選択した食材を買い物リストに追加しますか？")) {
+		return;
+	}
 
-    fetch("/users/bulk-add-shopping-list", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(ids)
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("買い物リストに追加しました！");
-            location.reload();
-        } else {
-            alert("追加に失敗しました");
-        }
-    });
+	fetch("/users/bulk-add-shopping-list", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(ids)
+	})
+			.then(async response => {
+
+				if (response.ok) {
+
+					alert("買い物リストに追加しました！");
+					location.reload();
+
+				} else {
+	　　　　　　　　　　//二重登録になる場合
+					const message = await response.text();
+					alert(message);  //　～はすでに買い物リストに存在しています
+
+				}
+
+			})
+			.catch(error => {
+				console.error(error);
+				alert("通信エラーが発生しました");
+			});
 
 });
 
