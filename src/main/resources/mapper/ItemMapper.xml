@@ -24,8 +24,9 @@
       items.status <> 0
     AND 
       items.user_id = #{userId}
-    ORDER BY 
-      items.id ASC
+    ORDER BY
+        category_id ASC,
+        deadline ASC
   ]]>
 	</select>
 	
