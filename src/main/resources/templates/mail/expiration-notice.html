@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<p>
+    いつもご利用いただきありがとうございます。<br>
+    食品の期限をお知らせいたします。
+</p>
+
+<div th:if="${!expiredItems.isEmpty()}">
+    <h3>【期限切れの食品】</h3>
+
+    <ul>
+        <li th:each="item : ${expiredItems}">
+            食品名: <span th:text="${item.name}"></span><br>
+            期限: <span th:text="${item.deadline}"></span>
+        </li>
+    </ul>
+</div>
+
+<div th:if="${!expiringItems.isEmpty()}">
+    <h3>【期限が近い食品】</h3>
+
+    <ul>
+        <li th:each="item : ${expiringItems}">
+            食品名: <span th:text="${item.name}"></span><br>
+            期限: <span th:text="${item.deadline}"></span>
+        </li>
+    </ul>
+</div>
+
+
+<p>
+    【賞味期限管理アプリ】のURLはこちら<br>
+    <a th:href="${appUrl}" th:text="${appUrl}"></a>
+</p>
+
+
+<hr>
+
+<p>
+    ※このメールは自動送信されています。
+</p>
+
+</body>
+</html>

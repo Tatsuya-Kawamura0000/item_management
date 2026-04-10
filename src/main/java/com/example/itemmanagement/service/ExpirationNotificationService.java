@@ -1,12 +1,16 @@
 package com.example.itemmanagement.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.mapper.ItemMapper;
@@ -21,24 +25,29 @@ public class ExpirationNotificationService {
     private final ItemMapper itemMapper;
     private final UsersMapper usersMapper;
     private final MailService mailService;
+    private final SpringTemplateEngine templateEngine;
 
-    
-//@Scheduled(cron = "0 */1 * * * *")    //テスト用
-@Scheduled(cron = "0 0 9 * * *", zone = "Asia/Tokyo")
+    @Value("${app.url}")
+    private String appUrl;
+
+    //@Scheduled(cron = "0 */1 * * * *") // テスト用
+    @Scheduled(cron = "0 0 9,17 * * *", zone = "Asia/Tokyo")
     public void notifyExpiringItems() {
 
         List<Items> items = itemMapper.findExpiringItems();
 
-        // ユーザーごとにアイテムをまとめる
+        if (items.isEmpty()) {
+            return;
+        }
+
         Map<Integer, List<Items>> itemsByUser = new HashMap<>();
 
         for (Items item : items) {
             itemsByUser
-                .computeIfAbsent(item.getUserId(), k -> new ArrayList<>())
-                .add(item);
+                    .computeIfAbsent(item.getUserId(), k -> new ArrayList<>())
+                    .add(item);
         }
 
-        // ユーザーごとにメール送信
         for (Map.Entry<Integer, List<Items>> entry : itemsByUser.entrySet()) {
 
             Integer userId = entry.getKey();
@@ -52,15 +61,12 @@ public class ExpirationNotificationService {
 
             String subject = "【期限通知】食品の期限をお知らせします";
 
-            StringBuilder text = new StringBuilder();
-
             List<Items> expiredItems = new ArrayList<>();
             List<Items> expiringItems = new ArrayList<>();
 
-            // ① 期限切れ / 期限間近 を分類
             for (Items item : userItems) {
 
-                if (item.getDeadline().isBefore(java.time.LocalDate.now())) {
+                if (item.getDeadline().isBefore(LocalDate.now())) {
                     expiredItems.add(item);
                 } else {
                     expiringItems.add(item);
@@ -68,37 +74,18 @@ public class ExpirationNotificationService {
 
             }
 
-            text.append("食品の期限をお知らせします。\n\n");
+            // テンプレートにデータを渡す
+            Context context = new Context();
+            context.setVariable("expiredItems", expiredItems);
+            context.setVariable("expiringItems", expiringItems);
+            context.setVariable("appUrl", appUrl);
 
-            // ② 期限切れ
-            if (!expiredItems.isEmpty()) {
+            String html = templateEngine.process(
+                    "mail/expiration-notice",
+                    context
+            );
 
-                text.append("【期限切れ】\n");
-
-                for (Items item : expiredItems) {
-                    text.append("食品名: ")
-                        .append(item.getName())
-                        .append("\n期限: ")
-                        .append(item.getDeadline())
-                        .append("\n\n");
-                }
-            }
-
-            // ③ 期限間近
-            if (!expiringItems.isEmpty()) {
-
-                text.append("【期限間近】\n");
-
-                for (Items item : expiringItems) {
-                    text.append("食品名: ")
-                        .append(item.getName())
-                        .append("\n期限: ")
-                        .append(item.getDeadline())
-                        .append("\n\n");
-                }
-            }
-
-            mailService.sendMail(email, subject, text.toString());
+            mailService.sendHtmlMail(email, subject, html);
         }
     }
 }
