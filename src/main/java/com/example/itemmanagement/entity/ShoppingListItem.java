@@ -16,7 +16,7 @@ public class ShoppingListItem {
     private boolean status;            // 1 = 有効
     private LocalDateTime addedAt;     // リストに追加した日時
     private boolean purchasedFlg;      // 0=未購入 / 1=購入済
-
+    private boolean favorite;          //お気に入り
     private String name;               // 食材名
     private String amount;             // 量
     private Integer categoryId;        // カテゴリID
