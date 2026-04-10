@@ -5,29 +5,31 @@
 <mapper namespace="com.example.itemmanagement.mapper.ShoppingListMapper">
 
     <insert id="insert" parameterType="com.example.itemmanagement.entity.ShoppingListItem" useGeneratedKeys="true" keyProperty="id">
-		 INSERT INTO shopping_list (
-        	item_id,
-        	user_id,
-       	    status,
-        	added_at,
-        	purchased_flg,
-        	name,
-        	amount,
-        	category_id,
-        	category_name,
-       		purchase_date
-  	 	 ) VALUES (
-        	#{itemId},
-        	#{userId},
-        	#{status},
-        	#{addedAt},
-        	#{purchasedFlg},
-        	#{name},
-        	#{amount},
-        	#{categoryId},
-        	#{categoryName},
-        	#{purchaseDate}
-    	)
+		INSERT INTO shopping_list (
+			item_id,
+		    user_id,
+		    status,
+		    added_at,
+		    purchased_flg,
+		    name,
+		    amount,
+		    category_id,
+		    category_name,
+		    purchase_date,
+		    favorite
+		) VALUES (
+			#{itemId},
+		    #{userId},
+		    #{status},
+		    #{addedAt},
+		    #{purchasedFlg},
+		    #{name},
+		    #{amount},
+		    #{categoryId},
+		    #{categoryName},
+		    #{purchaseDate},
+		    #{favorite}
+			)
     </insert>
     
     <select id="findAll" resultType="com.example.itemmanagement.entity.ShoppingListItem">

@@ -59,14 +59,15 @@
 
 	        <tr th:each="item : ${listItems}">
 				<td>
-				  <input type="checkbox"
-				         class="shopping-checkbox"
-				         th:value="${item.id}"
-				         th:data-name="${item.name}">
+				<input type="checkbox"
+		               class="shopping-checkbox"
+		               th:value="${item.id}"
+		               th:data-name="${item.name}"
+		               th:data-category-id="${item.categoryId}"
+		               th:data-favorite="${item.favorite}">
 				</td>
 	            <td>
 	                <span th:text="${item.name}"></span>
-	                <span class="pencil">✏️</span>
 	            </td>
 	            <td th:text="${item.amount}"></td>
 	            <td class="hidden" th:text="${item.categoryName}"></td>
@@ -86,6 +87,7 @@
 
 	        <form id="purchasedForm">
 	            <input type="hidden" name="shoppingListId" id="shoppingListId">
+				<input type="hidden" id="modalFavoriteField">
 
 	            <div>
 	                <label>食材名：</label>
@@ -120,16 +122,7 @@
 	            </div>
 
 				<div class="form-row">
-				    <label>お気に入り：</label>
-					<div class="favorite-row">
-				        <button type="button" id="modalFavoriteButton" class="heart-btn heart-home">
-				            <i class="fa-solid fa-heart"></i>
-				        </button>
-				        <input type="hidden" id="modalFavoriteField" name="favoriteFlg" value="0">
-				    </div>
 				</div>
-
-
 
 	            <div class="modal-buttons">
 	                <button type="button" onclick="submitPurchased()">食材一覧へ追加</button>

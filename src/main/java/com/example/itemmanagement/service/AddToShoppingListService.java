@@ -55,6 +55,7 @@ public class AddToShoppingListService {
         slItem.setCategoryId(item.getCategoryId());
         slItem.setCategoryName(item.getCategoryName());
         slItem.setPurchaseDate(item.getPurchaseDate());
+        slItem.setFavorite(item.isFavorite());
 
         shoppingListMapper.insert(slItem);
 

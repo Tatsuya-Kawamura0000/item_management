@@ -12,7 +12,7 @@ function openModal(id, name) {
     document.getElementById("shoppingListId").value = id;
     document.getElementById("itemName").value = name;
 
-    modal.classList.add("show");
+    modal.classList.add("show")
 }
 
 function closeModal() {
@@ -25,23 +25,24 @@ function closeModal() {
 // 食材一覧に追加
 // ------------------------------
 function submitPurchased() {
+
+    // デバッグ用
+    console.log("submitPurchased called");
+
     const id = document.getElementById("shoppingListId").value;
     const name = document.getElementById("itemName").value;
     const amount = document.getElementById("amount").value;
     const deadline = document.getElementById("deadline").value;
     const others = document.getElementById("others").value;
-
-    // ★ hidden を読む（0 / 1）
-    const favorite = document.getElementById("modalFavoriteField").value;
-
     const categoryId = document.getElementById("categoryId").value;
+    const favorite = document.getElementById("modalFavoriteField").value;
 
     if (!categoryId) {
         alert("カテゴリーを選択してください");
         return;
     }
 
-    const data = { id, name, amount, deadline, others, favorite: favorite === "1", categoryId };
+    const data = { id, name, amount, deadline, others, categoryId ,favorite};
 
 	fetch('/users/add-to-shopping-list', {
 	    method: 'POST',
@@ -241,7 +242,9 @@ function getSelectedShoppingItems(){
 
         items.push({
             id: cb.value,
-            name: cb.dataset.name
+            name: cb.dataset.name,
+            categoryId: cb.dataset.categoryId,
+            favorite: cb.dataset.favorite
         });
 
     });
@@ -270,11 +273,13 @@ function openPurchaseModal(){
 
     const item = purchaseQueue[currentIndex];
 
+    console.log(item);  // ←追加 デバック用
+
     document.getElementById("shoppingListId").value = item.id;
     document.getElementById("itemName").value = item.name;
-
+    document.getElementById("categoryId").value = item.categoryId;
     document.getElementById("purchasedModal").classList.add("show");
-
+    document.getElementById("modalFavoriteField").value = item.favorite;
 }
 
 document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
