@@ -20,4 +20,8 @@ public interface ShoppingListMapper {
     
     int stop(@Param("id") Integer id,@Param("userId") Integer userId);
 
+    //リスト追加の際の重複チェック
+    boolean existsByName(@Param("name") String name,
+                         @Param("userId") Integer userId);
+
 }
