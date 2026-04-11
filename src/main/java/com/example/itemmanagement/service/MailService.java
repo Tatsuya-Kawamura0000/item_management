@@ -28,21 +28,34 @@ public class MailService {
     // 追加：HTMLメール
     public void sendHtmlMail(String to, String subject, String html) {
 
-        try {
+        int retry = 3;
 
-            MimeMessage message = mailSender.createMimeMessage();
+        for (int i = 0; i < retry; i++) {
+            try {
 
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, true, "UTF-8");
+                MimeMessage message = mailSender.createMimeMessage();
 
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(html, true);
+                MimeMessageHelper helper =
+                        new MimeMessageHelper(message, true, "UTF-8");
 
-            mailSender.send(message);
+                helper.setTo(to);
+                helper.setSubject(subject);
+                helper.setText(html, true);
 
-        } catch (Exception e) {
-            throw new RuntimeException("メール送信失敗", e);
+                mailSender.send(message);
+                return;
+
+            } catch (Exception e) {
+
+                if (i == retry - 1) {
+                    throw new RuntimeException("メール送信失敗", e);
+                }
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ignored) {}
+
+            }
         }
     }
 }
