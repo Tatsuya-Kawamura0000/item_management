@@ -142,9 +142,7 @@
 			    <th>量</th>
 			    <th>期限</th>
 			    <th>メモ</th>
-			    <th></th>
-				<th></th>
-			    <th></th>
+			    <th>操作</th>
 			</tr>
 
             <tr th:each="item : ${filteredItems}" >
@@ -181,21 +179,20 @@
 
 				</td>
                 <td th:text="${item.others}"></td>
-                <td>
-                    <form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post">
-						<!-- ✅ 現在のフィルター条件を保持する hidden -->
+				<td class="action-cell">
+
+					<form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post" class="action-item">
 						<input type="hidden" name="category" th:value="${selectedCategory}">
 						<input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
 						<button type="submit" class="heart-btn">
-						    <i class="fa-solid fa-heart"
-						       th:classappend="${item.favorite} ? 'active' : ''"></i>
+							<i class="fa-solid fa-heart" th:classappend="${item.favorite} ? 'active' : ''"></i>
 						</button>
-                    </form>
-                </td>
-				<td>				
-					<a th:href="@{/users/edit/{id}(id=${item.id})}" class="edit-btn">
-						<i class="fa-solid fa-pen"></i>
+					</form>
+
+					<a th:href="@{/users/edit/{id}(id=${item.id})}" class="edit-btn action-item">
+						<i class="fa-solid fa-pencil"></i>
 					</a>
+
 				</td>
 
 
