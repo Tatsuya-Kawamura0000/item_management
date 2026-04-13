@@ -467,36 +467,6 @@ input[value*="使い切"]:hover {
 .food-name:hover {
     filter: brightness(0.96);
 }
-/* 食材ラベル（food-label）調整 */
-.food-label {
-    display: inline-flex;           /* 横並び & flex */
-    align-items: center;            /* 縦中央 */
-    justify-content: center;        /* 横中央 */
-    padding: 6px 12px;              /* 縦横の余白で高さを作る */
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.2;               /* padding で高さ確保してるので小さめでOK */
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
-    word-break: break-word;
-    max-width: 100%;
-    text-align: center;             /* 念のため中央 */
-}
-
-
-.food-label {
-    border-radius: 10px;   /* ← 999px やめる */
-}
-
-.food-label {
-    padding: 6px 12px;
-    line-height: 1.4;
-}
-
-.food-label {
-    font-size: 13px;
-    font-weight: 600;
-}
 
 td {
     vertical-align: middle;
@@ -517,12 +487,30 @@ td:nth-child(2) {
     text-align: center;
 }
 
+/* 食材ラベル（food-label）調整 */
+.food-label {
+    display: inline-flex;           /* 横並び & flex */
+    align-items: center;            /* 縦中央 */
+    justify-content: center;        /* 横中央 */
+    padding: 6px 12px;              /* 縦横の余白で高さを作る */
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.4;               /* padding で高さ確保してるので小さめでOK */
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    word-break: break-word;
+    max-width: 100%;
+    text-align: center;             /* 念のため中央 */
+    border-radius: 10px;   /* ← 999px やめる */
+}
+
+
 .food-label {
     display: inline-flex;
     align-items: center;       /* 縦中央 */
     justify-content: center;   /* 横中央 */
     padding: 0 12px;           /* 上下paddingは0にして横だけ残す */
-    min-height: 32px;          /* ラベルの高さを確保 */
+    min-height: 40px;          /* ラベルの高さを確保 */
     border-radius: 16px;
     font-size: 13px;
     font-weight: 600;
@@ -533,8 +521,42 @@ td:nth-child(2) {
     text-align: center;
 }
 
+/* =========================
+   食品名ラベル（色の範囲）
+========================= */
+.food-label {
+    display: inline-block;      /* 色の範囲を文字だけに */
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    max-width: 100%;
+    word-break: break-word;     /* 長い名前は折り返す */
+}
 
+/* =========================
+   食品名ラベル（food-label）中央揃え・統一幅
+========================= */
+.food-label {
+    display: inline-flex;           /* 横並び & flex */
+    align-items: center;            /* 縦中央 */
+    justify-content: center;        /* 横中央 */
+    padding: 0 12px;                /* 横padding */
+    width: 120px;                   /* ★横幅を統一 */
+    min-height: 40px;               /* 高さを統一 */
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    word-break: break-word;
+    text-align: center;             /* 念のため中央 */
+}
 
+.food-label.category-1 { background-color: #f3cfd6; } /* 肉 */
+.food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
+.food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
+.food-label.category-7 { background-color: #f4e7b8; } /* その他 */
 
 /* td の設定も確認 */
 td.food-cell {
@@ -613,18 +635,7 @@ td.food-cell {
     text-align: center;         /* 見出しと中央を揃える */
 }
 
-/* =========================
-   食品名ラベル（色の範囲）
-========================= */
-.food-label {
-    display: inline-block;      /* 色の範囲を文字だけに */
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    line-height: 1.4;
-    max-width: 100%;
-    word-break: break-word;     /* 長い名前は折り返す */
-}
+
 
 /* =========================
    カテゴリ色（くっきり版）
@@ -676,26 +687,6 @@ td.food-cell {
 .add-btn i {
     font-size: 18px;          /* +アイコンを大きく */
 }
-
-/* =========================
-   食品名ラベル（food-label）中央揃え・統一幅
-========================= */
-.food-label {
-    display: inline-flex;           /* 横並び & flex */
-    align-items: center;            /* 縦中央 */
-    justify-content: center;        /* 横中央 */
-    padding: 0 12px;                /* 横padding */
-    width: 120px;                   /* ★横幅を統一 */
-    min-height: 32px;               /* 高さを統一 */
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: normal;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
-    word-break: break-word;
-    text-align: center;             /* 念のため中央 */
-}
-
 
 /* =========================
    買い物リストボタン（大きく）
@@ -816,11 +807,6 @@ td.food-cell {
     text-align: center;               /* 中央寄せ */
     margin-bottom: 20px;              /* 下に余白 */
 }
-
-.food-label.category-1 { background-color: #f3cfd6; } /* 肉 */
-.food-label.category-2 { background-color: #cfe3f3; } /* 魚 */
-.food-label.category-3 { background-color: #d6f0e0; } /* 野菜 */
-.food-label.category-7 { background-color: #f4e7b8; } /* その他 */
 
 .logout-btn {
     background-color: #6b4c3b; 
@@ -1073,7 +1059,7 @@ table {
 
 table th,
 table td{
-    padding:10px 8px;
+    padding: 30px 15px;
 }
 
 .container{
