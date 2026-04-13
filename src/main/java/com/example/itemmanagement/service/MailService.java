@@ -1,61 +1,47 @@
 package com.example.itemmanagement.service;
 
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MailService {
 
-    private final JavaMailSender mailSender;
+    @Value("${SENDGRID_API_KEY}")  //RENDER上に設定済み
+    private String apiKey;
 
-    // 既存：テキストメール
-    public void sendMail(String to, String subject, String text) {
+    public void sendHtmlMailBySendGrid(String to, String subject, String html) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
+        Email from = new Email("apl.itemmanagement@gmail.com"); // 例：xxxxx@gmail.com
+        Email toEmail = new Email(to);
 
-        mailSender.send(message);
-    }
+        Content content = new Content("text/html", html);
+        Mail mail = new Mail(from, subject, toEmail, content);
 
-    // 追加：HTMLメール
-    public void sendHtmlMail(String to, String subject, String html) {
+        SendGrid sg = new SendGrid(apiKey);
+        Request request = new Request();
 
-        int retry = 3;
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
 
-        for (int i = 0; i < retry; i++) {
-            try {
+            Response response = sg.api(request);
 
-                MimeMessage message = mailSender.createMimeMessage();
+            System.out.println("Status Code: " + response.getStatusCode());
+            System.out.println("Response Body: " + response.getBody());
 
-                MimeMessageHelper helper =
-                        new MimeMessageHelper(message, true, "UTF-8");
-
-                helper.setTo(to);
-                helper.setSubject(subject);
-                helper.setText(html, true);
-
-                mailSender.send(message);
-                return;
-
-            } catch (Exception e) {
-
-                if (i == retry - 1) {
-                    throw new RuntimeException("メール送信失敗", e);
-                }
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ignored) {}
-
-            }
+        } catch (Exception e) {
+            throw new RuntimeException("SendGrid送信失敗", e);
         }
     }
+
 }

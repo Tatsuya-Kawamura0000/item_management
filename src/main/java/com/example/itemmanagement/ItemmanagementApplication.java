@@ -16,12 +16,8 @@ public class ItemmanagementApplication {
 				.ignoreIfMissing()
 				.load();
 
-		if (dotenv.get("MAIL_USERNAME") != null) {
-			System.setProperty("MAIL_USERNAME", dotenv.get("MAIL_USERNAME"));
-		}
-
-		if (dotenv.get("MAIL_PASSWORD") != null) {
-			System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
+		if (dotenv.get("SENDGRID_API_KEY") != null) {
+			System.setProperty("SENDGRID_API_KEY", dotenv.get("SENDGRID_API_KEY"));
 		}
 
 		SpringApplication.run(ItemmanagementApplication.class, args);
