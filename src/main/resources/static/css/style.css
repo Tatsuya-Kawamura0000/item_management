@@ -670,25 +670,6 @@ input[type="submit"]:hover {
 }
 
 /* =========================
-   ログイン
-========================= */
-.login-page {
-    background: #efefef;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 0;
-}
-
-.login-container {
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    width: 400px;
-}
-
-/* =========================
    その他
 ========================= */
 .hidden {

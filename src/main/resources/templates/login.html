@@ -1,33 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ログイン - 管理機能</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+
+
+    <!-- Font Awesome（必要なら） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 <body class="login-page">
-
 <div class="login-container">
+    <h1 class="page-title">ログイン</h1>
 
-<h1 class="page-title">ログイン</h1>
+    <form th:action="@{/login}" method="post" novalidate>
+        <!-- Spring Security を使う場合は CSRF トークンを出力 -->
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
 
-<form th:action="@{/login}" method="post">
+        <div class="form-row">
+            <label for="username">ユーザー名</label>
+            <input id="username" type="text" name="username" placeholder="ユーザー名" required autofocus aria-required="true" />
+        </div>
 
-    <div class="form-row">
-        <label>ユーザー名</label>
-        <input type="text" name="username" placeholder="ユーザー名">
-    </div>
+        <div class="form-row">
+            <label for="password">パスワード</label>
+            <input id="password" type="password" name="password" placeholder="パスワード" required aria-required="true" />
+        </div>
 
-    <div class="form-row">
-        <label>パスワード</label>
-        <input type="password" name="password" placeholder="パスワード">
-    </div>
+        <div class="form-actions">
+            <button type="submit" class="button primary">ログイン</button>
+        </div>
+    </form>
 
-    <div style="text-align:center; margin-top:20px;">
-        <button type="submit" class="button">ログイン</button>
-    </div>
-
-</form>
-
-<p style="text-align:center; margin-top:15px;">
-    <a th:href="@{/register}" class="add-btn">
-        新規ユーザー登録
-    </a>
-</p>
-
+    <p class="form-footer" style="text-align:center; margin-top:15px;">
+        <a th:href="@{/register}" class="add-btn">新規ユーザー登録</a>
+    </p>
 </div>
-
 </body>
+</html>
