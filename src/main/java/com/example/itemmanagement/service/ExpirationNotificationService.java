@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ExpirationNotificationService {
     private String appUrl;
 
     //@Scheduled(cron = "0 */1 * * * *") // テスト用
-    @Scheduled(cron = "0 0 9,17 * * *", zone = "Asia/Tokyo")
+    @Scheduled(cron = "0 30 10,17 * * *", zone = "Asia/Tokyo")
     public void notifyExpiringItems() {
 
         List<Items> items = itemMapper.findExpiringItems();
@@ -85,7 +86,18 @@ public class ExpirationNotificationService {
                     context
             );
 
-            mailService.sendHtmlMail(email, subject, html);
+            //mailService.sendHtmlMail(email, subject, html);　SMTP用
+            mailService.sendHtmlMailBySendGrid(email, subject, html);  //SendGrid API
         }
     }
+
+   /* @PostConstruct     テスト送信用　　起動時にメール送信できる
+    public void testSend() {
+        mailService.sendHtmlMailBySendGrid(
+                "tatsuya.k89.0523kitaq17@gmail.com",
+                "テスト送信",
+                "<h1>SendGrid成功！</h1>"
+        );
+    }*/
+
 }
