@@ -1085,3 +1085,31 @@ table td{
     background-color: #d9c7b5;   /* 少し濃く */
     border-color: #bfa48c;
 }
+
+/* =========================
+  期限アイコン
+========================= */
+
+.deadline-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* ← ここがキモ */
+.deadline-icon {
+    font-size: 25px;  /* サイズ調整 */
+    width: 20px;              /* アイコンの固定幅 */
+    display: inline-flex;
+    justify-content: center;
+}
+
+/* 色 */
+.icon-danger {
+    color: #c27a7a;
+}
+
+.icon-warning {
+    color: #cfa87c;
+}
