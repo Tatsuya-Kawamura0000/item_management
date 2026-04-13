@@ -165,7 +165,21 @@
 				</td>
                 <td class="hidden" th:text="${item.categoryName}"></td>
                 <td th:text="${item.amount}"></td>
-                <td th:text="${item.deadline}"></td>
+				<td class="deadline-cell">
+
+					<!-- アイコン枠（常に存在させる） -->
+					<span class="deadline-icon">
+        <i th:if="${item.message == '期限切れです'}"
+           class="fa-solid fa-circle-exclamation icon-danger"></i>
+
+        <i th:if="${item.message == '気を付けて'}"
+           class="fa-solid fa-triangle-exclamation icon-warning"></i>
+    </span>
+
+					<!-- 日付 -->
+					<span th:text="${item.deadline}"></span>
+
+				</td>
                 <td th:text="${item.others}"></td>
                 <td>
                     <form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post">
@@ -183,24 +197,7 @@
 						<i class="fa-solid fa-pen"></i>
 					</a>
 				</td>
-				<td th:classappend="${item.message == '期限切れです'} ? ' danger' :
-                    (${item.message == '気を付けて'} ? ' warning' : '')">
 
-				    <!-- 🔥 期限切れ（赤） -->
-				    <span th:if="${item.message == '期限切れです'}">
-				        <i class="fa-solid fa-circle-exclamation" style="margin-right:6px; color: #c27a7a;"></i>
-						<span th:text="${item.message}" style="color: #c27a7a;"></span>
-				    </span>
-
-					<!-- ⚠ 期限間近（オレンジ/黄色） -->
-					<span th:if="${item.message == '気を付けて'}">
-					    <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px; color: #cfa87c;"></i>
-					    <span th:text="${item.message}"></span>
-					</span>
-
-				    <!-- メッセージなし -->
-				    <span th:if="${item.message == ''}"></span>
-				</td>
 
 
 
