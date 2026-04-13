@@ -1,5 +1,6 @@
 package com.example.itemmanagement.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,19 +14,24 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	    http
-	        .csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/login", "/register").permitAll()  //  誰でもアクセス可能
-	            .anyRequest().authenticated()
-	        )
-	        .formLogin(form -> form
-	            .loginPage("/login")
-	            .defaultSuccessUrl("/users", true)
-	            .permitAll()
-	        );
+		http
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth
+						// 静的リソースを許可（推奨）
+						.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+						// 明示的に許可したいパス
+						.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+						.requestMatchers("/login", "/register", "/error").permitAll()
+						.anyRequest().authenticated()
+				)
+				.formLogin(form -> form
+						.loginPage("/login")
+						.loginProcessingUrl("/login")
+						.defaultSuccessUrl("/users", true)
+						.permitAll()
+				);
 
-	    return http.build();
+		return http.build();
 	}
 
 
