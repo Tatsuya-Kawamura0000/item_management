@@ -475,6 +475,8 @@ input[type="submit"]:hover {
 
 /* 消費済みにするボタン */
 .bulk-btn.delete {
+    padding: 30px 28px;
+    font-size: 1.05rem;
     background: linear-gradient(180deg, #ef5350 0%, #e53935 100%);
     border: 1px solid rgba(0,0,0,0.06);
     color: #fff;
@@ -487,6 +489,8 @@ input[type="submit"]:hover {
 
 /* 買い物リストへ追加ボタン　*/
 .bulk-btn.shopping {
+    padding: 30px 28px;
+    font-size: 1.05rem;
     background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%);
     border: 1px solid rgba(0,0,0,0.06);
     color: #fff;
@@ -532,7 +536,7 @@ input[type="submit"]:hover {
 
 .heart-btn i,
 .edit-btn i {
-    font-size: 25px !important;
+    font-size: 30px !important;
     line-height: 1 !important;
     color: #9aa0a6;
 }
@@ -610,16 +614,21 @@ input[type="submit"]:hover {
 }
 
 .tab {
-    padding: 10px 20px;
+    padding: 20px 21px;
     border-radius: 20px;
     background: #FFF6E5;
-    color: #A8D5BA;
+    color: #4A2E1F;
     position: relative;
 }
 
 .tab.active {
     background: #EADBC8;
     color: #333;
+}
+
+.tab.select:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.98);
 }
 
 /* ===== 通知バッジ ===== */
@@ -631,7 +640,7 @@ input[type="submit"]:hover {
     background: linear-gradient(#e8d8c8, #c9a98a) !important;
     color: #fff !important;
     border-radius: 50% !important;
-    font-size: 11px !important;
+    font-size: 13px !important;
     min-width: 18px !important;
     height: 18px !important;
     line-height: 18px !important;
