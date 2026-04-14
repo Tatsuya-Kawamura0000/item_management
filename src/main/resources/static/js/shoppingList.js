@@ -1,3 +1,5 @@
+
+
 // shoppingList.js
 
 let purchaseQueue = [];
@@ -38,7 +40,7 @@ function submitPurchased() {
     const favorite = document.getElementById("modalFavoriteField").value;
 
     if (!categoryId) {
-        alert("カテゴリーを選択してください");
+        showModalMessage("カテゴリーを選択してください", "error");
         return;
     }
 
@@ -61,25 +63,36 @@ function submitPurchased() {
 	    }
 	    return resJson;
 	})
-	.then(item => {
+        .then(item => {
 
-	    currentIndex++;
+            showModalMessage("追加しました", "success");
 
-	    if(currentIndex < purchaseQueue.length){
+            currentIndex++;
 
-	        openPurchaseModal();
+            if(currentIndex < purchaseQueue.length){
 
-	    }else{
+                openPurchaseModal();
 
-	        window.location.href = '/users/shoppingList';
+            }else{
 
-	    }
+                showModalMessage("すべて食材一覧に追加しました", "success");
 
-	})
-	.catch(error => {
-	    console.error('Error:', error);
-	    alert(error.message);
-	});
+                setTimeout(() => {
+
+                    closeModal();
+
+                    window.location.href = '/users/shoppingList';
+
+                }, 2000); // 2秒後、モーダルを閉じる
+            }
+
+        })
+
+        .catch(error => {
+            console.error(error);
+
+            showModalMessage(error.message, "error");
+        });
 
 }
 

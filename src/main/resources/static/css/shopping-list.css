@@ -217,3 +217,24 @@ table td:nth-of-type(7) {
     background: #f5f5f5;
 }
 
+/* =========================
+   モーダルポップアップメッセージ
+========================= */
+
+.modal-message {
+    opacity: 0;
+    transition: 0.3s ease;
+    min-height: 20px; /* 位置ブレ防止 */
+}
+
+.modal-message.show {
+    opacity: 1;
+}
+
+.modal-message.success {
+    color: #6b4c3b;
+}
+
+.modal-message.error {
+    color: #c27a7a;
+}
