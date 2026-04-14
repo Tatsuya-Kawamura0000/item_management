@@ -129,12 +129,13 @@ table td:nth-of-type(7) {
 .button {
     background-color: #ffffff;
     border: 1px solid #d0d0d0;
-    border-radius: 18px;
-    padding: 15px 25px;
+    border-radius: 24px;
+    padding: 25px 32px;
     font-weight: 600;
     cursor: pointer;
     color: #4A2E1F;
     box-shadow: none;
+    font-size: 1.2rem;
 }
 
 .button:hover {
@@ -172,6 +173,14 @@ table td:nth-of-type(7) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    padding: 18px 32px;
+    font-size: 1.2rem;
+    border-radius: 24px;
+}
+
+
+.bulk-actions .button i {
+    font-size: 20px;
 }
 
 /* =========================
