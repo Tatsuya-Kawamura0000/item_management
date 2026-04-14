@@ -181,18 +181,18 @@ function submitNewItem() {
     const name = document.getElementById("newItemName").value;
     const amount = document.getElementById("newItemAmount").value;
 
-    if (!name || !amount) {
-        alert("食材名と量を入力してください");
+    if (!name) {
+        showNewItemModalMessage("食材名を入力してください", "error");
         return;
     }
 
     if (name.length > 50) {
-        alert("購入するものは50文字以内で入力してください");
+        showNewItemModalMessage("購入するものは50文字以内で入力してください", "error");
         return;
     }
 
     if (amount.length > 20) {
-        alert("量は20文字以内で入力してください");
+        showNewItemModalMessage("量は20文字以内で入力してください", "error");
         return;
     }
 
@@ -211,6 +211,7 @@ function submitNewItem() {
 
             // ★ 追加したデータをテーブルに反映
             addRowToTable(item);
+            showNewItemModalMessage("追加しました","success");
 
             // 入力クリア
             document.getElementById("newItemName").value = "";
@@ -221,8 +222,20 @@ function submitNewItem() {
         })
     .catch(error => {
         console.error(error);
-        alert("登録に失敗しました");
+        showNewItemModalMessage("登録に失敗しました","error");
     });
+}
+
+function showNewItemModalMessage(message, type = "success") {
+
+    const el = document.getElementById("newItemModalMessage");
+
+    el.textContent = message;
+    el.className = "modal-message show " + type;
+
+    setTimeout(() => {
+        el.classList.remove("show");
+    }, 2000);
 }
 
 function addRowToTable(item) {
