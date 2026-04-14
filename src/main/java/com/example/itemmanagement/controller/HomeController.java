@@ -87,8 +87,9 @@ public class HomeController {
 	    int expiredCount = 0;
 	    
 	    int warningCount = 0;
-	    
-	    
+
+
+	    //　食材一覧表示、期限通知アイテムカウント
 	    for (Items item : filteredItems) {
 	        if (item.getDeadline() != null) {
 
@@ -99,7 +100,7 @@ public class HomeController {
 	                item.setMessage("期限切れです");
 	                expiredCount++;						//期限切れ食材をカウント
 	            } else if (days <= 3) {
-	                item.setMessage("気を付けて");
+	                item.setMessage("期限間近");
 	                warningCount++;						//期限間近食材をカウント
 	            } else {
 	                item.setMessage("");
@@ -316,17 +317,17 @@ public class HomeController {
 	public String filterItems(
 	        @RequestParam(required = false) Integer category,
 	        @RequestParam(required = false) Boolean expiringSoon,
+	        @RequestParam(required = false) Boolean expired, // 期限切れアラートリンク用に追加
 	        @AuthenticationPrincipal LoginUser loginUser,
 	        Model model) {
 
 	    Integer userId = loginUser.getId();
 
 		List<Items> items = getAllItemsService.getAllItems(userId);
-	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, userId);
+	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, expired,userId);
 
-	    int expiredCount = 0;
-	    int warningCount = 0;
 
+        //アラートアイコン表示用
 	    for (Items item : filteredItems) {
 
 	        if (item.getDeadline() != null) {
@@ -336,10 +337,8 @@ public class HomeController {
 
 	            if (days < 0) {
 	                item.setMessage("期限切れです");
-	                expiredCount++;
 	            } else if (days <= 3) {
-	                item.setMessage("気を付けて");
-	                warningCount++;
+	                item.setMessage("期限間近");
 	            } else {
 	                item.setMessage("");
 	            }
@@ -349,15 +348,35 @@ public class HomeController {
 	        }
 	    }
 
+		int expiredCount = 0;
+		int warningCount = 0;
+
+
+		// 期限アラート、全件数表示用
+		for (Items item : items) {
+
+			if (item.getDeadline() != null) {
+
+				long days = java.time.temporal.ChronoUnit.DAYS.between(
+						java.time.LocalDate.now(), item.getDeadline());
+
+				if (days < 0) {
+					expiredCount++;
+				} else if (days <= 3) {
+					warningCount++;
+				}
+			}
+		}
+
 	    List<Categories> categories = getAllCategoriesService.getAllCategories();
 
 	    model.addAttribute("items", items);
-		model.addAttribute("filteredItems", filteredItems);
+		model.addAttribute("filteredItems", filteredItems);  //　メインの一覧表示に渡す
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("selectedCategory", category);
 	    model.addAttribute("expiringSoon", expiringSoon);
 
-	    // これを追加
+	    // 期限アラート件数表示
 	    model.addAttribute("expiredCount", expiredCount);
 	    model.addAttribute("warningCount", warningCount);
 

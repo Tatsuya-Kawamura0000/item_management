@@ -146,10 +146,16 @@ AND items.user_id = #{userId}
   <if test="category != null">
     <![CDATA[ AND items.category_id = #{category} ]]>
   </if>
-  
-  <if test="expiringSoon != null and expiringSoon">
-    <![CDATA[ AND (items.deadline - CURRENT_DATE) <= 3 ]]>
-  </if>
+
+  <choose>
+        <when test="expired != null and expired">
+            <![CDATA[ AND items.deadline < CURRENT_DATE ]]>
+        </when>
+
+        <when test="expiringSoon != null and expiringSoon">
+            <![CDATA[ AND (items.deadline - CURRENT_DATE) BETWEEN 0 AND 3 ]]>
+        </when>
+  </choose>
   
 <![CDATA[ ORDER BY items.deadline ASC ]]>
 </select>

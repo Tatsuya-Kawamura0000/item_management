@@ -28,7 +28,8 @@ public interface ItemMapper {
     // 複数条件でフィルター
     List<Items> filterItems(@Param("userId") Integer userId,
     	    @Param("category") Integer category,
-    	    @Param("expiringSoon") Boolean expiringSoon);
+    	    @Param("expiringSoon") Boolean expiringSoon,
+			@Param("expired") Boolean expired); // ←期限切れアラートリンク用に追加);
     
     // shopping_list から削除
     int deleteFromShoppingList(@Param("id") Integer id,@Param("userId") Integer userId);
