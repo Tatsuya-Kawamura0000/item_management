@@ -17,8 +17,8 @@ public class GetFilterItemsService {
     /**
      * ユーザーID + 条件でアイテムをフィルター
      */
-    public List<Items> filterItems(Integer category, Boolean expiringSoon, Integer userId) {
-        return itemMapper.filterItems(userId, category, expiringSoon);
+    public List<Items> filterItems(Integer category, Boolean expiringSoon,Boolean expired, Integer userId) {
+        return itemMapper.filterItems(userId, category, expiringSoon,expired);
     }
 
 

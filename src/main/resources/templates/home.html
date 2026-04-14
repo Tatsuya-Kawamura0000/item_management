@@ -31,11 +31,17 @@
 
 	    <span class="expired">
 	        <i class="fa-solid fa-circle-exclamation"></i>
-	        今日の期限切れ: <span th:text="${expiredCount}"></span>件
+	        期限切れ:
+			<a th:href="@{/users/filter(expired=true)}">
+             <span th:text="${expiredCount}"></span>
+            </a>件
 	    </span>
 
 	    <span class="warning">
-	        期限間近: <span th:text="${warningCount}"></span>件
+	        期限間近:
+			<a th:href="@{/users/filter(expiringSoon=true)}">
+             <span th:text="${warningCount}"></span>
+           </a>件
 	    </span>
 
 	</div>
@@ -170,7 +176,7 @@
         <i th:if="${item.message == '期限切れです'}"
            class="fa-solid fa-circle-exclamation icon-danger"></i>
 
-        <i th:if="${item.message == '気を付けて'}"
+        <i th:if="${item.message == '期限間近'}"
            class="fa-solid fa-triangle-exclamation icon-warning"></i>
     </span>
 
