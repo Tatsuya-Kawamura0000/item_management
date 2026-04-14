@@ -142,7 +142,7 @@
 	    <div class="modal-content">
 	        <h2>新しい食材を追加</h2>
 
-			<span id="popupMessage" class="popup-message"></span>
+			<div id="newItemModalMessage" class="modal-message"></div>
 
 	        <form id="newItemForm">
 	            <div class="form-row">
@@ -152,7 +152,7 @@
 
 	            <div class="form-row">
 	                <label for="newItemAmount">量：</label>
-	                <input type="text" id="newItemAmount" name="amount" required>
+	                <input type="text" id="newItemAmount" name="amount" >  　<!-- 量　は必須入力にしない -->
 	            </div>
 
 	            <div class="modal-buttons">
