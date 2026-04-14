@@ -183,7 +183,7 @@ function submitNewItem() {
         return;
     }
 
-    fetch("/users/add-new-item-to-shopping-list", {
+    fetch("/users/add-to-shopping-list", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -193,13 +193,66 @@ function submitNewItem() {
             amount: amount
         })
     })
-    .then(() => {
-        location.reload();
-    })
+        .then(response => response.json())
+        .then(item => {
+
+            // ★ 追加したデータをテーブルに反映
+            addRowToTable(item);
+
+            // 入力クリア
+            document.getElementById("newItemName").value = "";
+            document.getElementById("newItemAmount").value = "";
+
+            // フォーカス戻す
+            document.getElementById("newItemName").focus();
+        })
     .catch(error => {
         console.error(error);
         alert("登録に失敗しました");
     });
+}
+
+function addRowToTable(item) {
+
+    const table = document.getElementById("shoppingListTable");
+
+    // 最後の行に追加
+    const row = table.insertRow(-1);
+
+    // チェックボックス
+    const cell1 = row.insertCell(0);
+    cell1.innerHTML = `
+        <input type="checkbox"
+            class="shopping-checkbox"
+            value="${item.id}"
+            data-name="${item.name}"
+            data-category-id="${item.categoryId}"
+            data-favorite="${item.favorite}">
+    `;
+
+    // 食材名
+    const cell2 = row.insertCell(1);
+    cell2.textContent = item.name;
+
+    // 量
+    const cell3 = row.insertCell(2);
+    cell3.textContent = item.amount;
+
+    // hidden列（カテゴリ）
+    const cell4 = row.insertCell(3);
+    cell4.classList.add("hidden");
+    cell4.textContent = item.categoryName || "";
+
+    // hidden列（購入日）
+    const cell5 = row.insertCell(4);
+    cell5.classList.add("hidden");
+
+    // hidden列（購入済み）
+    const cell6 = row.insertCell(5);
+    cell6.classList.add("hidden");
+
+    // 空セル
+    const cell7 = row.insertCell(6);
 }
 
 
