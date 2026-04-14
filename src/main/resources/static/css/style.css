@@ -29,6 +29,28 @@ h1 {
 }
 
 /* =========================
+   ポップアップメッセージ
+========================= */
+
+.popup-message {
+    display: inline-block;   /* ←これ重要 */
+    margin-left: 12px;
+    font-size: 25px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;     /* ←改行防止 */
+}
+
+/* 表示時 */
+.popup-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.popup-success { color: #6b4c3b; }
+.popup-error { color: #c27a7a; }
+
+/* =========================
    レイアウト
 ========================= */
 .container {
@@ -452,7 +474,7 @@ input[type="submit"]:hover {
 
 .bulk-actions {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     margin: 24px 0;
     align-items: center;
 }

@@ -129,10 +129,9 @@
 	        買い物リストへ追加する
 	    </button>
 
-	</div>
-	
-<div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
+		<div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
+	</div>
 
 
 <!-- 食材一覧を囲む -->
@@ -248,7 +247,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
     const checkboxes = document.querySelectorAll(".item-checkbox:checked");
 
     if (checkboxes.length === 0) {
-        alert("食材を選択してください");
+		showPopup("食材を選択してください", "error");
         return;
     }
 
@@ -312,10 +311,10 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 						const message = await response.text();
 
 						if (message.includes("すでに")) {
-							alert(message);    //重複あった場合のメッセージ
+							showPopup(message);    //重複あった場合のメッセージ
 							deleteItems(ids);　//アイテムは削除
 						} else {
-							alert("買い物リスト追加に失敗しました");
+							showPopup("買い物リスト追加に失敗しました", "error");
 						}
 
 					}
@@ -323,12 +322,12 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 				})
 				.catch(error => {
 					console.error(error);
-					alert("通信エラーが発生しました");
+					showPopup("通信エラーが発生しました", "error");
 				});
 	} else {
 
 		deleteItems(ids);
-
+		showPopup("選択した食材を消費済みにしました");
 	}
 });
 
@@ -343,11 +342,12 @@ function deleteItems(ids) {
     })
     .then(response => {
 
-        if (response.ok) {
-            location.reload();
-        } else {
-            alert("削除に失敗しました");
-        }
+		if (response.ok) {
+			showPopup("消費済みにしました");
+			setTimeout(() => location.reload(), 3000);
+		} else {
+			showPopup("削除に失敗しました", "error");
+		}
 
     });
 
@@ -371,7 +371,7 @@ document.getElementById("bulkShoppingBtn").addEventListener("click", function() 
 	const ids = getSelectedItems();
 
 	if (ids.length === 0) {
-		alert("食材を選択してください");
+		showPopup("食材を選択してください", "error");
 		return;
 	}
 
@@ -390,23 +390,44 @@ document.getElementById("bulkShoppingBtn").addEventListener("click", function() 
 
 				if (response.ok) {
 
-					alert("買い物リストに追加しました！");
+					showPopup("買い物リストに追加しました！");
 					location.reload();
 
 				} else {
 	　　　　　　　　　　//二重登録になる場合
 					const message = await response.text();
-					alert(message);  //　～はすでに買い物リストに存在しています
+					showPopup(message, "error");  //　～はすでに買い物リストに存在しています
 
 				}
 
 			})
 			.catch(error => {
 				console.error(error);
-				alert("通信エラーが発生しました");
+				showPopup("通信エラーが発生しました", "error");
 			});
 
 });
+
+function showPopup(message, type = "success") {
+	let popup = document.getElementById("popupMessage");
+
+	if (!popup) {
+		popup = document.createElement("span");
+		popup.id = "popupMessage";
+
+		const target = document.getElementById("bulkShoppingBtn");
+		target.parentNode.appendChild(popup);
+	}
+
+	popup.className = "popup-message popup-" + type;
+	popup.textContent = message;
+
+	popup.classList.add("show");
+
+	setTimeout(() => {
+		popup.classList.remove("show");
+	}, 3000);
+}
 
 </script>
 
