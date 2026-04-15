@@ -1,100 +1,107 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" th:href="@{/css/style.css}">
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
 
-<!-- jQuery（先に読み込む） -->
-<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+	<!-- 共通スタイル（先に読み込む） -->
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<!-- ページ固有スタイル（上書き用） -->
+	<link rel="stylesheet" th:href="@{/css/add.css}">
 
-<!-- DatepickerのCSS/JS -->
-<link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
-<script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
-<script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
-<link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css}">
-<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js}"></script>
-<!-- Font Awesome CDN（integrity を削除） -->
-<link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
-      crossorigin="anonymous">
+	<!-- ページ固有の最小上書き（add.css が読み込まれない場合の保険） -->
 
+	<!-- jQuery（先に読み込む） -->
+	<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 
+	<!-- DatepickerのCSS/JS -->
+	<link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
+	<script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
+	<script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
 
-<title>食材追加</title>
+	<!-- Bootstrap（CSS/JS） -->
+	<link rel="stylesheet" th:href="@{'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css'}">
+	<script th:src="@{'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js'}"></script>
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+	      crossorigin="anonymous">
+
+	<title>食材追加</title>
 </head>
-<body>
-<div class="form-wrapper">
-    <h1>食材追加</h1>
+<body class="login-page">
 
-	<div th:if="${successMessage}"
-	     id="successMessage"
-	     class="alert alert-success">
+<div class="form-wrapper" role="region" aria-labelledby="add-food-title">
+	<h1 id="add-food-title">食材追加</h1>
+
+	<div th:if="${successMessage}" id="successMessage" class="alert alert-success" role="status">
 		<span th:text="${successMessage}"></span>
 	</div>
 
-    <form th:action="@{/users}" th:object="${form}" method="POST">
+	<form th:action="@{/users}" th:object="${form}" method="POST" novalidate>
 
-        <div class="form-row">
-            <label for="name">食材</label>
-			<input type="text" th:field="*{name}"
+		<div class="form-row">
+			<label for="name">食材</label>
+			<input id="name" name="name" type="text" th:field="*{name}"
 			       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-			       class="form-control"/>
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
-        </div>
-        
-        <div class="form-row">
-            <label for="categoryId">カテゴリー</label>
-            <select th:field="*{categoryId}">
-                <option th:each="category : ${categories}"
-                        th:value="${category.id}"
-                        th:text="${category.name}">
-                </option>
-            </select>
-        </div>
-
-		
-		<div class="form-row date-row">
-		    <div>
-		        <label for="deadline">期限</label>
-		        <input type="date" th:field="*{deadline}" class="form-control" id="deadline" />
-		    </div>
+			       class="form-control" aria-required="true" />
+			<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
 		</div>
 
-	
-		<div class="form-row date-row">
-		    <div>
-		        <label for="purchaseDate">購入日</label>
-		        <input type="date" th:field="*{purchaseDate}" class="form-control" id="purchaseDate" />
-		        <div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
-		    </div>
+		<div class="form-row">
+			<label for="categoryId">カテゴリー</label>
+			<select id="categoryId" name="categoryId" th:field="*{categoryId}" class="form-control">
+				<option th:each="category : ${categories}"
+				        th:value="${category.id}"
+				        th:text="${category.name}">
+				</option>
+			</select>
 		</div>
 
+		<div class="form-row date-row">
+			<label for="deadline">期限</label>
+			<input id="deadline" name="deadline" type="date" th:field="*{deadline}" class="form-control" />
+		</div>
 
-        <div class="form-row">
-            <label for="amount">量</label>
-			<input type="text" th:field="*{amount}"
-			           th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"
-			           class="form-control"/>
-           <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
-        </div>
+		<div class="form-row date-row">
+			<label for="purchaseDate">購入日</label>
+			<input id="purchaseDate" name="purchaseDate" type="date" th:field="*{purchaseDate}" class="form-control" />
+			<div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
+		</div>
 
-        <div class="form-row">
-            <label for="others">その他</label>
-			<input type="text" th:field="*{others}"
-			           th:classappend="${#fields.hasErrors('others')} ? 'is-invalid' : ''"
-			           class="form-control"/>
-            <div th:if="${#fields.hasErrors('others')}" th:errors="*{others}" class="invalid-feedback"></div>
-        </div>
-              
-		<button type="button" class="heart-btn heart-home" id="favoriteButton">
-		    <i class="fa-solid fa-heart"></i>
-		</button>
-		<input type="hidden" th:field="*{favorite}" id="favoriteField" />  
+		<div class="form-row">
+			<label for="amount">量</label>
+			<input id="amount" name="amount" type="text" th:field="*{amount}"
+			       th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"
+			       class="form-control" />
+			<div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
+		</div>
 
-        <input type="submit" value="追加">
-        <a th:href="@{/users}" class="button">戻る</a>
+		<div class="form-row">
+			<label for="others">その他</label>
+			<input id="others" name="others" type="text" th:field="*{others}"
+			       th:classappend="${#fields.hasErrors('others')} ? 'is-invalid' : ''"
+			       class="form-control" />
+			<div th:if="${#fields.hasErrors('others')}" th:errors="*{others}" class="invalid-feedback"></div>
+		</div>
 
-    </form>
+		<div class="form-row" style="display:flex; align-items:center; gap:12px;">
+			<button type="button" class="heart-btn heart-home" id="favoriteButton" aria-pressed="false" title="お気に入り切替">
+				<i class="fa-solid fa-heart"></i>
+			</button>
+			<input type="hidden" th:field="*{favorite}" id="favoriteField" />
+		</div>
+
+		<div class="form-actions">
+			<!-- 追加ボタン（見た目を統一） -->
+			<button type="submit" class="button primary">追加</button>
+
+			<!-- 戻るはリンク風ボタン -->
+			<a th:href="@{/users}" class="button secondary" role="button">戻る</a>
+		</div>
+
+	</form>
 </div>
 
 <!-- add.js を読み込む -->
