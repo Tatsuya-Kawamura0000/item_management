@@ -98,7 +98,7 @@
 
 		<div>
 	    <!-- すべて -->
-		<a th:href="@{/users}" th:classappend="${selectedCategory == null} ? 'active'" class="tab select">
+		<a th:href="@{/users}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
 			すべて
 			<span class="badge" th:if="${#lists.size(items) > 0}" th:text="${#lists.size(items)}"></span>
 		</a>
@@ -128,8 +128,6 @@
 	        <i class="fa-solid fa-basket-shopping"></i>
 	        買い物リストへ追加する
 	    </button>
-
-		<div id="popupMessage" th:if="${successMessage}" th:text="${successMessage}" class="popup-message"></div>
 
 	</div>
 
@@ -200,32 +198,15 @@
 
 				</td>
 
-
-
-
-
-
-
-
             </tr>
         </table>
     </div>
 </div>
 
-<script th:inline="javascript">
-/* ✅ ポップアップの自動フェードアウト */
-window.addEventListener('DOMContentLoaded', function() {
-    const popup = document.getElementById('popupMessage');
-    if (popup) {
-        setTimeout(() => {
-            popup.style.transition = "opacity 0.5s ease-out";
-            popup.style.opacity = '0';
-            setTimeout(() => popup.remove(), 500);
-        }, 2500);
-    }
-});
 
- 
+<script src="/js/common.js"></script>
+
+<script th:inline="javascript">
 
 // 選択されたIDを取得
 function getSelectedItems() {
@@ -247,7 +228,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
     const checkboxes = document.querySelectorAll(".item-checkbox:checked");
 
     if (checkboxes.length === 0) {
-		showPopup("食材を選択してください", "error");
+		showPopupAndReload("食材を選択してください", "error");
         return;
     }
 
@@ -311,10 +292,10 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 						const message = await response.text();
 
 						if (message.includes("すでに")) {
-							showPopup(message);    //重複あった場合のメッセージ
+							showPopupAndReload(message, "error");    //重複あった場合のメッセージ
 							deleteItems(ids);　//アイテムは削除
 						} else {
-							showPopup("買い物リスト追加に失敗しました", "error");
+							showPopupAndReload("買い物リスト追加に失敗しました", "error");
 						}
 
 					}
@@ -322,12 +303,11 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 				})
 				.catch(error => {
 					console.error(error);
-					showPopup("通信エラーが発生しました", "error");
+					showPopupAndReload("通信エラーが発生しました", "error");
 				});
 	} else {
 
 		deleteItems(ids);
-		showPopup("選択した食材を消費済みにしました");
 	}
 });
 
@@ -343,10 +323,9 @@ function deleteItems(ids) {
     .then(response => {
 
 		if (response.ok) {
-			showPopup("消費済みにしました");
-			setTimeout(() => location.reload(), 3000);
+			showPopupAndReload("消費済みにしました");
 		} else {
-			showPopup("削除に失敗しました", "error");
+			showPopupAndReload("削除に失敗しました", "error");
 		}
 
     });
@@ -366,12 +345,15 @@ document.getElementById("selectAll").addEventListener("change", function() {
 
 });
 
+
+//買い物リストへ追加する　ボタン押下時の処理
+
 document.getElementById("bulkShoppingBtn").addEventListener("click", function() {
 
 	const ids = getSelectedItems();
 
 	if (ids.length === 0) {
-		showPopup("食材を選択してください", "error");
+		showPopupAndReload("食材を選択してください", "error");
 		return;
 	}
 
@@ -390,44 +372,23 @@ document.getElementById("bulkShoppingBtn").addEventListener("click", function() 
 
 				if (response.ok) {
 
-					showPopup("買い物リストに追加しました！");
-					location.reload();
+					showPopupAndReload("買い物リストに追加しました！");
 
 				} else {
-	　　　　　　　　　　//二重登録になる場合
+                       //二重登録になる場合
 					const message = await response.text();
-					showPopup(message, "error");  //　～はすでに買い物リストに存在しています
+					showPopupAndReload(message, "error");  //　～はすでに買い物リストに存在しています
 
 				}
 
 			})
 			.catch(error => {
 				console.error(error);
-				showPopup("通信エラーが発生しました", "error");
+				showPopupAndReload("通信エラーが発生しました", "error");
 			});
 
 });
 
-function showPopup(message, type = "success") {
-	let popup = document.getElementById("popupMessage");
-
-	if (!popup) {
-		popup = document.createElement("span");
-		popup.id = "popupMessage";
-
-		const target = document.getElementById("bulkShoppingBtn");
-		target.parentNode.appendChild(popup);
-	}
-
-	popup.className = "popup-message popup-" + type;
-	popup.textContent = message;
-
-	popup.classList.add("show");
-
-	setTimeout(() => {
-		popup.classList.remove("show");
-	}, 3000);
-}
 
 </script>
 
