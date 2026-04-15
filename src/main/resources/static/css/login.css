@@ -126,7 +126,7 @@ body.login-page .form-row input[type="password"] {
 }
 
 /* ログインボタン */
-bbody.login-page .button.primary {
+body.login-page .button.primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
