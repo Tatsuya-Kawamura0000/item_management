@@ -525,7 +525,7 @@ input[type="submit"]:hover {
 }
 
 .bulk-btn i {
-    font-size: 18px;
+    font-size:30px;
     line-height: 1;
     display: inline-flex;
     align-items: center;
@@ -635,6 +635,15 @@ input[type="submit"]:hover {
     margin: 50px 0 20px;
 }
 
+.alltab {
+    padding: 23px 24px;
+    font-weight: 800;
+    border-radius: 20px;
+    background: #f7d9b5;
+    color: #4A2E1F;
+    position: relative;
+}
+
 .tab {
     padding: 20px 21px;
     border-radius: 20px;
@@ -643,9 +652,19 @@ input[type="submit"]:hover {
     position: relative;
 }
 
+.allab.active {
+    background: #EADBC8;
+    color: #333;
+}
+
 .tab.active {
     background: #EADBC8;
     color: #333;
+}
+
+.alltab.select:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.98);
 }
 
 .tab.select:hover {
