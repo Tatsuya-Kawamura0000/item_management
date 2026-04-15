@@ -1,5 +1,6 @@
 package com.example.itemmanagement.controller;
 
+import com.example.itemmanagement.entity.ShoppingListItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +18,13 @@ public class AddNewItemController {
     private AddToShoppingListService addToShoppingListService;
 
     @PostMapping("/users/add-new-item-to-shopping-list")
-    public void addNewItemToShoppingList(
+    public ShoppingListItem addNewItemToShoppingList(
             @RequestBody AddShoppingListItemForm form,
             @AuthenticationPrincipal LoginUser loginUser) {
 
         Integer userId = loginUser.getId();
 
-        addToShoppingListService.addNewItem(form, userId);
+        return addToShoppingListService.addNewItem(form, userId); // ★返す
     }
+
 }

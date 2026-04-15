@@ -196,7 +196,7 @@ function submitNewItem() {
         return;
     }
 
-    fetch("/users/add-to-shopping-list", {
+    fetch("/users/add-new-item-to-shopping-list", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -336,7 +336,7 @@ document.getElementById("bulkPurchaseBtn").addEventListener("click", function(){
     purchaseQueue = getSelectedShoppingItems();
 
     if(purchaseQueue.length === 0){
-        alert("選択してください");
+        showPopup("選択してください", "success", ".bulk-actions");
         return;
     }
 
@@ -361,16 +361,19 @@ function openPurchaseModal(){
     document.getElementById("modalFavoriteField").value = item.favorite;
 }
 
+
+
 document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
 
     const items = getSelectedShoppingItems();
 
     if(items.length === 0){
-        alert("選択してください");
+        showPopup("選択してください", "success", ".bulk-actions");
         return;
     }
 
     const ids = items.map(i => i.id);
+    console.log(ids); // ←追加 デバッグ用
 
     fetch("/users/bulk-delete-shopping-list",{
         method:"POST",
@@ -379,13 +382,25 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
         },
         body:JSON.stringify(ids)
     })
-    .then(()=>{
-        location.reload();
-    })
-    .catch(error=>{
-        console.error(error);
-        alert("削除に失敗しました");
-    });
+        .then(response => {
+            if(!response.ok){
+                throw new Error("削除に失敗しました");
+            }
+
+            // ★ 成功メッセージ表示
+            showPopup("削除しました", "success", ".bulk-actions");
+
+            // ★ 2秒後リロード
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        })
+        .catch(error=>{
+            console.error(error);
+
+            // ★ 失敗メッセージ表示
+            showPopup("削除に失敗しました", "error", ".bulk-actions");
+        });
 
 });
 

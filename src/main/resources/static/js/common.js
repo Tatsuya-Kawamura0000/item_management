@@ -1,4 +1,4 @@
-function showPopup(message, type = "success") {
+function showPopup(message, type = "success", targetSelector = "body") {
 
     let popup = document.getElementById("popupMessage");
 
@@ -6,8 +6,8 @@ function showPopup(message, type = "success") {
         popup = document.createElement("span");
         popup.id = "popupMessage";
 
-        // bodyの最後に追加（どの画面でも安定）
-        document.body.appendChild(popup);
+        const target = document.querySelector(targetSelector);
+        target.appendChild(popup);
     }
 
     popup.className = "popup-message popup-" + type;
