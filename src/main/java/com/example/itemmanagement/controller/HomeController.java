@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -57,6 +56,8 @@ public class HomeController {
 	@Autowired
 	private  ItemDeadlineService itemDeadlineService;
 
+    @Autowired
+    private ShoppingListBulkService shoppingListBulkService;
 
 
 	@GetMapping
@@ -270,16 +271,9 @@ public class HomeController {
 
 		Integer userId = loginUser.getId();
 		//重複していたアイテムのリスト
-		List<String> duplicatedItems = new ArrayList<>();
 
-		for(Integer id : ids){
+		 List<String> duplicatedItems = shoppingListBulkService.addAll(ids,userId);
 
-			List<String> result = addToShoppingListService.addItemToList(id, userId);
-
-			if(!result.isEmpty()){
-				duplicatedItems.addAll(result);
-			}
-		}
 		// 重複が1つでもあればまとめて返す
 		if(!duplicatedItems.isEmpty()){
 			String message = String.join("、", duplicatedItems)
@@ -289,7 +283,6 @@ public class HomeController {
 						.badRequest()
 						.body(message);
 			}
-
 
 		return ResponseEntity.ok().build();
 	}
