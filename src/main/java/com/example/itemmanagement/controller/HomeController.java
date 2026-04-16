@@ -132,30 +132,6 @@ public class HomeController {
 	    return "redirect:/users/add";
 	}
 	
-	@PostMapping("/stop/{id}")
-	public String stop(
-	        @PathVariable("id") int id,
-	        RedirectAttributes redirectAttributes,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    Integer userId = loginUser.getId();
-
-	    // ユーザーID込みで取得
-	    Items item = getAllItemsService.getItemById(id, userId);
-
-	    if (item.isFavorite()) {
-	        redirectAttributes.addFlashAttribute("confirmAddToList", true);
-	        redirectAttributes.addFlashAttribute("targetItemId", id);
-	    }
-
-	    // ユーザーID込みで削除
-	    stopItemService.stopItem(id, userId);
-
-	    redirectAttributes.addFlashAttribute("successMessage", "食材を使い切りました！");
-
-	    return "redirect:/users";
-	}
-
 
 	@GetMapping("/edit/{id}")
 	public String edit(
