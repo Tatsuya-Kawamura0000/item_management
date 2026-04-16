@@ -3,16 +3,13 @@ package com.example.itemmanagement.controller;
 import com.example.itemmanagement.dto.HomeViewModel;
 import com.example.itemmanagement.entity.Categories;
 import com.example.itemmanagement.entity.Items;
-import com.example.itemmanagement.entity.ShoppingListItem;
 import com.example.itemmanagement.form.AddItemForm;
 import com.example.itemmanagement.mapper.ShoppingListMapper;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.*;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -171,31 +168,6 @@ public class HomeController {
 	    return "redirect:/users";
 	}
 
-
-	
-	@GetMapping("/shoppingList")
-	public String shoppingList(
-	        Model model,
-	        HttpServletRequest request,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    // ログインユーザーID取得
-	    Integer userId = loginUser.getId();
-
-	    // CSRFトークン
-	    CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-	    model.addAttribute("_csrf", csrfToken);
-
-	    // ユーザーごとの買い物リスト取得
-	    List<ShoppingListItem> listItems = shoppingListMapper.findAll(userId);
-	    model.addAttribute("listItems", listItems);
-
-	    // カテゴリー一覧
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-	    model.addAttribute("categories", categories);
-
-	    return "shoppingList";
-	}
 	
 	@PostMapping("/add-to-shopping-list/{id}")
 	public String addToShoppingList(

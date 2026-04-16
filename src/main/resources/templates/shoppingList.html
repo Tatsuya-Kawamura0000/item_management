@@ -13,13 +13,6 @@
 
     <title>買い物リスト</title>
 
-
-	
-	<!-- ★ CSRF無効化の場合、コメントアウト -->
-	    <!--
-	<meta name="_csrf" th:content="${_csrf.token}">
-	<meta name="_csrf_header" th:content="${_csrf.headerName}">
-	-->
 </head>
 <body>
 	<h1 class="shopping-title">📝 買い物リスト</h1>
@@ -60,7 +53,7 @@
 				<th></th>
 	        </tr>
 
-	        <tr th:each="item : ${listItems}">
+	        <tr th:each="item : ${slvm.listItems}">
 				<td>
 				<input type="checkbox"
 		               class="shopping-checkbox"
@@ -104,7 +97,7 @@
 				    <label>カテゴリー：</label>
 				    <select id="categoryId" name="categoryId" required>
 				        <option value="">-- 選択してください --</option>
-				        <option th:each="cat : ${categories}" 
+				        <option th:each="cat : ${slvm.categories}"
 				                th:value="${cat.id}" 
 				                th:text="${cat.name}">
 				        </option>
