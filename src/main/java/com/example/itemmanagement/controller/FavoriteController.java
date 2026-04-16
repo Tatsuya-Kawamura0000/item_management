@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/favorites")
+@RequestMapping("/favorite")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;

@@ -184,7 +184,7 @@
                 <td th:text="${item.others}"></td>
 				<td class="action-cell">
 
-					<form th:action="@{/users/favorite/{id}(id=${item.id})}" method="post" class="action-item">
+					<form th:action="@{/favorite/{id}(id=${item.id})}" method="post" class="action-item">
 						<input type="hidden" name="category" th:value="${selectedCategory}">
 						<input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
 						<button type="submit" class="heart-btn">
