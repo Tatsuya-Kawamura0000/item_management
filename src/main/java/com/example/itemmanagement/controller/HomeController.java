@@ -59,6 +59,9 @@ public class HomeController {
     @Autowired
     private ShoppingListBulkService shoppingListBulkService;
 
+	@Autowired
+	private FavoriteService favoriteService;
+
 
 	@GetMapping
 	public String index(Model model,
@@ -212,25 +215,25 @@ public class HomeController {
 
 	    Integer userId = loginUser.getId();
 
-	    // id + userId で取得
-	    Items item = getAllItemsService.getItemById(id, userId);
-
-	    // favorite反転
-	    item.setFavorite(!item.isFavorite());
-
-	    // 更新
-	    updateItemService.updateFavorite(item, userId);
+		// ★ 業務ロジックはServiceへ
+		favoriteService.toggleFavorite(id, userId);
 
 	    // フィルター条件がある場合
-	    if (category != null || expiringSoon != null) {
-	        StringBuilder url = new StringBuilder("redirect:/users/filter?");
-	        if (category != null) url.append("category=").append(category).append("&");
-	        if (expiringSoon != null && expiringSoon) url.append("expiringSoon=true");
-	        return url.toString();
-	    }
+		if (category != null || expiringSoon != null) {
 
-	    return "redirect:/users";
+			StringBuilder url = new StringBuilder("redirect:/users/filter?");
+
+			if (category != null) url.append("category=").append(category).append("&");
+			if (expiringSoon != null && expiringSoon) url.append("expiringSoon=true");
+
+			return url.toString();
+		}
+
+		return "redirect:/users";
 	}
+
+
+
 	
 	@PostMapping("/add-to-shopping-list/{id}")
 	public String addToShoppingList(
