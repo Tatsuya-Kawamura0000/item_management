@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -57,6 +56,8 @@ public class HomeController {
 	@Autowired
 	private  ItemDeadlineService itemDeadlineService;
 
+    @Autowired
+    private ShoppingListBulkService shoppingListBulkService;
 
 
 	@GetMapping
@@ -132,30 +133,6 @@ public class HomeController {
 	    return "redirect:/users/add";
 	}
 	
-	@PostMapping("/stop/{id}")
-	public String stop(
-	        @PathVariable("id") int id,
-	        RedirectAttributes redirectAttributes,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    Integer userId = loginUser.getId();
-
-	    // ユーザーID込みで取得
-	    Items item = getAllItemsService.getItemById(id, userId);
-
-	    if (item.isFavorite()) {
-	        redirectAttributes.addFlashAttribute("confirmAddToList", true);
-	        redirectAttributes.addFlashAttribute("targetItemId", id);
-	    }
-
-	    // ユーザーID込みで削除
-	    stopItemService.stopItem(id, userId);
-
-	    redirectAttributes.addFlashAttribute("successMessage", "食材を使い切りました！");
-
-	    return "redirect:/users";
-	}
-
 
 	@GetMapping("/edit/{id}")
 	public String edit(
@@ -294,16 +271,9 @@ public class HomeController {
 
 		Integer userId = loginUser.getId();
 		//重複していたアイテムのリスト
-		List<String> duplicatedItems = new ArrayList<>();
 
-		for(Integer id : ids){
+		 List<String> duplicatedItems = shoppingListBulkService.addAll(ids,userId);
 
-			List<String> result = addToShoppingListService.addItemToList(id, userId);
-
-			if(!result.isEmpty()){
-				duplicatedItems.addAll(result);
-			}
-		}
 		// 重複が1つでもあればまとめて返す
 		if(!duplicatedItems.isEmpty()){
 			String message = String.join("、", duplicatedItems)
@@ -313,7 +283,6 @@ public class HomeController {
 						.badRequest()
 						.body(message);
 			}
-
 
 		return ResponseEntity.ok().build();
 	}

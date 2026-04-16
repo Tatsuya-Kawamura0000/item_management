@@ -1,17 +1,16 @@
 package com.example.itemmanagement.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.entity.ShoppingListItem;
 import com.example.itemmanagement.form.AddShoppingListItemForm;
 import com.example.itemmanagement.mapper.ItemMapper;
 import com.example.itemmanagement.mapper.ShoppingListMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AddToShoppingListService {
@@ -24,7 +23,7 @@ public class AddToShoppingListService {
 
     public List<String> addItemToList(int id, Integer userId) {
 
-        //重複しているアイテムリスト
+        //重複しているアイテムリストを用意
         List<String> duplicatedNames = new ArrayList<>();
 
         Items item = itemMapper.findById(id, userId);
