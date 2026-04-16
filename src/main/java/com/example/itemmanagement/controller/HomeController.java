@@ -1,11 +1,14 @@
 package com.example.itemmanagement.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.example.itemmanagement.dto.HomeViewModel;
+import com.example.itemmanagement.entity.Categories;
+import com.example.itemmanagement.entity.Items;
+import com.example.itemmanagement.entity.ShoppingListItem;
+import com.example.itemmanagement.form.AddItemForm;
+import com.example.itemmanagement.mapper.ShoppingListMapper;
+import com.example.itemmanagement.security.LoginUser;
+import com.example.itemmanagement.service.*;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,29 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.itemmanagement.entity.Categories;
-import com.example.itemmanagement.entity.Items;
-import com.example.itemmanagement.entity.ShoppingListItem;
-import com.example.itemmanagement.form.AddItemForm;
-import com.example.itemmanagement.mapper.ShoppingListMapper;
-import com.example.itemmanagement.security.LoginUser;
-import com.example.itemmanagement.service.AddItemService;
-import com.example.itemmanagement.service.AddToShoppingListService;
-import com.example.itemmanagement.service.GetAllCategoriesService;
-import com.example.itemmanagement.service.GetAllItemsService;
-import com.example.itemmanagement.service.GetFilterItemsService;
-import com.example.itemmanagement.service.StopItemService;
-import com.example.itemmanagement.service.UpdateItemService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/users")
@@ -65,72 +51,28 @@ public class HomeController {
 
 	@Autowired
 	private GetFilterItemsService getFilterItemsService;
-	
-	
+
+	@Autowired
+	private HomeService homeService;
+
+	@Autowired
+	private  ItemDeadlineService itemDeadlineService;
 
 
-	
+
 	@GetMapping
 	public String index(Model model,
 	        @AuthenticationPrincipal LoginUser loginUser) {
 
-	    // ログインユーザー情報取得
-	    String username = loginUser.getUsername();
+	    // ログインユーザーID情報格納
 	    Integer userId = loginUser.getId();
 
-	    // ユーザーごとの食材一覧取得
-	    List<Items> items = getAllItemsService.getAllItems(userId);
+		HomeViewModel hvm = homeService.getHomeData(userId);
 
-		//home.htmlが、th:each="item : ${filteredItems}"で表示しているため
-		List<Items> filteredItems = items;
-
-	    int expiredCount = 0;
-	    
-	    int warningCount = 0;
-
-
-	    //　食材一覧表示、期限通知アイテムカウント
-	    for (Items item : filteredItems) {
-	        if (item.getDeadline() != null) {
-
-	            long days = java.time.temporal.ChronoUnit.DAYS.between(
-	                    java.time.LocalDate.now(), item.getDeadline());
-
-	            if (days < 0) {
-	                item.setMessage("期限切れです");
-	                expiredCount++;						//期限切れ食材をカウント
-	            } else if (days <= 3) {
-	                item.setMessage("期限間近");
-	                warningCount++;						//期限間近食材をカウント
-	            } else {
-	                item.setMessage("");
-	            }
-
-	        } else {
-	            item.setMessage("");
-	        }
-	    }
-
-	    //カテゴリー情報取得
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-
-	    model.addAttribute("categories", categories);
-	    model.addAttribute("items", items);
-		model.addAttribute("filteredItems", filteredItems);
-	    model.addAttribute("expiredCount", expiredCount);	//期限切れ食材数を渡す
-	    model.addAttribute("warningCount", warningCount);	//期限間近食材をカウント
-	    
-	    int shoppingCount = addToShoppingListService.getShoppingListCount(userId); //買い物リストのアイテム数を取得
-	    model.addAttribute("shoppingCount", shoppingCount);
-	    
-	    model.addAttribute("selectedCategory", null);
-
-		Map<Integer, Integer> categoryCounts =
-				getAllCategoriesService.getCategoryCounts(userId);
-
-		model.addAttribute("categoryCounts", categoryCounts);
+		model.addAttribute("hvm", hvm);
 	    
 	    return "home";
+
 	}
 
 	@GetMapping("/add")									//食材登録画面をリクエストされた時

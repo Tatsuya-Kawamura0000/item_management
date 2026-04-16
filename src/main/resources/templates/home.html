@@ -100,7 +100,7 @@
 	    <!-- すべて -->
 		<a th:href="@{/users}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
 			すべて
-			<span class="badge" th:if="${#lists.size(items) > 0}" th:text="${#lists.size(items)}"></span>
+			<span class="badge" th:if="${#lists.size(hvm.items) > 0}" th:text="${#lists.size(hvm.items)}"></span>
 		</a>
 
 	    <!-- DBカテゴリ -->
@@ -148,7 +148,7 @@
 			    <th>操作</th>
 			</tr>
 
-            <tr th:each="item : ${filteredItems}" >
+            <tr th:each="item : ${hvm.filteredItems}" >
 				<td>
 				<input type="checkbox"
 				       class="item-checkbox"
