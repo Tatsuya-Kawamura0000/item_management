@@ -34,10 +34,7 @@ public class HomeController {
 	
 	@Autowired
 	private  AddItemService addItemService;
-	
-	@Autowired
-	private  StopItemService stopItemService;
-	
+
 	@Autowired
 	private  UpdateItemService updateItemService;
 	
@@ -48,13 +45,7 @@ public class HomeController {
 	private  AddToShoppingListService addToShoppingListService;
 
 	@Autowired
-	private GetFilterItemsService getFilterItemsService;
-
-	@Autowired
 	private HomeService homeService;
-
-	@Autowired
-	private  ItemDeadlineService itemDeadlineService;
 
     @Autowired
     private ShoppingListBulkService shoppingListBulkService;
@@ -205,35 +196,6 @@ public class HomeController {
 
 	    return "shoppingList";
 	}
-	
-	@PostMapping("/favorite/{id}")
-	public String toggleFavorite(
-	        @PathVariable("id") int id,
-	        @RequestParam(required = false) Integer category,
-	        @RequestParam(required = false) Boolean expiringSoon,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    Integer userId = loginUser.getId();
-
-		// ★ 業務ロジックはServiceへ
-		favoriteService.toggleFavorite(id, userId);
-
-	    // フィルター条件がある場合
-		if (category != null || expiringSoon != null) {
-
-			StringBuilder url = new StringBuilder("redirect:/users/filter?");
-
-			if (category != null) url.append("category=").append(category).append("&");
-			if (expiringSoon != null && expiringSoon) url.append("expiringSoon=true");
-
-			return url.toString();
-		}
-
-		return "redirect:/users";
-	}
-
-
-
 	
 	@PostMapping("/add-to-shopping-list/{id}")
 	public String addToShoppingList(
