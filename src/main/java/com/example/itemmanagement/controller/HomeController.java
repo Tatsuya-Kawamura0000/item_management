@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/users")
@@ -67,12 +66,29 @@ public class HomeController {
 	    // ログインユーザーID情報格納
 	    Integer userId = loginUser.getId();
 
-		HomeViewModel hvm = homeService.getHomeData(userId);
+		HomeViewModel hvm = homeService.getHomeData(userId, null, null, null);
 
 		model.addAttribute("hvm", hvm);
 	    
 	    return "home";
 
+	}
+
+	@GetMapping("/filter")
+	public String filterItems(
+			@RequestParam(required = false) Integer category,
+			@RequestParam(required = false) Boolean expiringSoon,
+			@RequestParam(required = false) Boolean expired,
+			@AuthenticationPrincipal LoginUser loginUser,
+			Model model) {
+
+		Integer userId = loginUser.getId();
+
+		HomeViewModel hvm = homeService.getHomeData(userId, category, expiringSoon, expired);
+
+		model.addAttribute("hvm", hvm);
+
+		return "home";
 	}
 
 	@GetMapping("/add")									//食材登録画面をリクエストされた時
@@ -139,7 +155,8 @@ public class HomeController {
 
 	    return "redirect:/users";
 	}
-	
+
+
 	@GetMapping("/edit/{id}")
 	public String edit(
 	        @PathVariable("id") int id,
@@ -255,84 +272,7 @@ public class HomeController {
 	    return "redirect:/users";  
 	}
 
-	@GetMapping("/filter")
-	public String filterItems(
-	        @RequestParam(required = false) Integer category,
-	        @RequestParam(required = false) Boolean expiringSoon,
-	        @RequestParam(required = false) Boolean expired, // 期限切れアラートリンク用に追加
-	        @AuthenticationPrincipal LoginUser loginUser,
-	        Model model) {
 
-	    Integer userId = loginUser.getId();
-
-		List<Items> items = getAllItemsService.getAllItems(userId);
-	    List<Items> filteredItems = getFilterItemsService.filterItems(category, expiringSoon, expired,userId);
-
-
-        //アラートアイコン表示用
-	    for (Items item : filteredItems) {
-
-	        if (item.getDeadline() != null) {
-
-	            long days = java.time.temporal.ChronoUnit.DAYS.between(
-	                    java.time.LocalDate.now(), item.getDeadline());
-
-	            if (days < 0) {
-	                item.setMessage("期限切れです");
-	            } else if (days <= 3) {
-	                item.setMessage("期限間近");
-	            } else {
-	                item.setMessage("");
-	            }
-
-	        } else {
-	            item.setMessage("");
-	        }
-	    }
-
-		int expiredCount = 0;
-		int warningCount = 0;
-
-
-		// 期限アラート、全件数表示用
-		for (Items item : items) {
-
-			if (item.getDeadline() != null) {
-
-				long days = java.time.temporal.ChronoUnit.DAYS.between(
-						java.time.LocalDate.now(), item.getDeadline());
-
-				if (days < 0) {
-					expiredCount++;
-				} else if (days <= 3) {
-					warningCount++;
-				}
-			}
-		}
-
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-
-	    model.addAttribute("items", items);
-		model.addAttribute("filteredItems", filteredItems);  //　メインの一覧表示に渡す
-	    model.addAttribute("categories", categories);
-	    model.addAttribute("selectedCategory", category);
-	    model.addAttribute("expiringSoon", expiringSoon);
-
-	    // 期限アラート件数表示
-	    model.addAttribute("expiredCount", expiredCount);
-	    model.addAttribute("warningCount", warningCount);
-
-	    int shoppingCount = addToShoppingListService.getShoppingListCount(userId);
-	    model.addAttribute("shoppingCount", shoppingCount);
-
-		Map<Integer, Integer> categoryCounts =
-				getAllCategoriesService.getCategoryCounts(userId);
-
-		model.addAttribute("categoryCounts", categoryCounts);
-
-	    return "home";
-	}
-	
 	@PostMapping("/bulk-delete")
 	@ResponseBody
 	public ResponseEntity<?> bulkDelete(@RequestBody List<Integer> ids,
@@ -344,6 +284,7 @@ public class HomeController {
 
 	    return ResponseEntity.ok().build();
 	}
+
 
 	@PostMapping("/bulk-add-shopping-list")
 	@ResponseBody

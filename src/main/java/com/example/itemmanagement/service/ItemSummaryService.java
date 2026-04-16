@@ -22,8 +22,8 @@ public class ItemSummaryService {
                 long days = ChronoUnit.DAYS.between(
                         LocalDate.now(), item.getDeadline());
 
-                if (days < 0) expired++;
-                else if (days <= 3) warning++;
+                if (days < 0) expired++;         //期限切れアイテムをカウント
+                else if (days <= 3) warning++;   //期限間近アイテムをカウント
             }
         }
 

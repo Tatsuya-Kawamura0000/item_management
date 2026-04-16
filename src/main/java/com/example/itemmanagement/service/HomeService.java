@@ -6,8 +6,6 @@ import com.example.itemmanagement.entity.Categories;
 import com.example.itemmanagement.entity.Items;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,34 +15,54 @@ public class HomeService {
     private final GetAllItemsService itemService;
     private final ItemDeadlineService deadlineService;
     private final ItemSummaryService summaryService;
+    private final GetFilterItemsService getFilterItemsService;
+    private final GetAllCategoriesService getAllCategoriesService;
+    private final AddToShoppingListService addToShoppingListService;
 
     // ★ コンストラクタインジェクション
     public HomeService(
             GetAllItemsService itemService,
             ItemDeadlineService deadlineService,
-            ItemSummaryService summaryService) {
+            ItemSummaryService summaryService,
+            GetFilterItemsService getFilterItemsService,
+            GetAllCategoriesService getAllCategoriesService,
+            AddToShoppingListService addToShoppingListService) {
 
         this.itemService = itemService;
         this.deadlineService = deadlineService;
         this.summaryService = summaryService;
+        this.getFilterItemsService = getFilterItemsService;
+        this.getAllCategoriesService = getAllCategoriesService;
+        this.addToShoppingListService = addToShoppingListService;
     }
 
-    public HomeViewModel getHomeData(Integer userId) {
+    public HomeViewModel getHomeData(
+            Integer userId,
+            Integer category,
+            Boolean expiringSoon,
+            Boolean expired) {
 
-        // ユーザーごとの食材一覧取得
         List<Items> items = itemService.getAllItems(userId);
 
-        // 今はフィルタなしなのでそのまま
-        List<Items> filteredItems = items;
+        List<Items> filteredItems;
 
-        deadlineService.applyDeadlineMessage(items);
+        if (category != null || expiringSoon != null || expired != null) {
+            filteredItems = getFilterItemsService.filterItems(    //フィルター適用アイテム適用
+                    category, expiringSoon, expired, userId);
+        } else {
+            filteredItems = items;   //全件格納
+        }
 
-        ItemSummary summary = summaryService.summarize(items);
+        deadlineService.applyDeadlineMessage(filteredItems);  //期限メッセージをセット
 
-        // ※ 仮で空（後で追加する）
-        List<Categories> categories = new ArrayList<>();
-        int shoppingCount = 0;                                    //買い物リストのアイテム数を取得int shoppingCount = addToShoppingListService.getShoppingListCount(userId);
-        Map<Integer, Integer> categoryCounts = new HashMap<>();
+        ItemSummary summary = summaryService.summarize(items);  //期限切れ、期限間近アイテム件数集計
+
+        List<Categories> categories = getAllCategoriesService.getAllCategories();  //カテゴリ情報取得
+
+        int shoppingCount = addToShoppingListService.getShoppingListCount(userId);  //買い物リストのアイテム件数カウント
+
+        Map<Integer, Integer> categoryCounts =
+                getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
 
         return new HomeViewModel(
                 items,

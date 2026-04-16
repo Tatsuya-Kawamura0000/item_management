@@ -33,14 +33,14 @@
 	        <i class="fa-solid fa-circle-exclamation"></i>
 	        期限切れ:
 			<a th:href="@{/users/filter(expired=true)}">
-             <span th:text="${expiredCount}"></span>
+             <span th:text="${hvm.expiredCount}"></span>
             </a>件
 	    </span>
 
 	    <span class="warning">
 	        期限間近:
 			<a th:href="@{/users/filter(expiringSoon=true)}">
-             <span th:text="${warningCount}"></span>
+             <span th:text="${hvm.warningCount}"></span>
            </a>件
 	    </span>
 
@@ -59,7 +59,7 @@
 	    <!-- カテゴリ -->
 	    <select name="category" class="category-select">
 	        <option value="">すべて</option>
-	        <option th:each="cat : ${categories}"
+	        <option th:each="cat : ${hvm.categories}"
 	                th:value="${cat.id}"
 	                th:text="${cat.name}">
 	        </option>
@@ -83,7 +83,7 @@
 		
 		<a th:href="@{/users/shoppingList}" class="basket-btn">
 				        <i class="fa-solid fa-basket-shopping"></i>
-				        買い物リスト (<span th:text="${shoppingCount}"></span>)
+				        買い物リスト (<span th:text="${hvm.shoppingCount}"></span>)
 		</a>
 
 	    <a th:href="@{/users/add}" class="add-btn">
@@ -104,12 +104,12 @@
 		</a>
 
 	    <!-- DBカテゴリ -->
-		<a th:each="cat : ${categories}"
+		<a th:each="cat : ${hvm.categories}"
 		   th:href="@{/users/filter(category=${cat.id})}"
 		   th:classappend="${selectedCategory == cat.id} ? 'active'" class="tab select">
 			<span th:text="${cat.name}"></span>
-			<span class="badge" th:if="${categoryCounts[cat.id] != null and categoryCounts[cat.id] > 0}"
-			      th:text="${categoryCounts[cat.id]}"></span>
+			<span class="badge" th:if="${hvm.categoryCounts[cat.id] != null and hvm.categoryCounts[cat.id] > 0}"
+			      th:text="${hvm.categoryCounts[cat.id]}"></span>
 		</a>
 
 		</div>
