@@ -32,14 +32,14 @@
 	    <span class="expired">
 	        <i class="fa-solid fa-circle-exclamation"></i>
 	        期限切れ:
-			<a th:href="@{/users/filter(expired=true)}">
+			<a th:href="@{/filter(expired=true)}">
              <span th:text="${hvm.expiredCount}"></span>
             </a>件
 	    </span>
 
 	    <span class="warning">
 	        期限間近:
-			<a th:href="@{/users/filter(expiringSoon=true)}">
+			<a th:href="@{/filter(expiringSoon=true)}">
              <span th:text="${hvm.warningCount}"></span>
            </a>件
 	    </span>
@@ -48,7 +48,7 @@
 	
 	<div class="search-bar">
 
-	<form th:action="@{/users/filter}" method="get" class="search-form">
+	<form th:action="@{/filter}" method="get" class="search-form">
 
 	    <!-- 🔍 名前検索 -->
 	    <input type="text"
@@ -86,7 +86,7 @@
 				        買い物リスト (<span th:text="${hvm.shoppingCount}"></span>)
 		</a>
 
-	    <a th:href="@{/users/add}" class="add-btn">
+	    <a th:href="@{items/add}" class="add-btn">
 	        <i class="fa-solid fa-plus"></i>
 	        食材追加
 	    </a>
@@ -98,14 +98,14 @@
 
 		<div class="category-tabs">
 	    <!-- すべて -->
-		<a th:href="@{/users}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
+		<a th:href="@{/}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
 			すべて
 			<span class="badge" th:if="${#lists.size(hvm.items) > 0}" th:text="${#lists.size(hvm.items)}"></span>
 		</a>
 
 	    <!-- DBカテゴリ -->
 		<a th:each="cat : ${hvm.categories}"
-		   th:href="@{/users/filter(category=${cat.id})}"
+		   th:href="@{/filter(category=${cat.id})}"
 		   th:classappend="${selectedCategory == cat.id} ? 'active'" class="tab select">
 			<span th:text="${cat.name}"></span>
 			<span class="badge" th:if="${hvm.categoryCounts[cat.id] != null and hvm.categoryCounts[cat.id] > 0}"
@@ -184,7 +184,7 @@
                 <td th:text="${item.others}"></td>
 				<td class="action-cell">
 
-					<form th:action="@{/favorite/{id}(id=${item.id})}" method="post" class="action-item">
+					<form th:action="@{items/favorite/{id}(id=${item.id})}" method="post" class="action-item">
 						<input type="hidden" name="category" th:value="${selectedCategory}">
 						<input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
 						<button type="submit" class="heart-btn">
@@ -192,7 +192,7 @@
 						</button>
 					</form>
 
-					<a th:href="@{/users/edit/{id}(id=${item.id})}" class="edit-btn action-item">
+					<a th:href="@{items/edit/{id}(id=${item.id})}" class="edit-btn action-item">
 						<i class="fa-solid fa-pencil"></i>
 					</a>
 

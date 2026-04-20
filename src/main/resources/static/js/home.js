@@ -65,7 +65,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
     if (addIds.length > 0) {
 
         // 買い物リストに追加
-        fetch("/users/bulk-add-shopping-list", {
+        fetch("/items/bulk-add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -104,7 +104,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 
 function deleteItems(ids) {
 
-    fetch("/users/bulk-delete", {
+    fetch("/items/bulk-delete", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -152,7 +152,7 @@ document.getElementById("bulkShoppingBtn").addEventListener("click", function() 
         return;
     }
 
-    fetch("/users/bulk-add-shopping-list", {
+    fetch("/items/bulk-add", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
