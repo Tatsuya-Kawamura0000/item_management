@@ -1,6 +1,7 @@
 /* フォーム全体をカード化して中央に配置 */
+/* 追加画面と同じ幅にする */
 .form-wrapper {
-    max-width: 720px;
+    max-width: 480px;   /* ← 720px を 480px に変更 */
     width: 100%;
     margin: 36px auto;
     background: #ffffff;
@@ -36,11 +37,14 @@
     margin-top: 18px;
 }
 
-/* 小さい画面での余白調整 */
+
 @media (max-width: 720px) {
     .form-wrapper {
         margin: 18px 12px;
         padding: 20px;
         border-radius: 12px;
+        max-width: 100%; /* ← これを追加するとスマホで幅いっぱいになる */
     }
 }
+
+
