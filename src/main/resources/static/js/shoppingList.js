@@ -46,7 +46,7 @@ function submitPurchased() {
 
     const data = { id, name, amount, deadline, others, categoryId ,favorite};
 
-	fetch('/users/add-to-shopping-list', {
+	fetch('/shoppingList/${id}/move-to-items', {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
 	    body: JSON.stringify(data)
@@ -81,7 +81,7 @@ function submitPurchased() {
 
                     closeModal();
 
-                    window.location.href = '/users/shoppingList';
+                    window.location.href = '/shoppingList';
 
                 }, 2000); // 2秒後、モーダルを閉じる
             }
@@ -118,7 +118,7 @@ $(function () {
 // 食材一覧へ戻る
 // ------------------------------
 function goBack() {
-    window.location.href = '/users';
+    window.location.href = '/';
 }
 
 // ------------------------------
@@ -196,7 +196,7 @@ function submitNewItem() {
         return;
     }
 
-    fetch("/users/add-new-item-to-shopping-list", {
+    fetch("/shoppingList/add-new", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -375,7 +375,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
     const ids = items.map(i => i.id);
     console.log(ids); // ←追加 デバッグ用
 
-    fetch("/users/bulk-delete-shopping-list",{
+    fetch("/shoppingList/bulk-delete",{
         method:"POST",
         headers:{
             "Content-Type":"application/json"

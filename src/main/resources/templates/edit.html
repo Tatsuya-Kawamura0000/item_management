@@ -15,7 +15,7 @@
     <div class="form-wrapper">
         <h1>食材編集</h1>
 
-        <form th:action="@{/users/update/{id}(id=${item.id})}" th:object="${item}" method="post">
+        <form th:action="@{/items/update/{id}(id=${item.id})}" th:object="${item}" method="post">
 
             <!-- 食材名 -->
             <div class="form-row">
@@ -79,7 +79,7 @@
 
             <div class="form-actions">
                 <input type="submit" value="更新する" class="button">
-                <a th:href="@{/users}" class="button">戻る</a>
+                <a th:href="@{/}" class="button">戻る</a>
             </div>
         </form>
     </div>

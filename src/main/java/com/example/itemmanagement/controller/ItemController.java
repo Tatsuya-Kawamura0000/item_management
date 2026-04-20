@@ -9,17 +9,17 @@ import com.example.itemmanagement.service.GetAllCategoriesService;
 import com.example.itemmanagement.service.GetAllItemsService;
 import com.example.itemmanagement.service.UpdateItemService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+@Controller
+@RequestMapping("/items")
 public class ItemController {
 
     private final GetAllItemsService getAllItemsService;
@@ -52,7 +52,7 @@ public class ItemController {
 
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public String create(
             @Validated @ModelAttribute("form") AddItemForm form,
             BindingResult result,
@@ -76,7 +76,7 @@ public class ItemController {
 
         redirectAttributes.addFlashAttribute("successMessage", "食材を登録しました！");
 
-        return "redirect:/users/add";
+        return "redirect:/items/add";
     }
 
     @GetMapping("/edit/{id}")
@@ -118,6 +118,6 @@ public class ItemController {
 
         updateItemService.updateItem(id, userId, item);
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 }

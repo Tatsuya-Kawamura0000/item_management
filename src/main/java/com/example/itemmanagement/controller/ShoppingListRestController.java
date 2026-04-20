@@ -1,20 +1,21 @@
 package com.example.itemmanagement.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.form.AddItemForm;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.AddItemService;
 import com.example.itemmanagement.service.UpdateItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestController 
+import java.util.List;
+
+@RestController
+@RequestMapping("/shoppingList")
 public class ShoppingListRestController {
 
     @Autowired
@@ -22,8 +23,7 @@ public class ShoppingListRestController {
     
     @Autowired
     private UpdateItemService  updateItemService;
-
-    @PostMapping("/users/add-to-shopping-list")
+    @PostMapping("/{id}/move-to-items")
     public Items addToItemList(
             @RequestBody AddItemForm form,
             @AuthenticationPrincipal LoginUser loginUser) {
@@ -31,13 +31,14 @@ public class ShoppingListRestController {
         Integer userId = loginUser.getId();
 
         Items savedItem = addItemService.addAndReturn(form, userId);
-        
+
         addItemService.deleteFromShoppingList(form.getId(), userId);
 
         return savedItem;
     }
+
     
-    @PostMapping("/users/bulk-delete-shopping-list")
+    @PostMapping("/bulk-delete")
     public void bulkDeleteShoppingList(
             @RequestBody List<Integer> ids,
             @AuthenticationPrincipal LoginUser loginUser){

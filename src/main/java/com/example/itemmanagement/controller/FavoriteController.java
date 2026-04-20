@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/favorite")
+@RequestMapping("/items")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -20,7 +20,7 @@ public class FavoriteController {
     }
 
 
-    @PostMapping("/{id}")
+    @PostMapping("/favorite/{id}")
     public String toggleFavorite(
             @PathVariable("id") int id,
             @RequestParam(required = false) Integer category,
@@ -43,6 +43,6 @@ public class FavoriteController {
             return url.toString();
         }
 
-        return "redirect:/users";
+        return "redirect:/";
     }
 }

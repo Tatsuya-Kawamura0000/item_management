@@ -39,7 +39,7 @@
 		<span th:text="${successMessage}"></span>
 	</div>
 
-	<form th:action="@{/users}" th:object="${form}" method="POST" novalidate>
+	<form th:action="@{/items/add}" th:object="${form}" method="POST" novalidate>
 
 		<div class="form-row">
 			<label for="name">食材</label>
@@ -98,7 +98,7 @@
 			<button type="submit" class="button primary">追加</button>
 
 			<!-- 戻るはリンク風ボタン -->
-			<a th:href="@{/users}" class="button secondary" role="button">戻る</a>
+			<a th:href="@{/}" class="button secondary" role="button">戻る</a>
 		</div>
 
 	</form>
