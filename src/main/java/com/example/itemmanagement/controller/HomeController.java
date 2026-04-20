@@ -1,53 +1,22 @@
 package com.example.itemmanagement.controller;
 
 import com.example.itemmanagement.dto.HomeViewModel;
-import com.example.itemmanagement.entity.Categories;
-import com.example.itemmanagement.entity.Items;
-import com.example.itemmanagement.form.AddItemForm;
-import com.example.itemmanagement.mapper.ShoppingListMapper;
 import com.example.itemmanagement.security.LoginUser;
-import com.example.itemmanagement.service.*;
+import com.example.itemmanagement.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/users")
 public class HomeController {
 
 	@Autowired
-	private GetAllItemsService getAllItemsService;
-	
-	@Autowired
-	private GetAllCategoriesService getAllCategoriesService;
-	
-	@Autowired
-	private  AddItemService addItemService;
-
-	@Autowired
-	private  UpdateItemService updateItemService;
-	
-	@Autowired
-	private ShoppingListMapper shoppingListMapper;
-	
-	@Autowired
-	private  AddToShoppingListService addToShoppingListService;
-
-	@Autowired
 	private HomeService homeService;
-
-    @Autowired
-    private ShoppingListBulkService shoppingListBulkService;
-
-	@Autowired
-	private FavoriteService favoriteService;
 
 
 	@GetMapping
@@ -82,145 +51,5 @@ public class HomeController {
 		return "home";
 	}
 
-	@GetMapping("/add")									//食材登録画面をリクエストされた時
-	public String add(Model model) {
-
-		List<Categories> categories = getAllCategoriesService.getAllCategories();
-		
-		model.addAttribute("categories", categories);
-
-		model.addAttribute("form", new AddItemForm());
-
-		return "add";									
-
-	}
-
-	
-	@PostMapping
-	public String create(
-	        @Validated @ModelAttribute("form") AddItemForm form,
-	        BindingResult result,
-	        Model model,
-	        RedirectAttributes redirectAttributes,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-
-	    if (result.hasErrors()) {
-
-	        model.addAttribute("categories", categories);
-	        return "add";
-	    }
-
-	    // ログインユーザーID取得
-	    Integer userId = loginUser.getId();
-
-	    // userIdを渡して登録
-	    addItemService.add(form, userId);
-
-	    redirectAttributes.addFlashAttribute("successMessage", "食材を登録しました！");
-
-	    return "redirect:/users/add";
-	}
-	
-
-	@GetMapping("/edit/{id}")
-	public String edit(
-	        @PathVariable("id") int id,
-	        Model model,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    Integer userId = loginUser.getId();
-
-	    // id + userId で取得
-	    Items item = getAllItemsService.getItemById(id, userId);
-
-	    List<Categories> categories = getAllCategoriesService.getAllCategories();
-
-	    model.addAttribute("item", item);
-	    model.addAttribute("categories", categories);
-
-	    return "edit";
-	}
-
-
-	@PostMapping("/update/{id}")
-	public String update(
-	        @PathVariable("id") int id,
-	        @Validated @ModelAttribute("item") Items item,
-	        BindingResult result,
-	        Model model,
-	        @AuthenticationPrincipal LoginUser loginUser) {
-
-	    if (result.hasErrors()) {
-
-	        List<Categories> categories = getAllCategoriesService.getAllCategories();
-	        model.addAttribute("categories", categories);
-
-	        return "edit";
-	    }
-
-	    Integer userId = loginUser.getId();
-
-	    updateItemService.updateItem(id, userId, item);
-
-	    return "redirect:/users";
-	}
-
-	
-	@PostMapping("/add-to-shopping-list/{id}")
-	public String addToShoppingList(
-	        @PathVariable("id") int id,
-	        @AuthenticationPrincipal LoginUser loginUser,
-	        RedirectAttributes redirectAttributes) {
-
-	    Integer userId = loginUser.getId();
-
-	    // サービス呼び出しでShoppingListに追加
-	    addToShoppingListService.addItemToList(id, userId);
-
-	    // フラッシュメッセージ
-	    redirectAttributes.addFlashAttribute("successMessage", "買い物リストに追加しました！");
-
-	    return "redirect:/users";  
-	}
-
-
-	@PostMapping("/bulk-delete")
-	@ResponseBody
-	public ResponseEntity<?> bulkDelete(@RequestBody List<Integer> ids,
-	        @AuthenticationPrincipal LoginUser loginUser){
-
-	    Integer userId = loginUser.getId();
-
-	    updateItemService.bulkDeleteFromItems(ids, userId);
-
-	    return ResponseEntity.ok().build();
-	}
-
-
-	@PostMapping("/bulk-add-shopping-list")
-	@ResponseBody
-	public ResponseEntity<?> bulkAddShoppingList(
-			@RequestBody List<Integer> ids,
-			@AuthenticationPrincipal LoginUser loginUser){
-
-		Integer userId = loginUser.getId();
-		//重複していたアイテムのリスト
-
-		 List<String> duplicatedItems = shoppingListBulkService.addAll(ids,userId);
-
-		// 重複が1つでもあればまとめて返す
-		if(!duplicatedItems.isEmpty()){
-			String message = String.join("、", duplicatedItems)
-					+ " はすでに買い物リストに存在しています";
-
-			return ResponseEntity
-						.badRequest()
-						.body(message);
-			}
-
-		return ResponseEntity.ok().build();
-	}
 }
 	
