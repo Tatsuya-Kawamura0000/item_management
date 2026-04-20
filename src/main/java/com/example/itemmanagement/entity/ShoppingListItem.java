@@ -1,10 +1,11 @@
 package com.example.itemmanagement.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +22,6 @@ public class ShoppingListItem {
     private String amount;             // 量
     private Integer categoryId;        // カテゴリID
     private String categoryName;       // カテゴリ名
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate purchaseDate;    // 購入日
 }
