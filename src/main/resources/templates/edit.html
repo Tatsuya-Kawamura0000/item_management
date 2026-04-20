@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/add.css}">
     <link rel="stylesheet" th:href="@{/css/edit.css}">
     <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
     <link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
@@ -12,9 +13,9 @@
 
     <title>食材編集</title>
 </head>
-<body>
-    <div class="form-wrapper">
-        <h1>食材編集</h1>
+<body class="login-page">
+<div class="form-wrapper" role="region" aria-labelledby="edit-food-title">
+    <h1 id="edit-food-title">食材編集</h1>
 
         <form th:action="@{/items/update/{id}(id=${item.id})}" th:object="${item}" method="post">
 
