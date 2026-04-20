@@ -44,3 +44,8 @@ function showPopupAndReload(message, type = "success", targetSelector = ".bulk-a
         location.reload();
     }, 3000);
 }
+
+//日付フォーマット
+$('.datepicker').datepicker({
+    format: 'yyyy-mm-dd'
+});

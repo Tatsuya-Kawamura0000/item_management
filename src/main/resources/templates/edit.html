@@ -54,18 +54,18 @@
             <!-- 期限 -->
             <div class="form-row">
                 <label for="deadline">期限</label>
-                <input type="date" th:field="*{deadline}"
+                <input type="text" th:field="*{deadline}" class="form-control datepicker"
                        th:classappend="${#fields.hasErrors('deadline')} ? 'is-invalid' : ''"
-                       class="form-control"/>
+                       />
                 <div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" class="invalid-feedback"></div>
             </div>
 
             <!-- 購入日 -->
             <div class="form-row">
                 <label for="purchaseDate">購入日</label>
-                <input type="date" th:field="*{purchaseDate}"
+                <input type="text" th:field="*{purchaseDate}" class="form-control datepicker"
                        th:classappend="${#fields.hasErrors('purchaseDate')} ? 'is-invalid' : ''"
-                       class="form-control"/>
+                       />
                 <div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
             </div>
 
@@ -84,5 +84,8 @@
             </div>
         </form>
     </div>
+
+    <script src="/js/common.js"></script>
+
 </body>
 </html>
