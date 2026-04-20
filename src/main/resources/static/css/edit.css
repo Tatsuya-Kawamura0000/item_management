@@ -1,0 +1,46 @@
+/* フォーム全体をカード化して中央に配置 */
+.form-wrapper {
+    max-width: 720px;
+    width: 100%;
+    margin: 36px auto;
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: 14px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+}
+
+/* タイトルの余白調整 */
+.form-wrapper h1 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    text-align: center;
+    font-size: 1.9rem;
+    color: #6b4c3b;
+}
+
+/* フォーム要素を幅いっぱいに */
+.form-wrapper .form-row input[type="text"],
+.form-wrapper .form-row input[type="password"],
+.form-wrapper .form-row input[type="date"],
+.form-wrapper .form-row select,
+.form-wrapper .form-row textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ボタン類の見た目調整 */
+.form-wrapper .form-actions,
+.form-wrapper .form-footer {
+    text-align: center;
+    margin-top: 18px;
+}
+
+/* 小さい画面での余白調整 */
+@media (max-width: 720px) {
+    .form-wrapper {
+        margin: 18px 12px;
+        padding: 20px;
+        border-radius: 12px;
+    }
+}
