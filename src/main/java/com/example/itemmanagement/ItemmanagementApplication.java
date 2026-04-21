@@ -20,6 +20,11 @@ public class ItemmanagementApplication {
 			System.setProperty("SENDGRID_API_KEY", dotenv.get("SENDGRID_API_KEY"));
 		}
 
+		if (dotenv.get("OPENAI_API_KEY") != null) {
+			System.setProperty("OPENAI_API_KEY", dotenv.get("OPENAI_API_KEY"));
+		}
+
+
 		SpringApplication.run(ItemmanagementApplication.class, args);
 	}
 
