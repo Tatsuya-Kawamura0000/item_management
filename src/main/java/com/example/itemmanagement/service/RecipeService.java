@@ -4,22 +4,19 @@ import com.example.itemmanagement.dto.RecipeResponse;
 import com.example.itemmanagement.entity.Recipe;
 import com.example.itemmanagement.mapper.RecipeMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor //これが final フィールドを引数に持つコンストラクタを自動生成します
 public class RecipeService {
 
     private final RecipeMapper recipeMapper;
-    //private final ObjectMapper objectMapper;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public RecipeService(RecipeMapper recipeMapper) {
-        this.recipeMapper = recipeMapper;
-    }
 
     public void saveRecipe(Integer userId, RecipeResponse response, List<String> sourceItems) {
 
