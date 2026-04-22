@@ -49,17 +49,21 @@ public class OpenAiService {
             Map<String, Object> body = new HashMap<>();
             body.put("model", "gpt-4o-mini");
 
+            //messages:AIへの指示と依頼内容
+            //role(system):AIへの設定(背景)指示、role(user):userのcontent(今回の指示)をAIが読み取り、結果を返す　ここはOpenAI APIの仕様。
             body.put("messages", List.of(
                     Map.of("role", "system", "content", "あなたは料理のプロです。必ずJSONのみで返してください。"),
                     Map.of("role", "user", "content", prompt)
             ));
 
+            //ヘッダーとボディはセットで送信する必要がある
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-            // API実行
+            // restTemplateを使用してAPI実行
             ResponseEntity<String> response = restTemplate.postForEntity(
                     OPENAI_URL,
                     request,
+                    //レスポンスタイプに文字列を指定　→　OpenAIから届いたJSONを、加工せずにテキストとしてまるごと Stringに入れてくれる
                     String.class
             );
 
