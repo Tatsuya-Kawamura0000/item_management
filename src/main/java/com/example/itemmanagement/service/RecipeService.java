@@ -17,7 +17,6 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final ObjectMapper objectMapper;
 
-
     public void saveRecipe(Integer userId, RecipeResponse response, List<String> sourceItems) {
 
         try {
@@ -52,25 +51,6 @@ public class RecipeService {
         return recipeMapper.selectRecipe(userId);
 
     }
-
-
-/*
-
-　　//レシピ作成用
-    public void getSuggestedRecipe(Integer userId, RecipeResponse response, List<String> sourceItems) {
-
-        //名前のみ取得し、格納
-        List<String> sourceItems = getAllItemsService.getSourceItems(userId);
-
-
-        RecipeResponse response = openAiService.getRecipeSuggestion(sourceItems);
-
-
-        recipeService.saveRecipe(userId, response, sourceItems);
-
-    }
-
-*/
 
 
 }

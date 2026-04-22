@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestController {
 
-    //private final GeminiService geminiService;
     private final OpenAiService openAiService;
     private final RecipeService recipeService;
     private final GetAllItemsService getAllItemsService;

@@ -1,5 +1,6 @@
 package com.example.itemmanagement.controller;
 
+import com.example.itemmanagement.dto.RecipeResponse;
 import com.example.itemmanagement.dto.RecipeViewModel;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.GetAllItemsService;
@@ -11,10 +12,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 
-//@RestController
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/recipes")
@@ -42,17 +45,12 @@ public class RecipeController {
 
     }
 
-
-
-    /*
-     //レシピ提案依頼を受け取り、提案されたレシピを返す
+    //レシピ提案依頼を受け取り、提案されたレシピをDBに保存し、レシピページに遷移
     @PostMapping
-    public RecipeResponse getRecipe(@AuthenticationPrincipal LoginUser loginUser) {
-
+    public String getRecipe(@AuthenticationPrincipal LoginUser loginUser) {
 
         // ログインユーザーID情報格納
         Integer userId = loginUser.getId();
-
 
         //名前のみ取得し、格納
         List<String> sourceItems = getAllItemsService.getSourceItems(userId);
@@ -63,20 +61,9 @@ public class RecipeController {
         //返ってきた提案レシピをDBに保存
         recipeService.saveRecipe(userId, response, sourceItems);
 
-        //DBに保存されたレシピを取得
-        List<Recipe> suggestedRecipe = recipeService.getSuggestedRecipe(userId);
+        return "redirect:/recipes";
 
-
-        //モデルに埋め込み
-        RecipeViewModel rvm = recipehomeService.getRecipeHomeData(userId, suggestedRecipe);
-
-        model.addAttribute("rvm", rvm);
-
-
-        return "recipe";
-
-    }*/
-
+    }
 
 }
 
