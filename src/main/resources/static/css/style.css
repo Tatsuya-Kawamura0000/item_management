@@ -88,18 +88,18 @@ h1 {
 ========================= */
 
 /* 期限アラート */
+/* 期限アラート（修正版） */
 .deadline-alert {
-    background: #fff6e6;               /* ベースの薄ベージュ */
+    background: #fff6e6;
     border: 1px solid #e6dcc6;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     margin: 20px auto;
-    width: 80%;
+    width: 90%;
     display: flex;
-    gap: 12px;
     align-items: center;
     justify-content: flex-start;
-    font-size: 20px;
+    padding-right: 15%;
 }
 
 /* 期限切れ（強調：くすみレッド） */
@@ -131,6 +131,88 @@ h1 {
 /* 小さな調整：モバイルでの折り返し */
 @media (max-width: 640px) {
     .deadline-alert { flex-direction: column; align-items: flex-start; width: 95%; }
+}
+
+/* 左側のテキストグループ */
+.alert-info-group {
+    display: flex;
+    gap: 24px;
+    font-size: 18px;
+    margin-right: auto; /* これにより、ボタンとの間の隙間を自動で埋めてボタンを右へ押し出す */
+}
+
+/* --- レシピ管理ボタンの専用デザイン --- */
+.recipe-manage-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: white;
+    border: 1px solid #e6dcc6;
+    border-radius: 20px;
+    color: #8b6b57;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.recipe-manage-btn:hover {
+    background: #fafafa;
+    border-color: #d0c0a0;
+    color: #6b4c3b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ボタン内のアイコンサイズ固定 */
+.recipe-manage-btn .icon-main {
+    width: 20px;
+    height: 20px;
+    stroke: #cfa87c;
+}
+
+.recipe-manage-btn .icon-arrow {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all 0.3s ease;
+}
+
+.recipe-manage-btn:hover .icon-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* モバイル対応： */
+@media (max-width: 640px) {
+    .deadline-alert {
+        flex-direction: row; /* 横並びを強制 */
+        justify-content: space-between;
+        padding: 10px 12px; /* 余白を少し狭く */
+        width: 95%; /* 画面幅いっぱいに使う */
+        gap: 8px;
+    }
+
+    .alert-info-group {
+        flex-direction: row; /* 横並びを強制 */
+        gap: 10px; /* アイテム間の距離を縮める */
+        font-size: 14px; /* 文字を少し小さくして収まりを良くする */
+        flex-wrap: wrap; /* 万が一入り切らない場合はここだけ改行を許可 */
+    }
+
+    .recipe-manage-btn {
+        padding: 6px 12px; /* ボタンを少しコンパクトに */
+        font-size: 12px;
+        flex-shrink: 0; /* ボタンが潰れないように固定 */
+    }
+
+    .recipe-manage-btn .icon-main {
+        width: 14px; /* アイコンも少し小さく */
+        height: 14px;
+    }
 }
 
 /* =========================

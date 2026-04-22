@@ -25,32 +25,38 @@
 			        <i class="fa-solid fa-user"></i>
 			        <span sec:authentication="name"></span> さん、ようこそ！
 			    </p>
-		
-	
-	<div class="deadline-alert">
 
-	    <span class="expired">
-	        <i class="fa-solid fa-circle-exclamation"></i>
-	        期限切れ:
-			<a th:href="@{/filter(expired=true)}">
-             <span th:text="${hvm.expiredCount}"></span>
+
+		<div class="deadline-alert">
+			<div class="alert-info-group">
+        <span class="expired">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            期限切れ:
+            <a th:href="@{/filter(expired=true)}">
+                <span th:text="${hvm.expiredCount}"></span>
             </a>件
-	    </span>
+        </span>
 
-	    <span class="warning">
-	        期限間近:
-			<a th:href="@{/filter(expiringSoon=true)}">
-             <span th:text="${hvm.warningCount}"></span>
-           </a>件
-	    </span>
+				<span class="warning">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            期限間近:
+            <a th:href="@{/filter(expiringSoon=true)}">
+                <span th:text="${hvm.warningCount}"></span>
+            </a>件
+        </span>
+			</div>
 
-		<span class="recipe-suggest">
-        <a class="recipe-btn" th:href="@{/recipes}">
-            レシピの提案
-        </a>
-    </span>
-
-	</div>
+			<a th:href="@{/recipes}"
+			   class="recipe-manage-btn group">
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+				</svg>
+				<span>レシピの管理</span>
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+			</a>
+		</div>
 	
 	<div class="search-bar">
 
