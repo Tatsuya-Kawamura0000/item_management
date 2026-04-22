@@ -44,6 +44,12 @@
            </a>件
 	    </span>
 
+		<span class="recipe-suggest">
+        <a class="recipe-btn" th:href="@{/recipes}">
+            レシピの提案
+        </a>
+    </span>
+
 	</div>
 	
 	<div class="search-bar">
@@ -128,6 +134,13 @@
 	        <i class="fa-solid fa-basket-shopping"></i>
 	        買い物リストへ追加する
 	    </button>
+
+		<form th:action="@{/recipes}" method="post" style="display:inline;">
+			<button type="submit" class="bulk-btn recipe">
+				<i class="fa-solid fa-wand-magic-sparkles"></i>
+				レシピを提案してもらう
+			</button>
+		</form>
 
 	</div>
 

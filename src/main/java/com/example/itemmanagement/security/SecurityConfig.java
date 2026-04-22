@@ -22,6 +22,7 @@ public class SecurityConfig {
 						// 明示的に許可したいパス
 						.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
 						.requestMatchers("/login", "/register", "/error").permitAll()
+						//.requestMatchers("/test-recipe").permitAll()
 						.anyRequest().authenticated()
 				)
 				.formLogin(form -> form

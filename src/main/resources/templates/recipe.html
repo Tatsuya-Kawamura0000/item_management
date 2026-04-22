@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <link rel="stylesheet" th:href="@{/css/recipe.css}">
+
+    <title>レシピを提案します</title>
+
+</head>
+<body>
+
+<div>
+    <h1>レシピ提案</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>レシピ名</th>
+            <th>説明</th>
+            <th>材料（JSON）</th>
+            <th>手順（JSON）</th>
+            <th>お気に入り</th>
+            <th>ステータス</th>
+            <th>作成日時</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="recipe : ${rvm.recipe}">
+            <td th:text="${recipe.recipeName}"></td>
+            <td th:text="${recipe.description}"></td>
+            <td th:text="${recipe.ingredientsJson}"></td>
+            <td th:text="${recipe.stepsJson}"></td>
+            <td th:text="${recipe.favorite}"></td>
+            <td th:text="${recipe.status}"></td>
+            <td th:text="${recipe.createdAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

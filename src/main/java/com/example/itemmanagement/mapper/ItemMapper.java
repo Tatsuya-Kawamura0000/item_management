@@ -1,12 +1,11 @@
 package com.example.itemmanagement.mapper;
 
-import java.util.List;
-import java.util.Map;
-
+import com.example.itemmanagement.entity.Items;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.itemmanagement.entity.Items;
+import java.util.List;
+import java.util.Map;
 
 @Mapper						
 public interface ItemMapper {
@@ -39,4 +38,10 @@ public interface ItemMapper {
 
 	//カテゴリーごとのアイテム数をカウント
 	List<Map<String, Object>> countItemsByCategory(@Param("userId") Integer userId);
+
+
+
+	//AIに投げる用のアイテム取得
+	List<String> getSourceItems(@Param("userId") Integer userId);
+
 }

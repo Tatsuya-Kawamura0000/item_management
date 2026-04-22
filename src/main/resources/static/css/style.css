@@ -518,6 +518,20 @@ input[type="submit"]:hover {
     color: #fff;
 }
 
+/* レシピを提案してもらうボタン　*/
+
+.bulk-btn.recipe {
+    padding: 30px 28px;
+    font-size: 1.05rem;
+    background-color: #ff8c42;
+    color: white;
+}
+
+.bulk-btn.recipe:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.98);
+}
+
 /* 買い物ホバー */
 .bulk-btn.shopping:hover {
     transform: translateY(-2px);
