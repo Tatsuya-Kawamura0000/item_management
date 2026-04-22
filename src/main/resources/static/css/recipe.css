@@ -1,16 +1,22 @@
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+body {
+    background-color: #F8F7F2; /* 柔らかなベージュ */
+    font-family: 'Inter', -apple-system, sans-serif;
 }
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
+.font-serif {
+    font-family: 'Noto Serif JP', serif;
 }
-th {
-    background: #f0f0f0;
+.recipe-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
-h1 {
-    margin-bottom: 20px;
+.recipe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.9);
+}
+.pastel-badge {
+    background-color: #E8F3EE; /* パステルミント */
+    color: #5A8F7B;
 }
