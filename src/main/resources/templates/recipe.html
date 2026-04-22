@@ -8,78 +8,88 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
-
 </head>
-    <body class="text-slate-800 leading-relaxed antialiased">
 
-    <div class="max-w-5xl mx-auto px-6 py-16">
+<body class="text-slate-800 leading-relaxed antialiased">
 
-        <header class="mb-16">
-            <span class="text-xs uppercase tracking-widest text-stone-400 font-bold mb-2 block">Personalized AI Suggestions</span>
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-stone-800 mb-4">
-                レシピ提案
-            </h1>
-            <p class="text-stone-500 font-serif text-lg max-w-xl">
-                AIがあなたのリクエストに合わせて、心温まる一皿をデザインしました。
-            </p>
-            <div class="h-1 w-20 bg-stone-200 mt-8"></div>
-        </header>
+<div class="max-w-5xl mx-auto px-6 py-16">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <header class="mb-16">
+        <span class="text-xs uppercase tracking-widest text-stone-400 font-bold mb-2 block">Personalized AI Suggestions</span>
+        <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-stone-800 mb-4">
+            レシピ提案
+        </h1>
+        <p class="text-stone-500 font-serif text-lg max-w-xl">
+            AIがあなたのリクエストに合わせて、心温まる一皿をデザインしました。
+        </p>
+        <div class="h-1 w-20 bg-stone-200 mt-8"></div>
+    </header>
 
-            <article th:each="recipe : ${rvm.recipe}" class="recipe-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
 
-                <div>
-                    <div class="flex justify-between items-start mb-6">
+        <article th:each="recipe : ${rvm.recipe}" class="recipe-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between">
+
+            <div>
+                <div class="flex justify-between items-start mb-6">
                         <span class="pastel-badge text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase"
                               th:text="${recipe.status}">STATUS</span>
 
-                        <button class="text-rose-200 hover:text-rose-400 transition-colors duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <h2 class="text-3xl font-bold text-stone-800 mb-4 leading-tight" th:text="${recipe.recipeName}">
-                        レシピタイトル
-                    </h2>
-
-                    <p class="font-serif text-stone-600 mb-8 leading-loose" th:text="${recipe.description}">
-                        ここにレシピの説明が入ります。セリフ体を使用することで、物語のような読み心地を提供します。
-                    </p>
-
-                    <div class="space-y-6 mb-10 text-sm">
-                        <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
-                            <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Ingredients</h3>
-                            <p class="text-stone-700 font-serif leading-relaxed" th:text="${recipe.ingredientsJson}"></p>
-                        </div>
-                        <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
-                            <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Steps</h3>
-                            <p class="text-stone-700 font-serif leading-relaxed" th:text="${recipe.stepsJson}"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-6 border-t border-stone-100 mt-auto">
-                    <time class="text-xs text-stone-400 font-mono" th:text="${recipe.createdAt}">2024.01.01</time>
-                    <a href="#" class="group flex items-center text-sm font-bold text-stone-800">
-                        View Details
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <button class="text-rose-200 hover:text-rose-400 transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
-                    </a>
+                    </button>
                 </div>
 
-            </article>
+                <h2 class="text-3xl font-bold text-stone-800 mb-4 leading-tight" th:text="${recipe.recipeName}">
+                    レシピタイトル
+                </h2>
 
+                <p class="font-serif text-stone-600 mb-8 leading-loose" th:text="${recipe.description}">
+                    レシピの説明が入ります。
+                </p>
+
+                <div class="space-y-6 mb-10 text-sm">
+                    <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
+                        <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Ingredients</h3>
+                        <ul class="space-y-1">
+                            <li th:each="item : ${recipe.ingredientsList}" class="flex items-center mb-1">
+                                <span class="w-1 h-1 bg-stone-300 rounded-full mr-2"></span>
+                                <span th:text="${item}" class="font-serif text-stone-700">材料名</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
+                        <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Steps</h3>
+                        <ol class="space-y-4">
+                            <li th:each="step, stat : ${recipe.stepsList}" class="flex gap-4">
+                                    <span class="flex-none w-6 h-6 bg-stone-100 text-stone-500 text-xs font-bold rounded-full flex items-center justify-center"
+                                          th:text="${stat.count}">1</span>
+                                <span th:text="${step}" class="font-serif text-stone-700">手順の内容</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div> <div class="flex items-center justify-between pt-6 border-t border-stone-100 mt-auto">
+            <time class="text-xs text-stone-400 font-mono" th:text="${recipe.createdAt}">2024.01.01</time>
+            <a href="#" class="group flex items-center text-sm font-bold text-stone-800">
+                View Details
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
         </div>
 
-        <footer class="mt-24 text-center border-t border-stone-200 pt-12">
-            <p class="text-stone-400 text-sm italic font-serif">&copy; 2026 AI Kitchen Lab.</p>
-        </footer>
+        </article>
 
     </div>
 
-    </body>
-    </html>
+    <footer class="mt-24 text-center border-t border-stone-200 pt-12">
+        <p class="text-stone-400 text-sm italic font-serif">&copy; 2026 AI Kitchen Lab.</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
