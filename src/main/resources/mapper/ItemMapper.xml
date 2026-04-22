@@ -198,4 +198,15 @@ AND status = 1
 GROUP BY category_id
 </select>
 
+
+<select id="getSourceItems" resultType="string">
+<![CDATA[
+SELECT distinct items.name
+FROM items
+WHERE items.user_id = #{userId}
+AND items.status <> 0
+]]>
+</select>
+
+
 </mapper>	

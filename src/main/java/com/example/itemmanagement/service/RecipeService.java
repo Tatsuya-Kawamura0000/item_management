@@ -44,4 +44,33 @@ public class RecipeService {
             throw new RuntimeException("レシピ保存に失敗しました");
         }
     }
+
+
+    //レシピ取得用(初期画面)
+    public List<Recipe>  getRecipe(Integer userId) {
+
+        return recipeMapper.selectRecipe(userId);
+
+    }
+
+
+/*
+
+　　//レシピ作成用
+    public void getSuggestedRecipe(Integer userId, RecipeResponse response, List<String> sourceItems) {
+
+        //名前のみ取得し、格納
+        List<String> sourceItems = getAllItemsService.getSourceItems(userId);
+
+
+        RecipeResponse response = openAiService.getRecipeSuggestion(sourceItems);
+
+
+        recipeService.saveRecipe(userId, response, sourceItems);
+
+    }
+
+*/
+
+
 }

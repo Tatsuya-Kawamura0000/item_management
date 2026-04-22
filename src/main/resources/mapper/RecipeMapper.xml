@@ -28,4 +28,16 @@
         )
     </insert>
 
+    <select id="selectRecipe" parameterType="com.example.itemmanagement.entity.Recipe">
+        SELECT *
+        FROM
+            recipes
+        WHERE
+            recipes.user_id = #{userId}
+        AND
+            id = (SELECT MAX(id) FROM recipes)
+</select>
+
+
+
 </mapper>
