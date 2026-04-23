@@ -13,7 +13,6 @@
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 
-
 </head>
 <body>
 	
@@ -128,27 +127,65 @@
 
 
 	</header>
-	
+
+
+
 	<div class="bulk-actions">
-
-	    <button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
-	        <i class="fa-solid fa-trash"></i>
-	        消費済みにする
-	    </button>
-
-	    <button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
-	        <i class="fa-solid fa-basket-shopping"></i>
-	        買い物リストへ追加する
-	    </button>
-
-		<form th:action="@{/recipes}" method="post" style="display:inline;">
-			<button type="submit" class="bulk-btn recipe">
-				<i class="fa-solid fa-wand-magic-sparkles"></i>
-				レシピを提案してもらう
+		<div class="basic-actions">
+			<button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
+				<i class="fa-solid fa-trash"></i> 消費済みにする
 			</button>
-		</form>
+			<button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
+				<i class="fa-solid fa-basket-shopping"></i> 買い物リストへ追加
+			</button>
+		</div>
+			<div class="recipe-container">
+				<form th:action="@{/recipes}" method="post" id="recipeForm" class="recipe-generator-card">
+					<div class="recipe-options">
 
+						<div class="option-group-extra">
+							<label class="tag-checkbox genre-tag">
+								<i class="fa-solid fa-utensils"></i>
+								<select name="genre" class="custom-select" required>
+									<option value="" selected>ジャンル</option>
+									<option value="和食">和食</option>
+									<option value="洋食">洋食</option>
+									<option value="中華">中華</option>
+									<option value="おつまみ">おつまみ</option>
+									<option value="デザート">デザート</option>
+								</select>
+							</label>
+							<label class="tag-checkbox">
+								<input type="checkbox" name="prioritizeExpiring">
+								<span>🔥 期限間近優先</span>
+							</label>
+							<label class="tag-checkbox">
+								<input type="checkbox" name="lowCalorie">
+								<span>🥗 低カロリー</span>
+							</label>
+							<label class="tag-checkbox">
+								<input type="checkbox" name="easyMode">
+								<span>⏱️ 手軽</span>
+							</label>
+							<label class="tag-checkbox">
+								<input type="checkbox" name="useSelected" id="useSelected">
+								<span>🎯 食材指定</span>
+							</label>
+						</div>
+					</div>
+
+					<div id="selectedIdsContainer"></div>
+
+					<button type="button" onclick="handleRecipeSubmit()" class="bulk-btn recipe">
+						<i class="fa-solid fa-wand-magic-sparkles"></i>
+						レシピを提案してもらう
+					</button>
+				</form>
+			</div>
+		</div>
 	</div>
+
+
 
 
 <!-- 食材一覧を囲む -->
@@ -224,8 +261,8 @@
 
 
 <script src="/js/common.js"></script>
-
 <script src="/js/home.js"></script>
+<script src="/js/recipe.js"></script>
 
 
 </body>

@@ -42,6 +42,9 @@ public interface ItemMapper {
 
 
 	//AIに投げる用のアイテム取得
-	List<String> getSourceItems(@Param("userId") Integer userId);
+	List<Items> getSourceItems(@Param("userId") Integer userId);
+
+	//選択されたアイテムIDでアイテムを取得する
+	List<Items> getSourceItemsById(@Param("userId") Integer userId, @Param("selectedIds") List<Integer> selectedIds);
 
 }

@@ -2,6 +2,7 @@ package com.example.itemmanagement.controller;
 
 import com.example.itemmanagement.dto.RecipeResponse;
 import com.example.itemmanagement.dto.RecipeViewModel;
+import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.GetAllItemsService;
 import com.example.itemmanagement.service.OpenAiService;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -46,17 +48,40 @@ public class RecipeController {
     }
 
     //レシピ提案依頼を受け取り、提案されたレシピをDBに保存し、レシピページに遷移
+    //引数のgenreは、作成してもらうレシピのジャンル指定
     @PostMapping
-    public String getRecipe(@AuthenticationPrincipal LoginUser loginUser) {
+    public String getRecipe(@AuthenticationPrincipal LoginUser loginUser ,
+                            @RequestParam(value = "selectedIds", required = false) List<Integer> selectedIds,
+                            @RequestParam(value = "genre", required = false) String genre,
+                            @RequestParam(value = "prioritizeExpiring", defaultValue = "false") boolean prioritizeExpiring,
+                            @RequestParam(value = "lowCalorie", defaultValue = "false") boolean lowCalorie,
+                            @RequestParam(value = "easyMode", defaultValue = "false") boolean easyMode) {
+
+
 
         // ログインユーザーID情報格納
         Integer userId = loginUser.getId();
 
-        //名前のみ取得し、格納
-        List<String> sourceItems = getAllItemsService.getSourceItems(userId);
+        List<Items> sourceItems;
 
-        //上記で取得したsourceItemsを渡し、OpenAIからの提案を受け取る
-        RecipeResponse response = openAiService.getRecipeSuggestion(sourceItems);
+        //selectedIdsが飛んで来たらtrue にする。
+        boolean isSelectionMode = false; // フラグを用意
+
+
+        if (selectedIds != null && !selectedIds.isEmpty()) {
+            // パターンA: 選択したアイテムを使用
+            sourceItems = getAllItemsService.getSourceItemsById(userId,selectedIds);  //作成必要
+            isSelectionMode = true; // 　選択されている場合は true
+        } else {
+            // パターンB: 全件を使用
+            sourceItems = getAllItemsService.getSourceItems(userId);  //既存
+        }
+
+        // ジャンルが空の場合は 「お任せ」として扱う
+        String genreParam = (genre == null || genre.isEmpty()) ? "お任せ" : genre;
+
+        RecipeResponse response = openAiService.getRecipeSuggestion(sourceItems, genreParam, prioritizeExpiring,
+                lowCalorie, easyMode,isSelectionMode);
 
         //返ってきた提案レシピをDBに保存
         recipeService.saveRecipe(userId, response, sourceItems);
@@ -64,6 +89,7 @@ public class RecipeController {
         return "redirect:/recipes";
 
     }
+
 
 }
 

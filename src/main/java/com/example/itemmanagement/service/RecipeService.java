@@ -1,6 +1,7 @@
 package com.example.itemmanagement.service;
 
 import com.example.itemmanagement.dto.RecipeResponse;
+import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.entity.Recipe;
 import com.example.itemmanagement.mapper.RecipeMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +18,7 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final ObjectMapper objectMapper;
 
-    public void saveRecipe(Integer userId, RecipeResponse response, List<String> sourceItems) {
+    public void saveRecipe(Integer userId, RecipeResponse response, List<Items> sourceItems) {
 
         try {
             // ① Entity作成

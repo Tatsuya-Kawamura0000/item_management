@@ -628,6 +628,319 @@ input[type="submit"]:hover {
     justify-content: center;
 }
 
+
+
+/* レシピコンテナ */
+.recipe-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fcfcfc;
+    border-radius: 12px;
+}
+
+/* 削除・買い物ボタンの並び */
+.basic-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* レシピカード */
+
+.recipe-options {
+    display: flex;
+    flex-direction: row; /* 縦から横並びに変更 */
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* セレクトボックスの見た目カスタマイズ */
+.custom-select {
+    border: none !important; /* 外枠を消す */
+    background-color: transparent !important; /* 背景を親に任せる */
+    padding: 0 !important;
+    margin: 0;
+    font-size: 12px; /* タグと同じサイズ */
+    font-weight: 600; /* タグと同じ太さ */
+    color: #666;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none; /* デフォルトの矢印を消す（お好みで） */
+    appearance: none;
+}
+
+
+.custom-select:focus {
+    border-color: #ff8c00;
+}
+
+/* ヒントテキスト */
+.hint-text {
+    font-size: 11px;
+    color: #888;
+}
+
+/* ボタンの共通調整 */
+.bulk-btn {
+    height: 45px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* レシピカード内のレイアウト微調整 */
+.recipe-generator-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #ffefe5;
+    border-radius: 16px; /* 少し丸みを強く */
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.1); /* ほんのりオレンジの影 */
+}
+
+.option-group-extra {
+    display: flex;
+    gap: 6px;
+    padding: 6px 14px; /* タグと同じ余白 */
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    color: #e67e22;
+    background-color: #f9f9f9; /* タグと同じ背景 */
+    border: 1px solid #ddd; /* タグと同じ枠線 */
+    border-radius: 20px; /* タグと同じ丸み */
+    transition: all 0.2s ease;
+}
+
+/* ジャンル選択の中のアイコン */
+.option-group i {
+    color: #ff8c42; /* オレンジで統一 */
+    font-size: 14px;
+}
+
+/* ジャンルが選択されている（お任せ以外）の時に色を変える演出 */
+.option-group:has(.custom-select:not([value=""])) {
+    background-color: #ffefe5;
+    border-color: #ff8c42;
+    color: #ff8c42;
+}
+
+.option-group:has(.custom-select:not([value=""])) .custom-select {
+    color: #666;
+}
+
+
+
+/* --- 修正ポイント：ジャンル選択時のカラー設定 --- */
+.tag-checkbox.genre-tag:has(select:valid) {
+    background-color: #ffefe5;
+    border-color: #ff8c42;
+    color: #ff8c42;
+}
+
+/* ジャンルが選択された時だけアイコンもオレンジにする */
+.tag-checkbox.genre-tag:has(select:valid) i {
+    color: #ff8c42;
+}
+
+/* ジャンルが選択された時だけ文字色もオレンジにする */
+.tag-checkbox.genre-tag:has(select:valid) .custom-select {
+    color: #ff8c42;
+}
+
+.tag-checkbox {
+    cursor: pointer;
+}
+
+.tag-checkbox input {
+    display: none; /* 実際のチェックボックスは隠す */
+}
+
+.tag-checkbox span {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* チェックが入った時のスタイル */
+.tag-checkbox input:checked + span {
+    background-color: #ffefe5;
+    border-color: #ff8c42;
+    color: #ff8c42;
+    box-shadow: 0 2px 5px rgba(255, 140, 66, 0.2);
+}
+
+/* レシピボタンのサイズ調整（他と合わせる） */
+.bulk-btn.recipe {
+    height: auto; /* 高さを固定せずパディングで調整 */
+    padding: 15px 25px;
+    font-size: 1rem;
+    border-radius: 12px;
+}
+
+/* チェックが入った時のスタイル */
+.tag-checkbox input:checked + span {
+    background-color: #ffefe5;
+    border-color: #ff8c42;
+    color: #ff8c42;
+    box-shadow: 0 2px 5px rgba(255, 140, 66, 0.2);
+}
+
+/* 食材指定モードがONのとき、テーブルのチェックボックス周辺を強調 */
+.highlight-selection-mode .item-checkbox {
+    outline: 2px solid #ff7800;
+    outline-offset: 2px;
+    box-shadow: 0 0 10px rgba(255, 120, 0, 0.5);
+    transition: all 0.3s;
+}
+
+/* 指定モード時にチェックを入れた行をより目立たせる */
+.highlight-selection-mode tr:has(.item-checkbox:checked) {
+    background-color: #fff4e5 !important;
+}
+
+/* ジャンルタグ専用のスタイル */
+.tag-checkbox.genre-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 30px; /* 他のタグと高さを揃える（環境に合わせて調整） */
+    box-sizing: border-box;
+}
+
+/* ジャンルタグ内のアイコン */
+.tag-checkbox.genre-tag i {
+    color: #888;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+/* セレクトボックス自体のスタイルを消してタグに馴染ませる */
+.custom-select {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    -webkit-appearance: none; /* ブラウザ標準の矢印を消す */
+    appearance: none;
+}
+
+
+/* セレクトボックスにフォーカスが当たった時の親の見た目 */
+.tag-checkbox.genre-tag:focus-within {
+    border-color: #ff8c42;
+    box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2);
+}
+
+/* 選択状態に関わらず、ドロップダウンリスト内の文字色をリセット */
+.custom-select option {
+    background-color: #ffffff; /* 背景は常に白 */
+    color: #333333;           /* 文字色は常に濃いグレー/黒 */
+    font-weight: normal;       /* 太字を解除 */
+}
+
+/* =========================
+   まとめて操作エリア（レイアウト調整）
+========================= */
+
+.bulk-actions {
+    display: flex;
+    justify-content: space-between; /* これで左のボタン群と右のレシピカードを離す */
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    width: 100%;
+}
+
+.basic-actions {
+    display: flex;
+    align-items: center; /* 縦方向の中央揃え */
+    gap: 12px;
+    flex-wrap: nowrap; /* 勝手に改行されないように */
+}
+
+/* 左側ボタン2つの高さを統一し、パディングを調整 */
+.bulk-btn.delete,
+.bulk-btn.shopping {
+    height: 80px; /* 高さを明示的に指定 */
+    padding: 0 24px; /* 上下パディングをリセットし、横だけ指定 */
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px; /* レシピカードの角丸に合わせる */
+}
+
+/* アイコンサイズが大きすぎた場合の調整（ボタンの高さに収める） */
+.bulk-btn.delete i,
+.bulk-btn.shopping i {
+    font-size: 20px; /* 30pxから少し小さくしてバランス調整 */
+}
+
+/* レシピコンテナを右側に配置 */
+.recipe-container {
+    margin: 0; /* 余計なマージンを削除 */
+    padding: 0;
+    background-color: transparent; /* 二重の背景を防ぐ */
+}
+
+/* レシピカード自体の調整 */
+.recipe-generator-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px; /* パディングを少しタイトにして高さを合わせる */
+    min-height: 80px; /* 左のボタンと高さを合わせる */
+    background-color: #fff;
+    border: 2px solid #ffefe5;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.1);
+}
+
+/* レシピ提案ボタンの高さも統一 */
+.bulk-btn.recipe {
+    height: 70px; 
+    padding: 0 20px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+}
+
+
+
+
+
 /* =========================
    アクション（ハート・編集）
 ========================= */
