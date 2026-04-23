@@ -13,4 +13,8 @@ public interface RecipeMapper {
 
     //保存済みレシピ表示
     List<Recipe> selectRecipe (@Param("userId") Integer userId);
+
+    //直近30件の過去レシピ取得
+    List<Recipe> selectByUserId (@Param("userId") Integer userId);
+
 }

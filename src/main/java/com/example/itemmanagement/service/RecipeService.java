@@ -53,5 +53,14 @@ public class RecipeService {
 
     }
 
+    //直近30件の過去レシピ取得用
+    public List<Recipe> findByUserId(Integer userId) {
+
+        return recipeMapper.selectByUserId(userId);
+
+    }
+
+
+
 
 }

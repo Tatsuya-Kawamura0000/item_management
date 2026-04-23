@@ -3,6 +3,7 @@ package com.example.itemmanagement.controller;
 import com.example.itemmanagement.dto.RecipeResponse;
 import com.example.itemmanagement.dto.RecipeViewModel;
 import com.example.itemmanagement.entity.Items;
+import com.example.itemmanagement.entity.Recipe;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.GetAllItemsService;
 import com.example.itemmanagement.service.OpenAiService;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -88,6 +86,29 @@ public class RecipeController {
 
         return "redirect:/recipes";
 
+    }
+
+    //過去レシピ一覧　押下時
+    @GetMapping("/history")
+    public String getRecipeHistory(Model model, @AuthenticationPrincipal LoginUser loginUser) {
+
+        // ログインユーザーID情報格納
+        Integer userId = loginUser.getId();
+
+        // ログインユーザーの過去レシピを直近30件取得
+        List<Recipe> history = recipeService.findByUserId(userId);
+
+        model.addAttribute("history", history);
+
+        return "recipe_history";
+    }
+
+    // 既存の特定レシピ表示用（履歴からクリックした時用）
+    @GetMapping("/{id}")
+    public String getRecipeDetail(@PathVariable("id") Integer id, Model model) {
+        // IDから1件取得してRecipeViewModel(rvm)に詰めて返す処理
+        // ...
+        return "recipe";
     }
 
 
