@@ -15,6 +15,15 @@
 <div class="max-w-5xl mx-auto px-6 py-16">
 
     <header class="mb-16">
+        <div class="mb-8">
+            <a th:href="@{/}" class="inline-flex items-center text-stone-400 hover:text-stone-800 transition-colors duration-300 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="text-sm font-bold tracking-widest uppercase">一覧に戻る</span>
+            </a>
+        </div>
+
         <span class="text-xs uppercase tracking-widest text-stone-400 font-bold mb-2 block">Personalized AI Suggestions</span>
         <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-stone-800 mb-4">
             レシピ提案
@@ -74,7 +83,7 @@
             </div> <div class="flex items-center justify-between pt-6 border-t border-stone-100 mt-auto">
             <time class="text-xs text-stone-400 font-mono" th:text="${recipe.createdAt}">2024.01.01</time>
             <a href="#" class="group flex items-center text-sm font-bold text-stone-800">
-                View Details
+                過去レシピ🍳
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>

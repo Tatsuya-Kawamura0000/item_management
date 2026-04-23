@@ -16,6 +16,9 @@ function handleRecipeSubmit() {
             return; // 送信中止
         }
 
+        // ★ ローディング画面を表示
+        document.getElementById('loadingOverlay').style.display = 'flex';
+
         // IDをセット
         checkedBoxes.forEach(cb => {
             const input = document.createElement('input');
@@ -43,3 +46,10 @@ document.getElementById('useSelected').addEventListener('change', function() {
         table.classList.remove('highlight-selection-mode');
     }
 });
+
+//戻るボタン対策: ブラウザの「戻る」で戻った時にローディングが残っていることがあるため
+window.onpageshow = function(event) {
+    if (event.persisted) {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+};
