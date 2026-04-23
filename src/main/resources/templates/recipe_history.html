@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe History | AI Kitchen Lab.</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" th:href="@{/css/recipe.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-stone-50 text-slate-800 antialiased">
+
+<div class="max-w-4xl mx-auto px-6 py-16">
+
+    <header class="mb-12">
+        <div class="mb-6">
+            <a th:href="@{/}" class="inline-flex items-center text-stone-400 hover:text-stone-800 transition-colors group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="text-xs font-bold tracking-widest uppercase">Home</span>
+            </a>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-stone-800 mb-2">Recipe History</h1>
+        <p class="text-stone-500 font-serif text-sm">これまでにAIと共に紡いだ料理の記録です。</p>
+    </header>
+
+    <main class="space-y-12">
+
+        <section>
+            <h2 class="text-xs font-bold text-stone-300 uppercase tracking-[0.2em] mb-6 border-b border-stone-200 pb-2">April 2026</h2>
+
+            <div class="grid gap-4">
+                <div th:each="recipe : ${history}" class="group bg-white rounded-2xl p-5 border border-stone-100 hover:border-stone-300 hover:shadow-sm transition-all cursor-pointer">
+                    <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-none text-center">
+                                <span class="block text-[10px] font-mono text-stone-400 leading-none uppercase" th:text="${#temporals.format(recipe.createdAt, 'MMM')}">APR</span>
+                                <span class="block text-xl font-bold text-stone-800" th:text="${#temporals.format(recipe.createdAt, 'dd')}">23</span>
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg font-bold text-stone-800 group-hover:text-orange-600 transition-colors" th:text="${recipe.recipeName}">
+                                    鶏肉のレモンバターソテー
+                                </h3>
+                                <div class="flex gap-2 mt-1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-stone-200 group-hover:text-stone-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 text-center text-stone-400 text-xs italic font-serif">
+        &copy; 2026 AI Kitchen Lab.
+    </footer>
+
+</div>
+
+</body>
+</html>

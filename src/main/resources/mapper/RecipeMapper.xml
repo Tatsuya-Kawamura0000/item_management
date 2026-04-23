@@ -28,7 +28,7 @@
         )
     </insert>
 
-    <select id="selectRecipe" parameterType="com.example.itemmanagement.entity.Recipe">
+<select id="selectRecipe" parameterType="com.example.itemmanagement.entity.Recipe">
         SELECT *
         FROM
             recipes
@@ -36,6 +36,22 @@
             recipes.user_id = #{userId}
         AND
             id = (SELECT MAX(id) FROM recipes)
+</select>
+
+
+<select id="selectByUserId" parameterType="com.example.itemmanagement.entity.Recipe">
+        SELECT
+            id,
+            user_id,
+            recipe_name AS recipeName,
+            description,
+            ingredients_json AS ingredientsJson,
+            steps_json AS stepsjson,
+            created_at AS createdAt
+        FROM recipes
+        WHERE recipes.user_id = #{userId}
+        ORDER BY created_at DESC
+        LIMIT 30
 </select>
 
 
