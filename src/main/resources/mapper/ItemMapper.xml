@@ -199,13 +199,57 @@ GROUP BY category_id
 </select>
 
 
-<select id="getSourceItems" resultType="string">
-<![CDATA[
-SELECT distinct items.name
-FROM items
-WHERE items.user_id = #{userId}
-AND items.status <> 0
-]]>
+
+<select id="getSourceItems" resultType="com.example.itemmanagement.entity.Items">
+  <![CDATA[
+        SELECT
+            items.id,
+            items.name,
+            items.category_id AS categoryId,
+            items.amount,
+            items.deadline,
+            items.purchase_date AS purchaseDate,
+            items.others,
+            items.status,
+            items.favorite_flg AS favorite,
+            categories.name AS categoryName
+        FROM
+            items
+                INNER JOIN categories
+                           ON items.category_id = categories.id
+        WHERE
+            items.status = 1
+        AND
+            items.user_id = #{userId}
+
+        ]]>
+</select>
+
+<select id="getSourceItemsById" resultType="com.example.itemmanagement.entity.Items">
+        SELECT
+            items.id,
+            items.name,
+            items.category_id AS categoryId,
+            items.amount,
+            items.deadline,
+            items.purchase_date AS purchaseDate,
+            items.others,
+            items.status,
+            items.favorite_flg AS favorite,
+            categories.name AS categoryName
+        FROM
+            items
+        INNER JOIN categories
+                   ON items.category_id = categories.id
+        WHERE
+            items.status = 1
+        AND
+            items.user_id = #{userId}
+        AND
+            items.id
+                   IN <foreach item="id" collection="selectedIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
 </select>
 
 

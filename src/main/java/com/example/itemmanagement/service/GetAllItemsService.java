@@ -27,9 +27,17 @@ public class GetAllItemsService {
     }
 
 	@Transactional
-	public List<String> getSourceItems(Integer userId) {
+	public List<Items> getSourceItems(Integer userId) {
 
-		return mapper.getSourceItems(userId);
+		return mapper.getSourceItems(userId);  //レシピ作成で渡すための食材リストを返す
+
+	}
+
+	@Transactional
+	public List<Items> getSourceItemsById(Integer userId, List<Integer> selectedIds) {
+
+		return mapper.getSourceItemsById(userId,selectedIds);  //レシピ作成で渡すための食材リストを返す
 
 	}
 }
+

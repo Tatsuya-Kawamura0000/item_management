@@ -1,6 +1,7 @@
 package com.example.itemmanagement.service;
 
 import com.example.itemmanagement.dto.RecipeResponse;
+import com.example.itemmanagement.entity.Items;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,16 +29,67 @@ public class OpenAiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ItemDeadlineService itemDeadlineService;
 
-    public RecipeResponse getRecipeSuggestion(List<String> items) {
 
-        String ingredients = String.join("、", items);
 
-        String prompt = String.format(
-                "以下の食材を使って、晩ごはんのレシピを1つ提案してください。" +
-                        "出力は必ずJSON形式のみで返してください。" +
-                        "JSONフォーマット: {\"recipeName\":\"\",\"description\":\"\",\"ingredients\":[],\"steps\":[]}\n" +
-                        "食材リスト: %s", ingredients
+    //items:食材一覧(name)、genreParam:ジャンル、prioritizeExpiring:期限間近食材優、lowCalorie:低カロリー、asyMode:手軽
+    public RecipeResponse getRecipeSuggestion(List<Items> items, String genreParam,
+                                              boolean prioritizeExpiring, boolean lowCalorie, boolean easyMode,boolean isSelectionMode) {
+
+
+        // 1. 最新の期限状態をセット
+        itemDeadlineService.applyDeadlineMessage(items);
+
+        // 2. 食材一覧リストを作成
+        String ingredients = items.stream()
+                .map(Items::getName)
+                .collect(Collectors.joining("、"));
+
+        // 3. 追加条件の組み立て
+        StringBuilder options = new StringBuilder();
+
+
+        // --- ここがポイント：モードに応じたメイン指示の追加 ---
+        if (isSelectionMode) {
+            options.append("- 【重要】ユーザーが選択した食材です。メインで使用してください。\n");
+        }
+
+        // 期限間近食材を抽出して,使用するように指示
+        if (prioritizeExpiring) {
+            List<String> urgentItems = items.stream()
+                    .filter(Items::isExpiringSoon) // trueに修正したフラグを使用
+                    .map(Items::getName)
+                    .toList();
+
+            if (!urgentItems.isEmpty()) {
+                options.append(String.format("- 期限が近いこの食材を優先的に使用希望: [%s]\n",
+                        String.join("、", urgentItems)));
+            }
+        }
+
+        if (lowCalorie) options.append("- 低カロリー\n");
+        if (easyMode) options.append("- 15分以内で作れる、簡単な工程\n");
+
+
+
+        // 2. プロンプトの構築（テキストブロックで見やすく）
+        String prompt = String.format("""
+            以下の【食材リスト】から、レシピを1つ提案してください。ジャンルは「%s」です。
+            
+            【追加条件】
+            %s
+            
+            【出力ルール】
+            - 必ずJSON形式のみで返却すること。余計な解説文は一切不要。
+            - フォーマット: {"recipeName":"","description":"","ingredients":[],"steps":[]}
+            
+            【食材リスト】
+            %s
+            """,
+                genreParam,
+                !options.isEmpty() ? options.toString() : "- 特になし",
+                ingredients
         );
 
         try {
