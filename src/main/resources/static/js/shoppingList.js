@@ -70,20 +70,13 @@ function submitPurchased() {
             currentIndex++;
 
             if(currentIndex < purchaseQueue.length){
-
                 openPurchaseModal();
+            } else {
+                // showModalMessage("すべて食材一覧に追加しました", "success"); // これはモーダル内メッセージ
 
-            }else{
-
-                showModalMessage("すべて食材一覧に追加しました", "success");
-
-                setTimeout(() => {
-
-                    closeModal();
-
-                    window.location.href = '/shoppingList';
-
-                }, 2000); // 2秒後、モーダルを閉じる
+                // ★ 修正：モーダルを閉じてから、中央ポップアップを出してリロード
+                closeModal();
+                showPopupAndReload("すべて食材一覧に追加しました！", "success");
             }
 
         })
@@ -332,18 +325,15 @@ function getSelectedShoppingItems(){
 }
 
 document.getElementById("bulkPurchaseBtn").addEventListener("click", function(){
-
     purchaseQueue = getSelectedShoppingItems();
 
     if(purchaseQueue.length === 0){
-        showPopup("選択してください", "success", ".bulk-actions");
+        // ★ 修正：中央ポップアップ
+        showPopupAndReload("項目を選択してください", "error");
         return;
     }
-
     currentIndex = 0;
-
     openPurchaseModal();
-
 });
 
 	
@@ -367,13 +357,18 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
 
     const items = getSelectedShoppingItems();
 
+
     if(items.length === 0){
-        showPopup("選択してください", "success", ".bulk-actions");
+        // 修正：中央ポップアップを表示（リロードしないようにshowPopupAndReloadを使わない場合は自作するか、このままリロードさせて良ければ使用）
+        showPopupAndReload("項目を選択してください", "error");
         return;
     }
 
+
+
+
     const ids = items.map(i => i.id);
-    console.log(ids); // ←追加 デバッグ用
+
 
     fetch("/shoppingList/bulk-delete",{
         method:"POST",
@@ -383,23 +378,17 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
         body:JSON.stringify(ids)
     })
         .then(response => {
-            if(!response.ok){
-                throw new Error("削除に失敗しました");
-            }
+
+            if(!response.ok) throw new Error("削除に失敗しました");
 
             // ★ 成功メッセージ表示
-            showPopup("削除しました", "success", ".bulk-actions");
+            showPopupAndReload("削除しました", "success");
 
-            // ★ 2秒後リロード
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
         })
         .catch(error=>{
-            console.error(error);
 
             // ★ 失敗メッセージ表示
-            showPopup("削除に失敗しました", "error", ".bulk-actions");
+            showPopupAndReload("削除に失敗しました", "error");
         });
 
 });
