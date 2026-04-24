@@ -13,25 +13,46 @@ function getSelectedItems() {
     return ids;
 }
 
+
+
+
+
+
+
 //消費済みにする　ボタン押下時の処理
 document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 
     const checkboxes = document.querySelectorAll(".item-checkbox:checked");
+
+
+
+
 
     if (checkboxes.length === 0) {
         showPopupAndReload("食材を選択してください", "error");
         return;
     }
 
-    const ids = [];
-    const favoriteItems = [];
-    const favoriteIds = [];
 
+
+
+
+    const ids = [];               // 選択されたidを格納
+    const favoriteItems = [];     // お気に入りアイテムの名前を格納
+    const favoriteIds = [];       //　お気に入りアイテムのidを格納
+
+
+
+
+
+    //選択アイテムの判定
     checkboxes.forEach(cb => {
 
-        // value = item.id  削除対象アイテムのidを格納
+        // value = item.id  削除対象アイテムのidをidsに格納
         ids.push(cb.value);
 
+
+        //お気に入りアイテムを判定し、格納
         if (cb.dataset.favorite === "true") {
             favoriteItems.push(cb.dataset.name);
             favoriteIds.push(cb.value);
@@ -39,14 +60,28 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 
     });
 
-    // ① 消費確認
+
+
+
+
+
+    // ① 消費確認メッセージ
     if (!confirm("選択した食材を消費済みにしますか？")) {
         return;
     }
 
+
+
+
+
+
+    //買い物リストへ追加する食材を格納するために用意。
     const addIds = [];
 
-    // ② お気に入りごとに確認
+
+
+
+    // ② お気に入り食材を買い物リストに追加するか確認していく
     for (let i = 0; i < favoriteItems.length; i++) {
 
         const itemName = favoriteItems[i];
@@ -56,15 +91,21 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
             itemName + " はお気に入りの食材です。\n買い物リストに追加しますか？";
 
         if (confirm(message)) {
-            addIds.push(itemId);  //買い物リストへ追加するアイテムのidを格納していく
+            addIds.push(itemId);  //買い物リストへ追加するアイテムのidを、addIdsに格納していく
         }
 
     }
 
 
+
+
+
+
+
+    //買い物リストへ追加する食材がある場合
     if (addIds.length > 0) {
 
-        // 買い物リストに追加
+        // addIdsに格納された食材のidをもとに買い物リストへ追加依頼
         fetch("/items/bulk-add", {
             method: "POST",
             headers: {
@@ -74,17 +115,21 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
         })
             .then(async response => {
 
+                //買い物リストにすべて追加できた場合
                 if (response.ok) {
 
                     deleteItems(ids);
+                    showPopupAndReload("選択された食材を全て買い物リストに追加しました！");
 
                 } else {
 
+                    //サーバーから返ってきた処理結果メッセージを格納
                     const message = await response.text();
 
+                    //買い物リストにすでに食材が登録されていた場合
                     if (message.includes("すでに")) {
                         showPopupAndReload(message, "error");    //重複あった場合のメッセージ
-                        deleteItems(ids);　//アイテムは削除
+                        deleteItems(ids);　                            //アイテムは削除
                     } else {
                         showPopupAndReload("買い物リスト追加に失敗しました", "error");
                     }
@@ -102,6 +147,11 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
     }
 });
 
+
+
+
+
+
 function deleteItems(ids) {
 
     fetch("/items/bulk-delete", {
@@ -114,7 +164,7 @@ function deleteItems(ids) {
         .then(response => {
 
             if (response.ok) {
-                showPopupAndReload("消費済みにしました");
+                showPopupAndReload("選択された食材を消費済みにしました");
             } else {
                 showPopupAndReload("削除に失敗しました", "error");
             }
@@ -122,6 +172,19 @@ function deleteItems(ids) {
         });
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 全選択チェックボックス
 document.getElementById("selectAll").addEventListener("change", function() {

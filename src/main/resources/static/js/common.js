@@ -35,11 +35,29 @@ function showModalMessage(message, type = "success") {
     }, 2000);
 }
 
-//食材一覧　用ポップアップ目メッセージ　　買い物リストへ追加　ボタンの右隣に表示
 
-function showPopupAndReload(message, type = "success", targetSelector = ".bulk-actions") {
-    showPopup(message, type, targetSelector);
 
+//ポップアップメッセージ　
+function showPopupAndReload(message, type = "success") {
+    // 1. ポップアップ要素を作成
+    const popup = document.createElement('div');
+    popup.className = `custom-modal-popup ${type}`;
+
+    // 2. アイコンの判定（FontAwesomeを使用している前提）
+    const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+
+    // 3. 中身の構築
+    popup.innerHTML = `
+        <div class="popup-content">
+            <i class="fa-solid ${icon}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    // 4. bodyに直接追加（これでレイアウト崩れを防ぐ）
+    document.body.appendChild(popup);
+
+    // 5. 3秒後にリロード
     setTimeout(() => {
         location.reload();
     }, 3000);

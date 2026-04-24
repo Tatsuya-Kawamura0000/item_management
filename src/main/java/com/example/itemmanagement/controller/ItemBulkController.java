@@ -52,7 +52,7 @@ public class ItemBulkController {
         // 重複が1つでもあればまとめて返す
         if(!duplicatedItems.isEmpty()){
             String message = String.join("、", duplicatedItems)
-                    + " はすでに買い物リストに存在しています";
+                    + " はすでに買い物リストに存在していました";
 
             return ResponseEntity
                     .badRequest()
