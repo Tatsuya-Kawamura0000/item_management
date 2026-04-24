@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
 	<link rel="stylesheet" th:href="@{/css/style.css}">
 	<link rel="stylesheet" th:href="@{/css/shopping-list.css}">
+	<link rel="stylesheet" th:href="@{/css/popup.css}">
 
 	<!-- Font Awesome -->
 	<link rel="stylesheet" 
@@ -17,28 +18,21 @@
 <body>
 	<h1 class="shopping-title">📝 買い物リスト</h1>
 
-	<!-- 新規追加ボタン -->
-	<button type="button" class="button" onclick="openNewItemModal()">買い物リストに新規追加</button>
-
-	
 	<div class="memo-container">
+		<div class="bulk-actions">
+			<button type="button" class="button" onclick="openNewItemModal()">
+				<i class="fa-solid fa-plus"></i> 新規追加
+			</button>
 
-	<div class="bulk-actions">
+			<button type="button" id="bulkDeleteBtn" class="button">
+				<i class="fa-solid fa-trash"></i> 削除
+			</button>
 
-	<button type="button" id="bulkDeleteBtn" class="button">
-	<i class="fa-solid fa-trash"></i>
-	削除
-	</button>
+			<button type="button" id="bulkPurchaseBtn" class="button">
+				<i class="fa-solid fa-cart-shopping"></i> 購入済みにする
+			</button>
 
-	<button type="button" id="bulkPurchaseBtn" class="button">
-	<i class="fa-solid fa-cart-shopping"></i>
-	購入済み
-	</button>
-
-		<!-- フィードバックメッセージ -->
-	<span id="popupMessage" class="popup-message"></span>
-
-	</div>
+		</div>
 
 	    <table id="shoppingListTable">
 	        <tr>
@@ -75,7 +69,8 @@
 
 	<!-- 戻るボタン -->
 	<button type="button" onclick="goBack()" class="button">食材一覧へ戻る</button>
-	
+
+
 	<!-- ★購入済みポップアップ -->
 	<div id="purchasedModal" class="modal-overlay hidden">
 	    <div class="modal-content">

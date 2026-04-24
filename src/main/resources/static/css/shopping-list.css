@@ -247,3 +247,43 @@ table td:nth-of-type(7) {
 .modal-message.error {
     color: #c27a7a;
 }
+
+/* =========================
+  まとめて操作エリアの調整
+========================= */
+
+.bulk-actions {
+    display: flex;
+    justify-content: flex-start; /* 左詰めに固定 */
+    align-items: center;
+    gap: 12px;                  /* ボタン同士の間隔 */
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* ボタン共通のサイズ微調整 */
+.button {
+    background-color: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 24px;
+    padding: 12px 24px;        /* 25px 32pxから少し小さくしてスッキリさせます */
+    font-weight: 600;
+    cursor: pointer;
+    color: #4A2E1F;
+    font-size: 1rem;           /* 1.2remから調整 */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;       /* 文字の改行を防ぐ */
+    transition: all 0.2s;
+}
+
+.button:hover {
+    background-color: #f5f5f5;
+    transform: translateY(-1px);
+}
+
+/* 戻るボタンを少し離すための個別設定 */
+.back-btn {
+    margin-top: 20px;
+}
