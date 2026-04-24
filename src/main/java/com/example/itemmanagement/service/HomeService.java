@@ -2,6 +2,7 @@ package com.example.itemmanagement.service;
 
 import com.example.itemmanagement.dto.HomeViewModel;
 import com.example.itemmanagement.dto.ItemSummary;
+import com.example.itemmanagement.dto.SearchViewModel;
 import com.example.itemmanagement.entity.Categories;
 import com.example.itemmanagement.entity.Items;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class HomeService {
     private final GetFilterItemsService getFilterItemsService;
     private final GetAllCategoriesService getAllCategoriesService;
     private final AddToShoppingListService addToShoppingListService;
+    private final ItemSearchService itemSearchService;
 
     // ★ コンストラクタインジェクション
     public HomeService(
@@ -26,7 +28,8 @@ public class HomeService {
             ItemSummaryService summaryService,
             GetFilterItemsService getFilterItemsService,
             GetAllCategoriesService getAllCategoriesService,
-            AddToShoppingListService addToShoppingListService) {
+            AddToShoppingListService addToShoppingListService,
+            ItemSearchService itemSearchService) {
 
         this.itemService = itemService;
         this.deadlineService = deadlineService;
@@ -34,6 +37,7 @@ public class HomeService {
         this.getFilterItemsService = getFilterItemsService;
         this.getAllCategoriesService = getAllCategoriesService;
         this.addToShoppingListService = addToShoppingListService;
+        this.itemSearchService = itemSearchService;
     }
 
     public HomeViewModel getHomeData(
@@ -74,4 +78,47 @@ public class HomeService {
                 categoryCounts
         );
     }
+
+
+
+
+
+
+    //検索かけられたとき
+    public SearchViewModel getSearchData (
+            Integer userId,
+            String searchType,
+            String keyword) {
+
+
+        List<Items> items = itemService.getAllItems(userId);
+
+        //検索結果を格納
+        List<Items> result = itemSearchService.search(searchType, keyword, userId);
+
+
+        deadlineService.applyDeadlineMessage(result);  //期限メッセージをセット
+
+        ItemSummary summary = summaryService.summarize(items);  //期限切れ、期限間近アイテム件数集計
+
+        List<Categories> categories = getAllCategoriesService.getAllCategories();  //カテゴリ情報取得
+
+        int shoppingCount = addToShoppingListService.getShoppingListCount(userId);  //買い物リストのアイテム件数カウント
+
+        Map<Integer, Integer> categoryCounts =
+                getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
+
+
+
+        return new SearchViewModel(
+                items,
+                result,  //検索結果
+                categories,
+                summary.getExpiredCount(),
+                summary.getWarningCount(),
+                shoppingCount,
+                categoryCounts
+        );
+    }
+
 }

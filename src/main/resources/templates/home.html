@@ -74,28 +74,21 @@
 	
 	<div class="search-bar">
 
-	<form th:action="@{/filter}" method="get" class="search-form">
+	<form th:action="@{/search}" method="get" class="search-form">
 
 	    <!-- 🔍 名前検索 -->
 	    <input type="text"
 	           name="keyword"
-	           placeholder="食材を検索"
+	           placeholder="検索"
 	           class="search-input">
 
-	    <!-- カテゴリ -->
-	    <select name="category" class="category-select">
-	        <option value="">すべて</option>
-	        <option th:each="cat : ${hvm.categories}"
-	                th:value="${cat.id}"
-	                th:text="${cat.name}">
-	        </option>
-	    </select>
-
-	    <!-- 期限間近 -->
-	    <label class="expiring-check">
-	        <input type="checkbox" name="expiringSoon" value="true">
-	        期限間近
-	    </label>
+	    <!-- 検索項目 -->
+		<select name="searchType" class="searchItems">
+			<option value="">項目</option>
+			<option value="name">食材名</option>
+			<option value="amount">量</option>
+			<option value="others">メモ</option>
+		</select>
 
 	    <!-- 検索ボタン -->
 	    <button type="submit" class="search-btn">
