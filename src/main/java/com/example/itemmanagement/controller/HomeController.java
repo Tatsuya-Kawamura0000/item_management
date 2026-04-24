@@ -1,6 +1,7 @@
 package com.example.itemmanagement.controller;
 
 import com.example.itemmanagement.dto.HomeViewModel;
+import com.example.itemmanagement.dto.SearchViewModel;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,22 @@ public class HomeController {
 		Integer userId = loginUser.getId();
 
 		HomeViewModel hvm = homeService.getHomeData(userId, category, expiringSoon, expired);
+
+		model.addAttribute("hvm", hvm);
+
+		return "home";
+	}
+
+	@GetMapping("/search")
+	public String searchItems(
+			@AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam (required = false)String searchType,  //検索項目
+            @RequestParam (required = false)String keyword,     //入力されたキーワード
+			Model model) {
+
+		Integer userId = loginUser.getId();
+
+		SearchViewModel hvm = homeService.getSearchData(userId, searchType, keyword);
 
 		model.addAttribute("hvm", hvm);
 

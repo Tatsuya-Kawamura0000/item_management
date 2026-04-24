@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.itemmanagement.mapper.ItemSearchMapper">
+
+ <select id="searchItems" resultType="com.example.itemmanagement.entity.Items">
+   SELECT
+   items.id,
+   items.name,
+   items.category_id AS categoryId,
+   items.amount,
+   items.deadline,
+   items.purchase_date AS purchaseDate,
+   items.others,
+   items.status,
+   items.favorite_flg AS favorite,
+   categories.name AS categoryName
+   FROM
+   items
+   INNER JOIN categories
+   ON items.category_id = categories.id
+   WHERE
+   items.status = 1
+   AND items.user_id = #{userId}
+
+   <if test="keyword != null and keyword != '' and searchType != null and searchType != ''">
+    <choose>
+     <when test="searchType == 'name'">
+      AND items.name LIKE CONCAT('%', #{keyword}, '%')
+     </when>
+     <when test="searchType == 'amount'">
+      AND items.amount LIKE CONCAT('%', #{keyword}, '%')
+     </when>
+     <when test="searchType == 'others'">
+      AND items.others LIKE CONCAT('%', #{keyword}, '%')
+     </when>
+    </choose>
+   </if>
+
+   ORDER BY
+   category_id ASC,
+   deadline ASC
+
+
+ </select>
+
+</mapper>

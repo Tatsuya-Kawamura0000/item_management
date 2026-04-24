@@ -39,12 +39,13 @@ public interface ItemMapper {
 	//カテゴリーごとのアイテム数をカウント
 	List<Map<String, Object>> countItemsByCategory(@Param("userId") Integer userId);
 
-
-
 	//AIに投げる用のアイテム取得
 	List<Items> getSourceItems(@Param("userId") Integer userId);
 
 	//選択されたアイテムIDでアイテムを取得する
 	List<Items> getSourceItemsById(@Param("userId") Integer userId, @Param("selectedIds") List<Integer> selectedIds);
+
+	//アイテム検索
+	List<Items> searchItems(@Param("userId") Integer userId);
 
 }
