@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class GetAllItemsService {
+public class ItemQueryService {
 
     @Autowired
     private ItemMapper mapper;

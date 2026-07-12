@@ -10,12 +10,12 @@ import java.util.List;
 
 
 @Service
-public class ShoppingListService {
+public class ShoppingListHomeService {
 
     private final ShoppingListMapper shoppingListMapper;
     private final GetAllCategoriesService categoriesService;
 
-    public ShoppingListService(ShoppingListMapper shoppingListMapper, GetAllCategoriesService categoriesService) {
+    public ShoppingListHomeService(ShoppingListMapper shoppingListMapper, GetAllCategoriesService categoriesService) {
 
         this.shoppingListMapper = shoppingListMapper;
         this.categoriesService = categoriesService;

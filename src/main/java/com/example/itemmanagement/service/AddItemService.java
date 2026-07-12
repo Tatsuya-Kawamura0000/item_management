@@ -61,7 +61,7 @@ public class AddItemService {
     }
 
     @Transactional
-    public void deleteFromShoppingList(int id, Integer userId) {
+    public void markAsPurchased(int id, Integer userId) {
         // Mapper に userId を渡して削除
         mapper.deleteFromShoppingList(id, userId);
     }
