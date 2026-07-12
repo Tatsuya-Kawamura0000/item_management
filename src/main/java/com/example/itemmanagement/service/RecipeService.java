@@ -47,7 +47,7 @@ public class RecipeService {
 
 
     //レシピ取得用(初期画面)
-    public List<Recipe>  getRecipe(Integer userId) {
+    public List<Recipe> getRecipe(Integer userId) {
 
         return recipeMapper.selectRecipe(userId);
 
@@ -59,8 +59,6 @@ public class RecipeService {
         return recipeMapper.selectByUserId(userId);
 
     }
-
-
 
 
 }

@@ -15,7 +15,7 @@ public class ItemSearchService {
     private final ItemSearchMapper itemSearchmapper;
 
     @Transactional
-    public List<Items> search (String searchType, String keyword, Integer userId) {
+    public List<Items> search(String searchType, String keyword, Integer userId) {
 
         return itemSearchmapper.searchItems(searchType, keyword, userId);
 

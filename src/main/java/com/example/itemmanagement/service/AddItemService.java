@@ -10,39 +10,39 @@ import com.example.itemmanagement.mapper.ItemMapper;
 
 @Service
 public class AddItemService {
-	
-	@Autowired
-	private ItemMapper mapper;
 
-	@Transactional
-	public int add(AddItemForm form, Integer userId) {
+    @Autowired
+    private ItemMapper mapper;
 
-	    Items entity = new Items();
+    @Transactional
+    public int add(AddItemForm form, Integer userId) {
 
-	    entity.setName(form.getName());
-	    entity.setCategoryId(form.getCategoryId());
-	    entity.setDeadline(form.getDeadline());
-	    entity.setPurchaseDate(form.getPurchaseDate());
-	    entity.setAmount(form.getAmount());
-	    entity.setOthers(form.getOthers());
-	    entity.setStatus(1);                // 初期状態は「有効」
-	    entity.setFavorite(form.isFavorite());
-	    entity.setUserId(userId);           // ここでログインユーザーIDをセット
+        Items entity = new Items();
 
-	    return mapper.add(entity);          // ItemMapperのaddメソッドを呼び出す
-	}
-	
-	@Transactional
-	public Items addAndReturn(AddItemForm form, Integer userId) {
+        entity.setName(form.getName());
+        entity.setCategoryId(form.getCategoryId());
+        entity.setDeadline(form.getDeadline());
+        entity.setPurchaseDate(form.getPurchaseDate());
+        entity.setAmount(form.getAmount());
+        entity.setOthers(form.getOthers());
+        entity.setStatus(1);                // 初期状態は「有効」
+        entity.setFavorite(form.isFavorite());
+        entity.setUserId(userId);           // ここでログインユーザーIDをセット
 
-	    Items entity = createEntityFromForm(form);
+        return mapper.add(entity);          // ItemMapperのaddメソッドを呼び出す
+    }
 
-	    entity.setUserId(userId);
+    @Transactional
+    public Items addAndReturn(AddItemForm form, Integer userId) {
 
-	    mapper.add(entity);
+        Items entity = createEntityFromForm(form);
 
-	    return entity;
-	}
+        entity.setUserId(userId);
+
+        mapper.add(entity);
+
+        return entity;
+    }
 
     /**
      * 共通の変換処理
@@ -59,7 +59,7 @@ public class AddItemService {
         entity.setFavorite(form.isFavorite());
         return entity;
     }
-    
+
     @Transactional
     public void deleteFromShoppingList(int id, Integer userId) {
         // Mapper に userId を渡して削除

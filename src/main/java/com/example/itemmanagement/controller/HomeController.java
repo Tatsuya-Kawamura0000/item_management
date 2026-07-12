@@ -14,57 +14,57 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-	@Autowired
-	private HomeService homeService;
+    @Autowired
+    private HomeService homeService;
 
 
-	@GetMapping
-	public String index(Model model,
-	        @AuthenticationPrincipal LoginUser loginUser) {
+    @GetMapping
+    public String index(Model model,
+                        @AuthenticationPrincipal LoginUser loginUser) {
 
-	    // ログインユーザーID情報格納
-	    Integer userId = loginUser.getId();
+        // ログインユーザーID情報格納
+        Integer userId = loginUser.getId();
 
-		HomeViewModel hvm = homeService.getHomeData(userId, null, null, null);
+        HomeViewModel hvm = homeService.getHomeData(userId, null, null, null);
 
-		model.addAttribute("hvm", hvm);
-	    
-	    return "home";
+        model.addAttribute("hvm", hvm);
 
-	}
+        return "home";
 
-	@GetMapping("/filter")
-	public String filterItems(
-			@RequestParam(required = false) Integer category,
-			@RequestParam(required = false) Boolean expiringSoon,
-			@RequestParam(required = false) Boolean expired,
-			@AuthenticationPrincipal LoginUser loginUser,
-			Model model) {
+    }
 
-		Integer userId = loginUser.getId();
+    @GetMapping("/filter")
+    public String filterItems(
+            @RequestParam(required = false) Integer category,
+            @RequestParam(required = false) Boolean expiringSoon,
+            @RequestParam(required = false) Boolean expired,
+            @AuthenticationPrincipal LoginUser loginUser,
+            Model model) {
 
-		HomeViewModel hvm = homeService.getHomeData(userId, category, expiringSoon, expired);
+        Integer userId = loginUser.getId();
 
-		model.addAttribute("hvm", hvm);
+        HomeViewModel hvm = homeService.getHomeData(userId, category, expiringSoon, expired);
 
-		return "home";
-	}
+        model.addAttribute("hvm", hvm);
 
-	@GetMapping("/search")
-	public String searchItems(
-			@AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam (required = false)String searchType,  //検索項目
-            @RequestParam (required = false)String keyword,     //入力されたキーワード
-			Model model) {
+        return "home";
+    }
 
-		Integer userId = loginUser.getId();
+    @GetMapping("/search")
+    public String searchItems(
+            @AuthenticationPrincipal LoginUser loginUser,
+            @RequestParam(required = false) String searchType,  //検索項目
+            @RequestParam(required = false) String keyword,     //入力されたキーワード
+            Model model) {
 
-		SearchViewModel hvm = homeService.getSearchData(userId, searchType, keyword);
+        Integer userId = loginUser.getId();
 
-		model.addAttribute("hvm", hvm);
+        SearchViewModel hvm = homeService.getSearchData(userId, searchType, keyword);
 
-		return "home";
-	}
+        model.addAttribute("hvm", hvm);
+
+        return "home";
+    }
 
 }
 	

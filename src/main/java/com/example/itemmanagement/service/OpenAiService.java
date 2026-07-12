@@ -32,19 +32,15 @@ public class OpenAiService {
     private final ItemDeadlineService itemDeadlineService;
 
 
-
     //items:食材一覧(name)、genreParam:ジャンル、prioritizeExpiring:期限間近食材優、lowCalorie:低カロリー、asyMode:手軽
-    public RecipeResponse getRecipeSuggestion(List<Items> items, String genreParam,
-                                              boolean prioritizeExpiring, boolean lowCalorie, boolean easyMode,boolean isSelectionMode) {
+    public RecipeResponse getRecipeSuggestion(List<Items> items, String genreParam, boolean prioritizeExpiring, boolean lowCalorie, boolean easyMode, boolean isSelectionMode) {
 
 
         // 1. 最新の期限状態をセット
         itemDeadlineService.applyDeadlineMessage(items);
 
         // 2. 食材一覧リストを作成
-        String ingredients = items.stream()
-                .map(Items::getName)
-                .collect(Collectors.joining("、"));
+        String ingredients = items.stream().map(Items::getName).collect(Collectors.joining("、"));
 
         // 3. 追加条件の組み立て
         StringBuilder options = new StringBuilder();
@@ -57,14 +53,11 @@ public class OpenAiService {
 
         // 期限間近食材を抽出して,使用するように指示
         if (prioritizeExpiring) {
-            List<String> urgentItems = items.stream()
-                    .filter(Items::isExpiringSoon) // trueに修正したフラグを使用
-                    .map(Items::getName)
-                    .toList();
+            List<String> urgentItems = items.stream().filter(Items::isExpiringSoon) // trueに修正したフラグを使用
+                    .map(Items::getName).toList();
 
             if (!urgentItems.isEmpty()) {
-                options.append(String.format("- 期限が近いこの食材を優先的に使用希望: [%s]\n",
-                        String.join("、", urgentItems)));
+                options.append(String.format("- 期限が近いこの食材を優先的に使用希望: [%s]\n", String.join("、", urgentItems)));
             }
         }
 
@@ -72,25 +65,20 @@ public class OpenAiService {
         if (easyMode) options.append("- 15分以内で作れる、簡単な工程\n");
 
 
-
         // 2. プロンプトの構築（テキストブロックで見やすく）
         String prompt = String.format("""
-            以下の【食材リスト】から、レシピを1つ提案してください。ジャンルは「%s」です。
-            
-            【追加条件】
-            %s
-            
-            【出力ルール】
-            - 必ずJSON形式のみで返却すること。余計な解説文は一切不要。
-            - フォーマット: {"recipeName":"","description":"","ingredients":[],"steps":[]}
-            
-            【食材リスト】
-            %s
-            """,
-                genreParam,
-                !options.isEmpty() ? options.toString() : "- 特になし",
-                ingredients
-        );
+                以下の【食材リスト】から、レシピを1つ提案してください。ジャンルは「%s」です。
+                
+                【追加条件】
+                %s
+                
+                【出力ルール】
+                - 必ずJSON形式のみで返却すること。余計な解説文は一切不要。
+                - フォーマット: {"recipeName":"","description":"","ingredients":[],"steps":[]}
+                
+                【食材リスト】
+                %s
+                """, genreParam, !options.isEmpty() ? options.toString() : "- 特になし", ingredients);
 
         try {
             // リクエストヘッダー
@@ -104,28 +92,19 @@ public class OpenAiService {
 
             //messages:AIへの指示と依頼内容
             //role(system):AIへの設定(背景)指示、role(user):userのcontent(今回の指示)をAIが読み取り、結果を返す　ここはOpenAI APIの仕様。
-            body.put("messages", List.of(
-                    Map.of("role", "system", "content", "あなたは料理のプロです。必ずJSONのみで返してください。"),
-                    Map.of("role", "user", "content", prompt)
-            ));
+            body.put("messages", List.of(Map.of("role", "system", "content", "あなたは料理のプロです。必ずJSONのみで返してください。"), Map.of("role", "user", "content", prompt)));
 
             //ヘッダーとボディはセットで送信する必要がある
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
             // restTemplateを使用してAPI実行
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                    OPENAI_URL,
-                    request,
+            ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_URL, request,
                     //レスポンスタイプに文字列を指定　→　OpenAIから届いたJSONを、加工せずにテキストとしてまるごと Stringに入れてくれる
-                    String.class
-            );
+                    String.class);
 
             // レスポンス解析
             JsonNode root = objectMapper.readTree(response.getBody());
-            String content = root.path("choices").get(0)
-                    .path("message")
-                    .path("content")
-                    .asText();
+            String content = root.path("choices").get(0).path("message").path("content").asText();
 
             // ```json 除去
             String cleanedJson = content.replaceAll("```json|```", "").trim();

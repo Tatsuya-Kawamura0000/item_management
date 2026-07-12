@@ -39,7 +39,7 @@ public class ItemController {
         this.updateItemService = updateItemService;
     }
 
-    @GetMapping("/add")									//食材登録画面をリクエストされた時
+    @GetMapping("/add")                                    //食材登録画面をリクエストされた時
     public String add(Model model) {
 
         List<Categories> categories = getAllCategoriesService.getAllCategories();

@@ -10,34 +10,35 @@ import java.util.List;
 
 @Service
 public class GetAllItemsService {
-	
-	@Autowired 
-	private ItemMapper mapper;
 
-	@Transactional 
-	public List<Items> getAllItems(Integer userId) {
+    @Autowired
+    private ItemMapper mapper;
 
-		return mapper.findAll(userId); //mapper.findAll()メソッドで取得したitems一覧をItems型のリストで返却
+    @Transactional
+    public List<Items> getAllItems(Integer userId) {
 
-	}
-	@Transactional
-	public Items getItemById(int id, Integer userId) {
-		
+        return mapper.findAll(userId); //mapper.findAll()メソッドで取得したitems一覧をItems型のリストで返却
+
+    }
+
+    @Transactional
+    public Items getItemById(int id, Integer userId) {
+
         return mapper.findById(id, userId);
     }
 
-	@Transactional
-	public List<Items> getSourceItems(Integer userId) {
+    @Transactional
+    public List<Items> getSourceItems(Integer userId) {
 
-		return mapper.getSourceItems(userId);  //レシピ作成で渡すための食材リストを返す
+        return mapper.getSourceItems(userId);  //レシピ作成で渡すための食材リストを返す
 
-	}
+    }
 
-	@Transactional
-	public List<Items> getSourceItemsById(Integer userId, List<Integer> selectedIds) {
+    @Transactional
+    public List<Items> getSourceItemsById(Integer userId, List<Integer> selectedIds) {
 
-		return mapper.getSourceItemsById(userId,selectedIds);  //レシピ作成で渡すための食材リストを返す
+        return mapper.getSourceItemsById(userId, selectedIds);  //レシピ作成で渡すための食材リストを返す
 
-	}
+    }
 }
 

@@ -20,13 +20,12 @@ public class ShoppingListRestController {
 
     @Autowired
     private AddItemService addItemService;
-    
+
     @Autowired
-    private UpdateItemService  updateItemService;
+    private UpdateItemService updateItemService;
+
     @PostMapping("/{id}/move-to-items")
-    public Items addToItemList(
-            @RequestBody AddItemForm form,
-            @AuthenticationPrincipal LoginUser loginUser) {
+    public Items addToItemList(@RequestBody AddItemForm form, @AuthenticationPrincipal LoginUser loginUser) {
 
         Integer userId = loginUser.getId();
 
@@ -37,16 +36,14 @@ public class ShoppingListRestController {
         return savedItem;
     }
 
-    
+
     @PostMapping("/bulk-delete")
-    public void bulkDeleteShoppingList(
-            @RequestBody List<Integer> ids,
-            @AuthenticationPrincipal LoginUser loginUser){
+    public void bulkDeleteShoppingList(@RequestBody List<Integer> ids, @AuthenticationPrincipal LoginUser loginUser) {
 
         Integer userId = loginUser.getId();
 
         updateItemService.bulkDelete(ids, userId);
     }
-	
+
 
 }

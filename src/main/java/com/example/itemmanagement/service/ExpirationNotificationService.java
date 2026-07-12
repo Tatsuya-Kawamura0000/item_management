@@ -1,23 +1,20 @@
 package com.example.itemmanagement.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import jakarta.annotation.PostConstruct;
+import com.example.itemmanagement.entity.Items;
+import com.example.itemmanagement.mapper.ItemMapper;
+import com.example.itemmanagement.mapper.UsersMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import com.example.itemmanagement.entity.Items;
-import com.example.itemmanagement.mapper.ItemMapper;
-import com.example.itemmanagement.mapper.UsersMapper;
-
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +41,7 @@ public class ExpirationNotificationService {
         Map<Integer, List<Items>> itemsByUser = new HashMap<>();
 
         for (Items item : items) {
-            itemsByUser
-                    .computeIfAbsent(item.getUserId(), k -> new ArrayList<>())
-                    .add(item);
+            itemsByUser.computeIfAbsent(item.getUserId(), k -> new ArrayList<>()).add(item);
         }
 
         for (Map.Entry<Integer, List<Items>> entry : itemsByUser.entrySet()) {
@@ -81,10 +76,7 @@ public class ExpirationNotificationService {
             context.setVariable("expiringItems", expiringItems);
             context.setVariable("appUrl", appUrl);
 
-            String html = templateEngine.process(
-                    "mail/expiration-notice",
-                    context
-            );
+            String html = templateEngine.process("mail/expiration-notice", context);
 
             //mailService.sendHtmlMail(email, subject, html);　SMTP用
             mailService.sendHtmlMailBySendGrid(email, subject, html);  //SendGrid API
