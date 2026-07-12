@@ -12,12 +12,12 @@ public class RecipeHomeService {
     //コンストラクタインジェクション
     private final RecipeService recipeService;
 
-    public RecipeHomeService(RecipeService recipeService){
+    public RecipeHomeService(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
 
 
-    public RecipeViewModel getRecipeHomeData(Integer userId){
+    public RecipeViewModel getRecipeHomeData(Integer userId) {
 
         //レシピを取得し、格納
         List<Recipe> recipe = recipeService.getRecipe(userId);

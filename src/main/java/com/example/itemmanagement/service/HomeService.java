@@ -22,14 +22,10 @@ public class HomeService {
     private final ItemSearchService itemSearchService;
 
     // ★ コンストラクタインジェクション
-    public HomeService(
-            GetAllItemsService itemService,
-            ItemDeadlineService deadlineService,
-            ItemSummaryService summaryService,
-            GetFilterItemsService getFilterItemsService,
-            GetAllCategoriesService getAllCategoriesService,
-            AddToShoppingListService addToShoppingListService,
-            ItemSearchService itemSearchService) {
+    public HomeService(GetAllItemsService itemService, ItemDeadlineService deadlineService,
+                       ItemSummaryService summaryService, GetFilterItemsService getFilterItemsService,
+                       GetAllCategoriesService getAllCategoriesService,
+                       AddToShoppingListService addToShoppingListService, ItemSearchService itemSearchService) {
 
         this.itemService = itemService;
         this.deadlineService = deadlineService;
@@ -40,11 +36,7 @@ public class HomeService {
         this.itemSearchService = itemSearchService;
     }
 
-    public HomeViewModel getHomeData(
-            Integer userId,
-            Integer category,
-            Boolean expiringSoon,
-            Boolean expired) {
+    public HomeViewModel getHomeData(Integer userId, Integer category, Boolean expiringSoon, Boolean expired) {
 
         List<Items> items = itemService.getAllItems(userId);
 
@@ -65,30 +57,14 @@ public class HomeService {
 
         int shoppingCount = addToShoppingListService.getShoppingListCount(userId);  //買い物リストのアイテム件数カウント
 
-        Map<Integer, Integer> categoryCounts =
-                getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
+        Map<Integer, Integer> categoryCounts = getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
 
-        return new HomeViewModel(
-                items,
-                filteredItems,
-                categories,
-                summary.getExpiredCount(),
-                summary.getWarningCount(),
-                shoppingCount,
-                categoryCounts
-        );
+        return new HomeViewModel(items, filteredItems, categories, summary.getExpiredCount(), summary.getWarningCount(), shoppingCount, categoryCounts);
     }
 
 
-
-
-
-
     //検索かけられたとき
-    public SearchViewModel getSearchData (
-            Integer userId,
-            String searchType,
-            String keyword) {
+    public SearchViewModel getSearchData(Integer userId, String searchType, String keyword) {
 
 
         List<Items> items = itemService.getAllItems(userId);
@@ -105,20 +81,11 @@ public class HomeService {
 
         int shoppingCount = addToShoppingListService.getShoppingListCount(userId);  //買い物リストのアイテム件数カウント
 
-        Map<Integer, Integer> categoryCounts =
-                getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
+        Map<Integer, Integer> categoryCounts = getAllCategoriesService.getCategoryCounts(userId);  //カテゴリ毎のアイテム件数カウント
 
 
-
-        return new SearchViewModel(
-                items,
-                result,  //検索結果
-                categories,
-                summary.getExpiredCount(),
-                summary.getWarningCount(),
-                shoppingCount,
-                categoryCounts
-        );
+        return new SearchViewModel(items, result,  //検索結果
+                categories, summary.getExpiredCount(), summary.getWarningCount(), shoppingCount, categoryCounts);
     }
 
 }

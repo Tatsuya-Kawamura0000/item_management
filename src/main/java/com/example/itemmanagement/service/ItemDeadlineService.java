@@ -14,8 +14,7 @@ public class ItemDeadlineService {
         for (Items item : items) {
             if (item.getDeadline() != null) {
 
-                long days = ChronoUnit.DAYS.between(
-                        LocalDate.now(), item.getDeadline());
+                long days = ChronoUnit.DAYS.between(LocalDate.now(), item.getDeadline());
 
                 if (days < 0) {
                     item.setMessage("期限切れです");

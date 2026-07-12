@@ -15,9 +15,7 @@ public class ShoppingListService {
     private final ShoppingListMapper shoppingListMapper;
     private final GetAllCategoriesService categoriesService;
 
-    public ShoppingListService(
-            ShoppingListMapper shoppingListMapper,
-            GetAllCategoriesService categoriesService) {
+    public ShoppingListService(ShoppingListMapper shoppingListMapper, GetAllCategoriesService categoriesService) {
 
         this.shoppingListMapper = shoppingListMapper;
         this.categoriesService = categoriesService;

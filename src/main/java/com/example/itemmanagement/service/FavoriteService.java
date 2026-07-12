@@ -9,9 +9,7 @@ public class FavoriteService {
     private final GetAllItemsService getAllItemsService;
     private final UpdateItemService updateItemService;
 
-    public FavoriteService(
-            GetAllItemsService getAllItemsService,
-            UpdateItemService updateItemService) {
+    public FavoriteService(GetAllItemsService getAllItemsService, UpdateItemService updateItemService) {
 
         this.getAllItemsService = getAllItemsService;
         this.updateItemService = updateItemService;

@@ -13,23 +13,23 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RegisterService {
-	
-	    private final UsersMapper usersMapper;
-	    private final PasswordEncoder passwordEncoder;
 
-	    @Transactional
-	    public void register(RegisterForm form) {
-	        // パスワード暗号化
-	        String encodedPassword = passwordEncoder.encode(form.getPassword());
+    private final UsersMapper usersMapper;
+    private final PasswordEncoder passwordEncoder;
 
-	        // Entityにセット
-	        Users user = new Users();
-	        user.setLoginId(form.getLoginId());
-	        user.setPassword(encodedPassword);
-	        user.setEmail(form.getEmail());
+    @Transactional
+    public void register(RegisterForm form) {
+        // パスワード暗号化
+        String encodedPassword = passwordEncoder.encode(form.getPassword());
 
-	        // DB保存
-	        usersMapper.insertUser(user);
-	    }
+        // Entityにセット
+        Users user = new Users();
+        user.setLoginId(form.getLoginId());
+        user.setPassword(encodedPassword);
+        user.setEmail(form.getEmail());
+
+        // DB保存
+        usersMapper.insertUser(user);
+    }
 
 }

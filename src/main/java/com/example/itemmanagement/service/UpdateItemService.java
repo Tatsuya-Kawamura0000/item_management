@@ -1,21 +1,20 @@
 package com.example.itemmanagement.service;
 
-import java.util.List;
-
+import com.example.itemmanagement.entity.Items;
+import com.example.itemmanagement.mapper.ItemMapper;
+import com.example.itemmanagement.mapper.ShoppingListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.itemmanagement.entity.Items;
-import com.example.itemmanagement.mapper.ItemMapper;
-import com.example.itemmanagement.mapper.ShoppingListMapper;
+import java.util.List;
 
 @Service
 public class UpdateItemService {
 
     @Autowired
     private ItemMapper mapper;
-    
+
     @Autowired
     private ShoppingListMapper shoppingListMapper;
 
@@ -33,21 +32,21 @@ public class UpdateItemService {
         item.setUserId(userId);
         mapper.updateFavorite(item);
     }
-    
+
     @Transactional
     public void bulkDelete(List<Integer> ids, Integer userId) {
 
-        for(Integer id : ids){
-        	shoppingListMapper.stop(id, userId);
+        for (Integer id : ids) {
+            shoppingListMapper.stop(id, userId);
         }
 
     }
-    
+
     @Transactional
     public void bulkDeleteFromItems(List<Integer> ids, Integer userId) {
 
-        for(Integer id : ids){
-        	mapper.stop(id, userId);
+        for (Integer id : ids) {
+            mapper.stop(id, userId);
         }
 
     }

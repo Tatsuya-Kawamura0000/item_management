@@ -60,7 +60,7 @@ public class AddToShoppingListService {
 
         return duplicatedNames; // 空＝成功;
     }
-    
+
     public ShoppingListItem addNewItem(AddShoppingListItemForm form, Integer userId) {
 
         ShoppingListItem item = new ShoppingListItem();
@@ -76,11 +76,11 @@ public class AddToShoppingListService {
 
         return item;
     }
-    
+
     public int getShoppingListCount(Integer userId) {
-    	
+
         return shoppingListMapper.countByUserId(userId);
-        
+
     }
 
 }
