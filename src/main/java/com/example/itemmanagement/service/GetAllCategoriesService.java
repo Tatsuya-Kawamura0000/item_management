@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class GetAllCategoriesService {                    //全カテゴリーをリスト型で返却するサービス
+public class CategoryService {                    //全カテゴリーをリスト型で返却するサービス
 
     @Autowired
     private CategoryMapper mapper;
