@@ -2,7 +2,7 @@ package com.example.itemmanagement.controller;
 
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.ShoppingListBulkService;
-import com.example.itemmanagement.service.ShoppingListService;
+import com.example.itemmanagement.service.ShoppingListHomeService;
 import com.example.itemmanagement.service.UpdateItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,7 @@ public class ItemBulkController {
     private final UpdateItemService updateItemService;
     private final ShoppingListBulkService shoppingListBulkService;
 
-    public ItemBulkController(UpdateItemService updateItemService, ShoppingListService shoppingListService, ShoppingListBulkService shoppingListBulkService) {
+    public ItemBulkController(UpdateItemService updateItemService, ShoppingListHomeService shoppingListHomeService, ShoppingListBulkService shoppingListBulkService) {
         this.updateItemService = updateItemService;
         this.shoppingListBulkService = shoppingListBulkService;
     }

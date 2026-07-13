@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class FavoriteService {
 
-    private final GetAllItemsService getAllItemsService;
+    private final ItemQueryService itemQueryService;
     private final UpdateItemService updateItemService;
 
-    public FavoriteService(GetAllItemsService getAllItemsService, UpdateItemService updateItemService) {
+    public FavoriteService(ItemQueryService itemQueryService, UpdateItemService updateItemService) {
 
-        this.getAllItemsService = getAllItemsService;
+        this.itemQueryService = itemQueryService;
         this.updateItemService = updateItemService;
     }
 
     public void toggleFavorite(int itemId, Integer userId) {
 
-        Items item = getAllItemsService.getItemById(itemId, userId);
+        Items item = itemQueryService.getItemById(itemId, userId);
 
         item.setFavorite(!item.isFavorite());
 
