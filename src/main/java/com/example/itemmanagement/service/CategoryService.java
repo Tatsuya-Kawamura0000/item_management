@@ -44,4 +44,5 @@ public class CategoryService {                    //全カテゴリーをリス�
 
         return categoryCounts;
     }
+
 }

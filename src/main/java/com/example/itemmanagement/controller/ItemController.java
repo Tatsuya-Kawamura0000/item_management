@@ -5,8 +5,8 @@ import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.form.AddItemForm;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.AddItemService;
-import com.example.itemmanagement.service.GetAllCategoriesService;
-import com.example.itemmanagement.service.GetAllItemsService;
+import com.example.itemmanagement.service.CategoryService;
+import com.example.itemmanagement.service.ItemQueryService;
 import com.example.itemmanagement.service.UpdateItemService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,19 +22,19 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final GetAllItemsService getAllItemsService;
-    private final GetAllCategoriesService getAllCategoriesService;
+    private final ItemQueryService itemQueryService;
+    private final CategoryService categoryService;
     private final AddItemService addItemService;
     private final UpdateItemService updateItemService;
 
     public ItemController(
-            GetAllItemsService getAllItemsService,
-            GetAllCategoriesService getAllCategoriesService,
+            ItemQueryService itemQueryService,
+            CategoryService categoryService,
             AddItemService addItemService,
             UpdateItemService updateItemService) {
 
-        this.getAllItemsService = getAllItemsService;
-        this.getAllCategoriesService = getAllCategoriesService;
+        this.itemQueryService = itemQueryService;
+        this.categoryService = categoryService;
         this.addItemService = addItemService;
         this.updateItemService = updateItemService;
     }
@@ -42,7 +42,7 @@ public class ItemController {
     @GetMapping("/add")                                    //食材登録画面をリクエストされた時
     public String add(Model model) {
 
-        List<Categories> categories = getAllCategoriesService.getAllCategories();
+        List<Categories> categories = categoryService.getAllCategories();
 
         model.addAttribute("categories", categories);
 
@@ -60,7 +60,7 @@ public class ItemController {
             RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal LoginUser loginUser) {
 
-        List<Categories> categories = getAllCategoriesService.getAllCategories();
+        List<Categories> categories = categoryService.getAllCategories();
 
         if (result.hasErrors()) {
 
@@ -88,9 +88,9 @@ public class ItemController {
         Integer userId = loginUser.getId();
 
         // id + userId で取得
-        Items item = getAllItemsService.getItemById(id, userId);
+        Items item = itemQueryService.getItemById(id, userId);
 
-        List<Categories> categories = getAllCategoriesService.getAllCategories();
+        List<Categories> categories = categoryService.getAllCategories();
 
         model.addAttribute("item", item);
         model.addAttribute("categories", categories);
@@ -108,7 +108,7 @@ public class ItemController {
 
         if (result.hasErrors()) {
 
-            List<Categories> categories = getAllCategoriesService.getAllCategories();
+            List<Categories> categories = categoryService.getAllCategories();
             model.addAttribute("categories", categories);
 
             return "edit";

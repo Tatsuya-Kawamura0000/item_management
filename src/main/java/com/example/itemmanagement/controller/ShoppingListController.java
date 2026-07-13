@@ -4,7 +4,7 @@ import com.example.itemmanagement.dto.ShoppingListViewModel;
 import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.AddToShoppingListService;
 import com.example.itemmanagement.service.ShoppingListBulkService;
-import com.example.itemmanagement.service.ShoppingListService;
+import com.example.itemmanagement.service.ShoppingListHomeService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/shoppingList")
 public class ShoppingListController {
 
-    private final ShoppingListService shoppingListService;
+    private final ShoppingListHomeService shoppingListHomeService;
 
     public ShoppingListController(
-            ShoppingListService shoppingListService,
+            ShoppingListHomeService shoppingListService,
             AddToShoppingListService addToShoppingListService,
             ShoppingListBulkService shoppingListBulkService) {
 
-        this.shoppingListService = shoppingListService;
+        this.shoppingListHomeService = shoppingListService;
     }
 
 
@@ -30,7 +30,7 @@ public class ShoppingListController {
     public String view(Model model,
                        @AuthenticationPrincipal LoginUser user) {
 
-        ShoppingListViewModel slvm = shoppingListService.getPageData(user.getId());
+        ShoppingListViewModel slvm = shoppingListHomeService.getPageData(user.getId());
 
         model.addAttribute("slvm", slvm);
 

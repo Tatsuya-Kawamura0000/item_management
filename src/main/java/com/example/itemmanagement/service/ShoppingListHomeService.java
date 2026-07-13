@@ -13,18 +13,18 @@ import java.util.List;
 public class ShoppingListHomeService {
 
     private final ShoppingListMapper shoppingListMapper;
-    private final GetAllCategoriesService categoriesService;
+    private final CategoryService categoryService;
 
-    public ShoppingListHomeService(ShoppingListMapper shoppingListMapper, GetAllCategoriesService categoriesService) {
+    public ShoppingListHomeService(ShoppingListMapper shoppingListMapper, CategoryService categoryService) {
 
         this.shoppingListMapper = shoppingListMapper;
-        this.categoriesService = categoriesService;
+        this.categoryService = categoryService;
     }
 
     public ShoppingListViewModel getPageData(Integer userId) {
 
         List<ShoppingListItem> list = shoppingListMapper.findAll(userId);
-        List<Categories> categories = categoriesService.getAllCategories();
+        List<Categories> categories = categoryService.getAllCategories();
 
         return new ShoppingListViewModel(list, categories);
     }

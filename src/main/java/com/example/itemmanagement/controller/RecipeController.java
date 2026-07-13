@@ -5,7 +5,7 @@ import com.example.itemmanagement.dto.RecipeViewModel;
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.entity.Recipe;
 import com.example.itemmanagement.security.LoginUser;
-import com.example.itemmanagement.service.GetAllItemsService;
+import com.example.itemmanagement.service.ItemQueryService;
 import com.example.itemmanagement.service.OpenAiService;
 import com.example.itemmanagement.service.RecipeHomeService;
 import com.example.itemmanagement.service.RecipeService;
@@ -25,7 +25,7 @@ public class RecipeController {
 
     private final OpenAiService openAiService;
     private final RecipeService recipeService;
-    private final GetAllItemsService getAllItemsService;
+    private final ItemQueryService itemQueryService;
     private final RecipeHomeService recipeHomeService;
 
     //レシピ画面を返す
@@ -68,11 +68,11 @@ public class RecipeController {
 
         if (selectedIds != null && !selectedIds.isEmpty()) {
             // パターンA: 選択したアイテムを使用
-            sourceItems = getAllItemsService.getSourceItemsById(userId,selectedIds);  //作成必要
+            sourceItems = itemQueryService.getSourceItemsById(userId,selectedIds);  //作成必要
             isSelectionMode = true; // 　選択されている場合は true
         } else {
             // パターンB: 全件を使用
-            sourceItems = getAllItemsService.getSourceItems(userId);  //既存
+            sourceItems = itemQueryService.getSourceItems(userId);  //既存
         }
 
         // ジャンルが空の場合は 「お任せ」として扱う

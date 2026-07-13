@@ -32,7 +32,7 @@ public class ShoppingListRestController {
 
         Items savedItem = addItemService.addAndReturn(form, userId);
 
-        addItemService.deleteFromShoppingList(form.getId(), userId);
+        addItemService.markAsPurchased(form.getId(), userId);
 
         return savedItem;
     }

@@ -2,6 +2,7 @@ package com.example.itemmanagement.service;
 
 import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.mapper.ItemMapper;
+import com.example.itemmanagement.mapper.ItemSearchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,9 @@ public class ItemQueryService {
 
     @Autowired
     private ItemMapper mapper;
+
+    @Autowired
+    private ItemSearchMapper itemSearchmapper;
 
     @Transactional
     public List<Items> getAllItems(Integer userId) {
@@ -38,6 +42,18 @@ public class ItemQueryService {
     public List<Items> getSourceItemsById(Integer userId, List<Integer> selectedIds) {
 
         return mapper.getSourceItemsById(userId, selectedIds);  //レシピ作成で渡すための食材リストを返す
+
+    }
+
+    @Transactional
+    public List<Items> filterItems(Integer category, Boolean expiringSoon, Boolean expired, Integer userId) {
+        return mapper.filterItems(userId, category, expiringSoon, expired);
+    }
+
+    @Transactional
+    public List<Items> search(String searchType, String keyword, Integer userId) {
+
+        return itemSearchmapper.searchItems(searchType, keyword, userId);
 
     }
 }
