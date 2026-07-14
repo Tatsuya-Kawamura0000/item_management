@@ -22,7 +22,8 @@ public class ShoppingListRestController {
     private AddItemService addItemService;
 
     @Autowired
-    private UpdateItemService  updateItemService;
+    private UpdateItemService updateItemService;
+
     @PostMapping("/{id}/move-to-items")
     public Items addToItemList(
             @RequestBody AddItemForm form,
@@ -30,7 +31,7 @@ public class ShoppingListRestController {
 
         Integer userId = loginUser.getId();
 
-        Items savedItem = addItemService.addAndReturn(form, userId);
+        Items savedItem = addItemService.add(form, userId);
 
         addItemService.markAsPurchased(form.getId(), userId);
 
@@ -41,7 +42,7 @@ public class ShoppingListRestController {
     @PostMapping("/bulk-delete")
     public void bulkDeleteShoppingList(
             @RequestBody List<Integer> ids,
-            @AuthenticationPrincipal LoginUser loginUser){
+            @AuthenticationPrincipal LoginUser loginUser) {
 
         Integer userId = loginUser.getId();
 
