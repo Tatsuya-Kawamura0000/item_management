@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ShoppingListItem {
 
-    private int id;                // 自動採番
+    private int id;                    // 自動採番
     private Integer itemId;            // items.id
     private Integer userId;            // user.id
     private boolean status;            // 1 = 有効

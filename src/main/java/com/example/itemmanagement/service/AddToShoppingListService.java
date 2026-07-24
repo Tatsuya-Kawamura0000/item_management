@@ -23,15 +23,11 @@ public class AddToShoppingListService {
 
     public List<String> addItemToList(int id, Integer userId) {
 
-        //重複しているアイテムリストを用意
+        //重複しているアイテムを受け取るリストを用意
         List<String> duplicatedNames = new ArrayList<>();
 
+        //選択された食材情報を取得
         Items item = itemMapper.findById(id, userId);
-
-        if (item == null) {
-            duplicatedNames.add("存在しない食材");
-            return duplicatedNames;
-        }
 
         //重複チェックのサービスを呼び出し
         boolean exists = shoppingListMapper.existsByName(item.getName(), userId);
@@ -42,7 +38,7 @@ public class AddToShoppingListService {
             return duplicatedNames;
         }
 
-        //重複がなかったので、買い物リストに追加
+        //重複していない場合、買い物リストに追加
         ShoppingListItem slItem = new ShoppingListItem();
         slItem.setItemId(item.getId());
         slItem.setUserId(userId);

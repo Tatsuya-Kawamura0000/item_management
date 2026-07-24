@@ -45,8 +45,8 @@ public class ItemBulkController {
             @AuthenticationPrincipal LoginUser loginUser){
 
         Integer userId = loginUser.getId();
-        //重複していたアイテムのリスト
 
+        //重複していたアイテムのリスト
         List<String> duplicatedItems = shoppingListBulkService.addAll(ids,userId);
 
         // 重複が1つでもあればまとめて返す
