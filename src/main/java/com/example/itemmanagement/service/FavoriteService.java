@@ -15,9 +15,9 @@ public class FavoriteService {
         this.updateItemService = updateItemService;
     }
 
-    public void toggleFavorite(int itemId, Integer userId) {
+    public void toggleFavorite(int id, Integer userId) {
 
-        Items item = itemQueryService.getItemById(itemId, userId);
+        Items item = itemQueryService.getItemById(id, userId);
 
         item.setFavorite(!item.isFavorite());
 

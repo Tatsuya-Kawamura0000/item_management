@@ -101,7 +101,7 @@ public class ItemController {
     @PostMapping("/update/{id}")
     public String update(
             @PathVariable("id") int id,
-            @Validated @ModelAttribute("item") Items item,
+            @Validated @ModelAttribute("item") Items item,  //編集された食材
             BindingResult result,
             Model model,
             @AuthenticationPrincipal LoginUser loginUser) {
