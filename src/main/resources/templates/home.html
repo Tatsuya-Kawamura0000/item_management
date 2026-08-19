@@ -1,55 +1,55 @@
-
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#ff8c42">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-<script defer src="/js/pwa.js"></script>
-<title>食材一覧</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ff8c42">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <script defer src="/js/pwa.js"></script>
+    <title>食材一覧</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=BIZ+UDP+Gothic:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" th:href="@{/css/style.css}">
-<link rel="stylesheet" th:href="@{/css/popup.css}">
-<link rel="stylesheet" th:href="@{/css/loading.css}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDP+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" th:href="@{/css/loading.css}">
 
-<!-- Font Awesome 読み込み -->
-<link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
+    <!-- Font Awesome 読み込み -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 
 </head>
 <body>
 
 <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-	<div class="loading-content">
-		<div class="cooking-animation">
-			<div class="pan"></div>
-			<div class="food"></div>
-		</div>
-		<p class="loading-text">AIがレシピを考えています...</p>
-		<p class="sub-text">おいしい献立を準備中 🍳</p>
-	</div>
+    <div class="loading-content">
+        <div class="cooking-animation">
+            <div class="pan"></div>
+            <div class="food"></div>
+        </div>
+        <p class="loading-text">AIがレシピを考えています...</p>
+        <p class="sub-text">おいしい献立を準備中 🍳</p>
+    </div>
 </div>
 
-	
-	<header class="page-header">
 
-	    <h1 class="page-title">🥦 食材一覧 🥕</h1>
+<header class="page-header">
 
-		<p class="welcome-message">
-			        <i class="fa-solid fa-user"></i>
-			        <span sec:authentication="name"></span> さん、ようこそ！
-			    </p>
+    <h1 class="page-title">🥦 食材一覧 🥕</h1>
+
+    <p class="welcome-message">
+        <i class="fa-solid fa-user"></i>
+        <span sec:authentication="name"></span> さん、ようこそ！
+    </p>
 
 
-		<div class="deadline-alert">
-			<div class="alert-info-group">
+    <div class="deadline-alert">
+        <div class="alert-info-group">
         <span class="expired">
             <i class="fa-solid fa-circle-exclamation"></i>
             期限切れ:
@@ -58,189 +58,251 @@
             </a>件
         </span>
 
-				<span class="warning">
+            <span class="warning">
             <i class="fa-solid fa-triangle-exclamation"></i>
             期限間近:
             <a th:href="@{/filter(expiringSoon=true)}">
                 <span th:text="${hvm.warningCount}"></span>
             </a>件
         </span>
-			</div>
+        </div>
 
-			<a th:href="@{/recipes}"
-			   class="recipe-manage-btn group">
-				<svg xmlns="http://www.w3.org/2000/svg" class="icon-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-				</svg>
-				<span>レシピの管理</span>
-				<svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-			</a>
-		</div>
-	
-	<div class="search-bar">
+        <a th:href="@{/recipes}"
+           class="recipe-manage-btn group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-main" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+            <span>レシピの管理</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+    </div>
 
-	<form th:action="@{/search}" method="get" class="search-form">
+    <div class="search-bar">
 
-	    <!-- 🔍 名前検索 -->
-	    <input type="text"
-	           name="keyword"
-	           placeholder="検索"
-	           class="search-input">
+        <form th:action="@{/search}" method="get" class="search-form">
 
-	    <!-- 検索項目 -->
-		<select name="searchType" class="searchItems">
-			<option value="">項目</option>
-			<option value="name">食材名</option>
-			<option value="amount">量</option>
-			<option value="others">メモ</option>
-		</select>
+            <!-- 🔍 名前検索 -->
+            <input type="text"
+                   name="keyword"
+                   placeholder="検索"
+                   class="search-input">
 
-	    <!-- 検索ボタン -->
-	    <button type="submit" class="search-btn">
-	        <i class="fa-solid fa-magnifying-glass"></i>
-	    </button>
+            <!-- 検索項目 -->
+            <select name="searchType" class="searchItems">
+                <option value="">項目</option>
+                <option value="name">食材名</option>
+                <option value="amount">量</option>
+                <option value="others">メモ</option>
+            </select>
 
-	</form>
+            <!-- 検索ボタン -->
+            <button type="submit" class="search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
 
-	<!-- 右側ボタン -->
-	<div class="action-buttons">
-		
-		<a th:href="@{/shoppingList}" class="basket-btn">
-				        <i class="fa-solid fa-basket-shopping"></i>
-				        買い物リスト (<span th:text="${hvm.shoppingCount}"></span>)
-		</a>
+        </form>
 
-	    <a th:href="@{items/add}" class="add-btn">
-	        <i class="fa-solid fa-plus"></i>
-	        食材追加
-	    </a>
+        <!-- 右側ボタン -->
+        <div class="action-buttons">
 
-	</div>
+            <a th:href="@{/shoppingList}" class="basket-btn">
+                <i class="fa-solid fa-basket-shopping"></i>
+                買い物リスト (<span th:text="${hvm.shoppingCount}"></span>)
+            </a>
 
-	</div>
+            <a th:href="@{items/add}" class="add-btn">
+                <i class="fa-solid fa-plus"></i>
+                食材追加
+            </a>
 
+        </div>
 
-		<div class="category-tabs">
-	    <!-- すべて -->
-		<a th:href="@{/}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
-			すべて
-			<span class="badge" th:if="${#lists.size(hvm.items) > 0}" th:text="${#lists.size(hvm.items)}"></span>
-		</a>
-
-	    <!-- DBカテゴリ -->
-		<a th:each="cat : ${hvm.categories}"
-		   th:href="@{/filter(category=${cat.id})}"
-		   th:classappend="${selectedCategory == cat.id} ? 'active'" class="tab select">
-			<span th:text="${cat.name}"></span>
-			<span class="badge" th:if="${hvm.categoryCounts[cat.id] != null and hvm.categoryCounts[cat.id] > 0}"
-			      th:text="${hvm.categoryCounts[cat.id]}"></span>
-		</a>
-
-		</div>
+    </div>
 
 
-	</header>
+    <div class="category-tabs">
+        <!-- すべて -->
+        <a th:href="@{/}" th:classappend="${selectedCategory == null} ? 'active'" class="alltab select">
+            すべて
+            <span class="badge" th:if="${#lists.size(hvm.items) > 0}" th:text="${#lists.size(hvm.items)}"></span>
+        </a>
+
+        <!-- DBカテゴリ -->
+        <a th:each="cat : ${hvm.categories}"
+           th:href="@{/filter(category=${cat.id})}"
+           th:classappend="${selectedCategory == cat.id} ? 'active'" class="tab select">
+            <span th:text="${cat.name}"></span>
+            <span class="badge" th:if="${hvm.categoryCounts[cat.id] != null and hvm.categoryCounts[cat.id] > 0}"
+                  th:text="${hvm.categoryCounts[cat.id]}"></span>
+        </a>
+
+    </div>
 
 
-
-	<div class="bulk-actions">
-		<div class="basic-actions">
-			<button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
-				<i class="fa-solid fa-trash"></i> 消費済みにする
-			</button>
-			<button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
-				<i class="fa-solid fa-basket-shopping"></i> 買い物リストへ追加
-			</button>
-		</div>
-			<div class="recipe-container">
-				<form th:action="@{/recipes}" method="post" id="recipeForm" class="recipe-generator-card">
-					<div class="recipe-options">
-
-						<div class="option-group-extra">
-							<label class="tag-checkbox genre-tag">
-								<i class="fa-solid fa-utensils"></i>
-								<select name="genre" class="custom-select" required>
-									<option value="" selected>ジャンル</option>
-									<option value="和食">和食</option>
-									<option value="洋食">洋食</option>
-									<option value="中華">中華</option>
-									<option value="おつまみ">おつまみ</option>
-									<option value="デザート">デザート</option>
-								</select>
-							</label>
-							<label class="tag-checkbox">
-								<input type="checkbox" name="prioritizeExpiring">
-								<span>🔥 期限間近優先</span>
-							</label>
-							<label class="tag-checkbox">
-								<input type="checkbox" name="lowCalorie">
-								<span>🥗 低カロリー</span>
-							</label>
-							<label class="tag-checkbox">
-								<input type="checkbox" name="easyMode">
-								<span>⏱️ 手軽</span>
-							</label>
-							<label class="tag-checkbox">
-								<input type="checkbox" name="useSelected" id="useSelected">
-								<span>🎯 食材指定</span>
-							</label>
-						</div>
-					</div>
-
-					<div id="selectedIdsContainer"></div>
-
-					<button type="button" onclick="handleRecipeSubmit()" class="bulk-btn recipe">
-						<i class="fa-solid fa-wand-magic-sparkles"></i>
-						レシピを提案してもらう
-					</button>
-				</form>
-			</div>
-		</div>
-	</div>
+</header>
 
 
+<div class="bulk-actions">
+    <div class="basic-actions">
+        <button type="button" id="bulkDeleteBtn" class="bulk-btn delete">
+            <i class="fa-solid fa-trash"></i> 消費済みにする
+        </button>
+        <button type="button" id="bulkShoppingBtn" class="bulk-btn shopping">
+            <i class="fa-solid fa-basket-shopping"></i> 買い物リストへ追加
+        </button>
+    </div>
+    <!-- レシピ提案 -->
+    <div class="recipe-container">
+        <button type="button"
+                id="openRecipeModalBtn"
+                class="bulk-btn recipe">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            レシピ提案
+        </button>
+    </div>
+
+    <!-- レシピ提案モーダル -->
+    <div id="recipeModal"
+         class="modal-overlay"
+         aria-hidden="true">
+
+        <div class="modal-content recipe-modal-content"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="recipeModalTitle">
+
+            <div class="recipe-modal-header">
+                <h2 id="recipeModalTitle">レシピ提案</h2>
+
+                <button type="button"
+                        id="closeRecipeModalBtn"
+                        class="recipe-modal-close"
+                        aria-label="閉じる">
+                    ×
+                </button>
+            </div>
+
+            <form th:action="@{/recipes}"
+                  method="post"
+                  id="recipeForm">
+
+                <div class="recipe-modal-options">
+
+                    <!-- ジャンル -->
+                    <label class="tag-checkbox genre-tag">
+                        <i class="fa-solid fa-utensils"></i>
+
+                        <select name="genre"
+                                class="custom-select"
+                                required>
+                            <option value="" selected>ジャンル</option>
+                            <option value="和食">和食</option>
+                            <option value="洋食">洋食</option>
+                            <option value="中華">中華</option>
+                            <option value="おつまみ">おつまみ</option>
+                            <option value="デザート">デザート</option>
+                        </select>
+                    </label>
+
+                    <!-- 期限間近優先 -->
+                    <label class="tag-checkbox">
+                        <input type="checkbox"
+                               name="prioritizeExpiring">
+
+                        <span>🔥 期限間近優先</span>
+                    </label>
+
+                    <!-- 低カロリー -->
+                    <label class="tag-checkbox">
+                        <input type="checkbox"
+                               name="lowCalorie">
+
+                        <span>🥗 低カロリー</span>
+                    </label>
+
+                    <!-- 手軽 -->
+                    <label class="tag-checkbox">
+                        <input type="checkbox"
+                               name="easyMode">
+
+                        <span>⏱️ 手軽</span>
+                    </label>
+
+                    <!-- 食材指定 -->
+                    <label class="tag-checkbox">
+                        <input type="checkbox"
+                               name="useSelected"
+                               id="useSelected">
+
+                        <span>🎯 食材指定</span>
+                    </label>
+
+                </div>
+
+                <!-- 選択した食材IDを格納 -->
+                <div id="selectedIdsContainer"></div>
+
+                <div class="recipe-modal-actions">
+
+                    <button type="button"
+                            onclick="handleRecipeSubmit()"
+                            class="bulk-btn recipe">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        レシピを提案してもらう
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+</div>
 
 
 <!-- 食材一覧を囲む -->
 <div class="table-wrapper">
     <div class="table-container">
         <table>
-			<tr>
-			    <th>
-			        <input type="checkbox" id="selectAll">
-			    </th>
-				<th>食材</th>
-			    <th class="hidden">カテゴリー</th>
-			    <th>量</th>
-			    <th>期限</th>
-			    <th>メモ</th>
-			    <th>操作</th>
-			</tr>
+            <tr>
+                <th>
+                    <input type="checkbox" id="selectAll">
+                </th>
+                <th>食材</th>
+                <th class="hidden">カテゴリー</th>
+                <th>量</th>
+                <th>期限</th>
+                <th>メモ</th>
+                <th>操作</th>
+            </tr>
 
-            <tr th:each="item : ${hvm.filteredItems}" >
-				<td>
-				<input type="checkbox"
-				       class="item-checkbox"
-				       th:value="${item.id}"
-				       th:data-favorite="${item.favorite}"
-					   th:data-name="${item.name}">
-				</td>	   
-                
-				<td class="food-cell">
+            <tr th:each="item : ${hvm.filteredItems}">
+                <td>
+                    <input type="checkbox"
+                           class="item-checkbox"
+                           th:value="${item.id}"
+                           th:data-favorite="${item.favorite}"
+                           th:data-name="${item.name}">
+                </td>
+
+                <td class="food-cell">
 				  <span
-				    class="food-label"
-				    th:text="${item.name}"
-				    th:classappend="' category-' + ${item.categoryId}">
+                          class="food-label"
+                          th:text="${item.name}"
+                          th:classappend="' category-' + ${item.categoryId}">
 				  </span>
-				</td>
+                </td>
                 <td class="hidden" th:text="${item.categoryName}"></td>
                 <td th:text="${item.amount}"></td>
-				<td class="deadline-cell">
+                <td class="deadline-cell">
 
-					<!-- アイコン枠（常に存在させる） -->
-					<span class="deadline-icon">
+                    <!-- アイコン枠（常に存在させる） -->
+                    <span class="deadline-icon">
         <i th:if="${item.message == '期限切れです'}"
            class="fa-solid fa-circle-exclamation icon-danger"></i>
 
@@ -248,26 +310,26 @@
            class="fa-solid fa-triangle-exclamation icon-warning"></i>
     </span>
 
-					<!-- 日付 -->
-					<span th:text="${item.deadline}"></span>
+                    <!-- 日付 -->
+                    <span th:text="${item.deadline}"></span>
 
-				</td>
+                </td>
                 <td th:text="${item.others}"></td>
-				<td class="action-cell">
+                <td class="action-cell">
 
-					<form th:action="@{items/favorite/{id}(id=${item.id})}" method="post" class="action-item">
-						<input type="hidden" name="category" th:value="${selectedCategory}">
-						<input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
-						<button type="submit" class="heart-btn">
-							<i class="fa-solid fa-heart" th:classappend="${item.favorite} ? 'active' : ''"></i>
-						</button>
-					</form>
+                    <form th:action="@{items/favorite/{id}(id=${item.id})}" method="post" class="action-item">
+                        <input type="hidden" name="category" th:value="${selectedCategory}">
+                        <input type="hidden" name="expiringSoon" th:value="${expiringSoon}">
+                        <button type="submit" class="heart-btn">
+                            <i class="fa-solid fa-heart" th:classappend="${item.favorite} ? 'active' : ''"></i>
+                        </button>
+                    </form>
 
-					<a th:href="@{items/edit/{id}(id=${item.id})}" class="edit-btn action-item">
-						<i class="fa-solid fa-pencil"></i>
-					</a>
+                    <a th:href="@{items/edit/{id}(id=${item.id})}" class="edit-btn action-item">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a>
 
-				</td>
+                </td>
 
             </tr>
         </table>
