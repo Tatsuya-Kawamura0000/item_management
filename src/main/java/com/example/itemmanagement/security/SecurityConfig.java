@@ -21,6 +21,7 @@ public class SecurityConfig {
 						.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 						// 明示的に許可したいパス
 						.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+						.requestMatchers("/manifest.webmanifest", "/sw.js", "/icons/**").permitAll()
 						.requestMatchers("/login", "/register", "/error").permitAll()
 						//.requestMatchers("/test-recipe").permitAll()
 						.anyRequest().authenticated()
