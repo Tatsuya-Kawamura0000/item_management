@@ -1114,28 +1114,6 @@ input[type="submit"]:hover {
 /* 0のときは非表示にする場合 */
 .badge[data-count="0"] { display: none !important; }
 
-/* =========================
-   モーダル
-========================= */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-}
-
-.modal-overlay.show {
-    display: flex;
-}
-
-.modal-content {
-    background-color: #fff;
-    margin: 20px;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-}
 
 /* =========================
    その他
@@ -1393,6 +1371,35 @@ input[type="submit"]:hover {
 }
 
 /* =========================
+   モーダル
+========================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #fff;
+    width: min(400px, 100%);
+    max-height: calc(100dvh - 32px);
+    padding: 20px;
+    border-radius: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* =========================
    レシピ提案モーダル
 ========================= */
 
@@ -1406,3 +1413,12 @@ input[type="submit"]:hover {
     pointer-events: auto;
 }
 
+@media (max-width: 640px) {
+    .recipe-modal-content {
+        width: 100%;
+        max-width: 420px;
+        max-height: calc(100dvh - 32px);
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+}
