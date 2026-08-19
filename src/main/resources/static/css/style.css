@@ -1392,4 +1392,17 @@ input[type="submit"]:hover {
     }
 }
 
+/* =========================
+   レシピ提案モーダル
+========================= */
+
+/* 食材指定ON時は、モーダルの背景部分だけクリック可能にする */
+.modal-overlay.allow-background-interaction {
+    pointer-events: none;
+}
+
+/* モーダル本体は引き続き操作可能 */
+.modal-overlay.allow-background-interaction .modal-content {
+    pointer-events: auto;
+}
 
