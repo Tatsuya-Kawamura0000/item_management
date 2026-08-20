@@ -100,8 +100,30 @@
     </section>
 </main>
 
+<!-- 選択時に浮き出る「消費済みにする」ボタン -->
+<div class="action-area">
+    <button id="consumeButton" class="consume-button" type="button">
+        <span class="trash-icon">🗑</span>
+        <span>消費済みにする</span>
+        <span id="selectedCount" class="consume-count">0</span>件
+    </button>
+</div>
+
+<!-- ポップアップモーダル -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-container">
+        <h3 class="modal-title">消費の確認</h3>
+        <p id="modalMessage" class="modal-message">選択した食材を消費済みにしますか？</p>
+        <div class="modal-actions">
+            <button id="cancelBtn" class="modal-btn cancel" type="button">キャンセル</button>
+            <button id="confirmBtn" class="modal-btn confirm" type="button">消費する</button>
+        </div>
+    </div>
+</div>
+
 <!-- 下部ナビゲーションの呼び出し -->
 <div th:replace="~{fragments/bottom-navigation :: bottomNavigation}"></div>
+
 <!-- JSの読み込み -->
 <script th:src="@{/js/dashboard.js}"></script>
 </body>
