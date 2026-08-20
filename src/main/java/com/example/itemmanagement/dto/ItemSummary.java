@@ -2,15 +2,16 @@ package com.example.itemmanagement.dto;
 
 public class ItemSummary {
 
-    private int expiredCount;  //期限切れ食材数
-    private int warningCount;  //期限間近食材数
+    private int expiredCount;  // 期限切れ食材数
+    private int warningCount;  // 期限間近食材数
+    private int totalCount;    // 全食材数（追加）
 
-    public ItemSummary(int expiredCount, int warningCount) {
+    public ItemSummary(int expiredCount, int warningCount, int totalCount) {
         this.expiredCount = expiredCount;
         this.warningCount = warningCount;
+        this.totalCount = totalCount;
     }
 
-    // getterも忘れずに
     public int getExpiredCount() {
         return expiredCount;
     }
@@ -18,5 +19,8 @@ public class ItemSummary {
     public int getWarningCount() {
         return warningCount;
     }
-}
 
+    public int getTotalCount() {
+        return totalCount;
+    }
+}

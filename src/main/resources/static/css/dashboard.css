@@ -1,0 +1,317 @@
+/* ========================================
+   ダッシュボード メインレイアウト
+======================================== */
+.dashboard {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.page-title-area {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 750;
+    color: #222;
+    letter-spacing: 0.02em;
+}
+
+/* ========================================
+   ユーザー情報 & ログアウト
+======================================== */
+.user-info-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-top: 1px solid #e2e7e3;
+    border-bottom: 1px solid #e2e7e3;
+}
+
+.user-area {
+    min-width: 0;
+}
+
+.user-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    color: #4d7057;
+    white-space: nowrap;
+}
+
+.user-message {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 11px;
+    border: 1px solid #dedede;
+    border-radius: 9px;
+    background: #fff;
+    color: #777;
+    font-size: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    color: #444;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logout-icon {
+    font-size: 13px;
+}
+
+/* ========================================
+   サマリーカード
+======================================== */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 36px;
+}
+
+.summary-card {
+    position: relative;
+    min-width: 0;
+    padding: 17px 15px;
+    border-radius: 16px;
+    background: #fff;
+    cursor: default;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.045);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+.summary-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.summary-number {
+    display: block;
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.summary-card.total { border: 1px solid #b9dec4; }
+.summary-card.total .summary-label { color: #39965a; }
+.summary-card.total .summary-number { color: #27854a; }
+
+.summary-card.soon { border: 1px solid #e6cf83; }
+.summary-card.soon .summary-label { color: #c18a16; }
+.summary-card.soon .summary-number { color: #b67b0c; }
+
+.summary-card.expired { border: 1px solid #e8bcbc; }
+.summary-card.expired .summary-label { color: #d04c4c; }
+.summary-card.expired .summary-number { color: #c83d3d; }
+
+/* ========================================
+   セクション & カード一覧
+======================================== */
+.section {
+    margin-bottom: 34px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.section-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.section.soon .section-title { color: #c18a16; }
+.section.expired .section-title { color: #d04c4c; }
+
+.item-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 3px 13px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.item-scroll::-webkit-scrollbar { height: 5px; }
+.item-scroll::-webkit-scrollbar-thumb { background: #d7d7d7; border-radius: 10px; }
+.item-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* 食材カード */
+.food-card {
+    position: relative;
+    flex: 0 0 180px;
+    min-height: 155px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.soon-card {
+    border: 2px solid #e8c75b;
+    box-shadow: 0 0 0 0 rgba(232, 199, 91, 0);
+}
+.soon-card:hover {
+    border: 2px solid #e8c75b;
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+.expired-card {
+    border: 2px solid #df7777;
+    box-shadow: 0 0 0 0 rgba(223, 119, 119, 0);
+}
+.expired-card:hover {
+    border: 2px solid #df7777;
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+.soon-card.selected {
+    background: #fff9df;
+    transform: translateY(-4px);
+    border: 2px solid #e8c75b;
+    box-shadow: 0 8px 22px rgba(197, 148, 20, 0.16);
+}
+
+.expired-card.selected {
+    background: #fff1f1;
+    transform: translateY(-4px);
+    border: 2px solid #df7777;
+    box-shadow: 0 8px 22px rgba(190, 55, 55, 0.14);
+}
+
+.food-card-top { margin-bottom: 10px; }
+.food-card-name {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.food-card-date {
+    margin-bottom: 13px;
+    font-size: 26px;
+    font-weight: 750;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+}
+
+.soon-card .food-card-date { color: #c18a16; }
+.expired-card .food-card-date { color: #d04c4c; }
+
+.food-card-details { display: flex; flex-direction: column; gap: 5px; }
+.food-card-detail { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+.detail-label { color: #aaa; }
+.food-card-note { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* ========================================
+   消費済み操作ボタン
+======================================== */
+.action-area {
+    position: sticky;
+    bottom: 84px;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    margin-top: -5px;
+    pointer-events: none;
+}
+
+.consume-button {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 24px;
+    background: #d04c4c;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(208, 76, 76, 0.25);
+    pointer-events: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.consume-button.show { display: flex; }
+.consume-button:hover {
+    transform: translateY(-2px);
+    background: #c13f3f;
+    box-shadow: 0 10px 22px rgba(208, 76, 76, 0.32);
+}
+
+.trash-icon { font-size: 16px; line-height: 1; }
+.consume-count { opacity: 0.75; }
+
+/* ========================================
+   スマホレスポンシブ（ダッシュボード）
+======================================== */
+@media (max-width: 600px) {
+    .dashboard { padding: 18px 14px 32px; }
+    .page-title-area { margin-bottom: 18px; }
+    .page-title { font-size: 24px; }
+    .user-info-area { gap: 10px; }
+    .user-name { font-size: 13px; }
+    .user-message { font-size: 10px; }
+    .logout-button { padding: 6px 8px; font-size: 9px; }
+
+    .summary-grid { gap: 7px; margin-bottom: 31px; }
+    .summary-card { padding: 14px 8px; border-radius: 13px; text-align: center; }
+    .summary-label { margin-bottom: 8px; font-size: 10px; }
+    .summary-number { font-size: 22px; }
+
+    .section { margin-bottom: 29px; }
+    .section-title { font-size: 14px; }
+
+    .food-card { flex-basis: 170px; min-height: 150px; padding: 15px; border-radius: 14px; }
+    .food-card-name { font-size: 16px; }
+    .food-card-date { font-size: 23px; }
+
+    .action-area { bottom: 78px; }
+    .consume-button { min-height: 42px; padding: 0 18px; font-size: 12px; }
+}

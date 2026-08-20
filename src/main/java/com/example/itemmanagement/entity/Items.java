@@ -37,6 +37,8 @@ public class Items {
 	private String categoryName;
 	
 	private boolean expiringSoon;		//期限が3日以内であれば、true
+
+	private boolean expired;          // ★期限切れであれば、true (追加)
 	
 	private boolean favorite;
 	
