@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/items")
+@RequestMapping("/foods")
 public class ItemController {
 
     private final ItemQueryService itemQueryService;
@@ -39,17 +39,10 @@ public class ItemController {
         this.updateItemService = updateItemService;
     }
 
-    @GetMapping("/add")                                    //食材登録画面をリクエストされた時
-    public String add(Model model) {
-
-        List<Categories> categories = categoryService.getAllCategories();
-
-        model.addAttribute("categories", categories);
-
-        model.addAttribute("form", new AddItemForm());
+    @GetMapping("/add")
+    public String showAddPage() {
 
         return "add";
-
     }
 
     @PostMapping("/add")

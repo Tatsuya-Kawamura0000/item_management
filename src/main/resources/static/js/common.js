@@ -1,40 +1,49 @@
+/**
+ * 共通UI処理
+ */
+document.addEventListener("DOMContentLoaded", () => {
 
-function showModalMessage(message, type = "success") {
+    /*
+     * モーダルを閉じる
+     *
+     * .modal-overlay を使用している
+     * 全画面で利用可能
+     */
+    const modalOverlays =
+        document.querySelectorAll(".modal-overlay");
 
-    const el = document.getElementById("modalMessage");
+    modalOverlays.forEach(modal => {
 
-    el.textContent = message;
-    el.className = "modal-message show " + type;
+        modal.addEventListener("click", (event) => {
 
-    setTimeout(() => {
-        el.classList.remove("show");
-    }, 2000);
-}
+            // モーダル本体をクリックした場合は閉じない
+            if (event.target !== modal) {
+                return;
+            }
+
+            modal.classList.remove("show");
+        });
+
+    });
 
 
+    /*
+     * ESCキーでモーダルを閉じる
+     */
+    document.addEventListener("keydown", (event) => {
 
-//ポップアップメッセージ　
-function showPopupAndReload(message, type = "success") {
-    // 1. ポップアップ要素を作成
-    const popup = document.createElement('div');
-    popup.className = `custom-modal-popup ${type}`;
+        if (event.key !== "Escape") {
+            return;
+        }
 
-    // 2. アイコンの判定（FontAwesomeを使用している前提）
-    const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+        document
+            .querySelectorAll(".modal-overlay.show")
+            .forEach(modal => {
 
-    // 3. 中身の構築
-    popup.innerHTML = `
-        <div class="popup-content">
-            <i class="fa-solid ${icon}"></i>
-            <span>${message}</span>
-        </div>
-    `;
+                modal.classList.remove("show");
 
-    // 4. bodyに直接追加（これでレイアウト崩れを防ぐ）
-    document.body.appendChild(popup);
+            });
 
-    // 5. 3秒後にリロード
-    setTimeout(() => {
-        location.reload();
-    }, 3000);
-}
+    });
+
+});
