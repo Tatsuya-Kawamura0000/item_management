@@ -60,10 +60,11 @@ public class AddToShoppingListService {
     public ShoppingListItem addNewItem(AddShoppingListItemForm form, Integer userId) {
 
         ShoppingListItem item = new ShoppingListItem();
-        item.setItemId(null);
+        item.setItemId(form.getItemId());
         item.setUserId(userId);   // ← ログインユーザー
         item.setName(form.getName());
         item.setAmount(form.getAmount());
+        item.setCategoryId(form.getCategoryId());
         item.setStatus(true);
         item.setPurchasedFlg(false);
         item.setAddedAt(LocalDateTime.now());

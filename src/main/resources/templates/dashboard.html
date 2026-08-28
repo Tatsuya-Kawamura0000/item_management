@@ -6,32 +6,17 @@
     <title>賞味期限管理 - Dashboard</title>
     <!-- CSS読み込み -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/common-page.css}">
     <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
 
 <main class="dashboard">
-    <header class="dashboard-header">
-        <div class="page-title-area">
-            <h1 class="page-title">Dashboard</h1>
-        </div>
-
-        <div class="user-info-area">
-            <div class="user-area">
-                <!-- ログインユーザー名の動的表示 -->
-                <p class="user-name" th:text="|${#authentication.name} さん|">〇〇さん</p>
-                <p class="user-message">食材の期限を確認しましょう</p>
-            </div>
-
-            <!-- Spring Security標準ログアウトフォーム -->
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button class="logout-button" type="submit">
-                    <span class="logout-icon">↪</span> ログアウト
-                </button>
-            </form>
-        </div>
-    </header>
+    <div th:replace="~{fragments/page-header :: pageHeader(
+    'Dashboard',
+    '食材の期限を確認しましょう'
+)}"></div>
 
     <!-- サマリーカード -->
     <section class="summary-grid">

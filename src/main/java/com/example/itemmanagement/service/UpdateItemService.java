@@ -37,7 +37,7 @@ public class UpdateItemService {
     public void bulkDelete(List<Integer> ids, Integer userId) {
 
         for (Integer id : ids) {
-            shoppingListMapper.stop(id, userId);
+            mapper.deleteFromShoppingList(id, userId);
         }
 
     }

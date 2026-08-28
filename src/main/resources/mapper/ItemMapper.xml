@@ -10,6 +10,7 @@
       items.name,
       items.category_id AS categoryId,
       items.amount,
+      items.purchase_amount AS purchaseAmount,
       items.deadline,
       items.purchase_date AS purchaseDate,
       items.others,
@@ -35,6 +36,7 @@
 			name,
 			category_id,
 			amount,
+            purchase_amount,
 			deadline,
 			purchase_date,
 			others,
@@ -45,6 +47,7 @@
 			#{name},
 			#{categoryId},
 			#{amount},
+            #{purchaseAmount},
 			#{deadline},
 			#{purchaseDate},
 			#{others},
@@ -160,13 +163,41 @@ AND items.user_id = #{userId}
 <![CDATA[ ORDER BY items.deadline ASC ]]>
 </select>
 
-<!-- ItemMapper.xml 内 -->
+    <!-- 直近3回分の購入日に該当するアイテムを取得 -->
+    <select id="getItemsByRecentPurchaseDates" resultType="com.example.itemmanagement.entity.Items">
+    <![CDATA[
+        SELECT
+            i.id,
+            i.name,
+            i.category_id AS categoryId,
+            i.amount,
+            i.purchase_amount AS purchaseAmount,
+            i.deadline,
+            i.purchase_date AS purchaseDate,
+            i.others,
+            i.status,
+            i.favorite_flg AS favorite,
+            c.name AS categoryName
+        FROM items i
+        INNER JOIN categories c ON i.category_id = c.id
+        WHERE i.user_id = #{userId}
+        AND i.purchase_date IN (
+            SELECT DISTINCT purchase_date FROM items
+            WHERE user_id = #{userId}
+            AND purchase_date IS NOT NULL
+            ORDER BY purchase_date DESC
+            LIMIT 3
+        )
+        ORDER BY i.purchase_date DESC, i.name ASC
+    ]]>
+    </select>
+
+
 <delete id="deleteFromShoppingList">
     DELETE FROM shopping_list
     WHERE id = #{id}
     AND user_id = #{userId}
 </delete>
-
 
 
 
@@ -251,6 +282,49 @@ GROUP BY category_id
             #{id}
         </foreach>
 </select>
+
+    <!-- お気に入り食材を取得 -->
+    <select id="getFavoriteItems"
+            resultType="com.example.itemmanagement.entity.Items">
+        <![CDATA[
+    SELECT
+        latest.id,
+        latest.name,
+        latest.category_id AS categoryId,
+        latest.amount,
+        latest.purchase_amount AS purchaseAmount,
+        latest.deadline,
+        latest.purchase_date AS purchaseDate,
+        latest.others,
+        latest.status,
+        latest.favorite_flg AS favorite,
+        categories.name AS categoryName
+    FROM (
+        SELECT
+            items.*,
+            ROW_NUMBER() OVER (
+                PARTITION BY items.name
+                ORDER BY items.purchase_date DESC NULLS LAST,
+                         items.id DESC
+            ) AS row_num
+        FROM
+            items
+        WHERE
+            items.user_id = #{userId}
+        AND
+            items.favorite_flg = true
+    ) latest
+    INNER JOIN categories
+        ON latest.category_id = categories.id
+    WHERE
+        latest.row_num = 1
+    ORDER BY
+        latest.status ASC,
+        latest.name ASC
+    ]]>
+    </select>
+
+
 
 
 </mapper>	

@@ -42,10 +42,16 @@ public interface ItemMapper {
 	//AIに投げる用のアイテム取得
 	List<Items> getSourceItems(@Param("userId") Integer userId);
 
+	// 直近3回分の購入日に該当するアイテムを取得
+	List<Items> getItemsByRecentPurchaseDates(@Param("userId") Integer userId);
+
 	//選択されたアイテムIDでアイテムを取得する
 	List<Items> getSourceItemsById(@Param("userId") Integer userId, @Param("selectedIds") List<Integer> selectedIds);
 
 	//アイテム検索
 	List<Items> searchItems(@Param("userId") Integer userId);
+
+	// お気に入り食材を取得
+	List<Items> getFavoriteItems(@Param("userId") Integer userId);
 
 }

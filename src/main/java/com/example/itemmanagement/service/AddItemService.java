@@ -36,6 +36,7 @@ public class AddItemService {
         entity.setDeadline(form.getDeadline());
         entity.setPurchaseDate(form.getPurchaseDate());
         entity.setAmount(form.getAmount());
+        entity.setPurchaseAmount(form.getAmount());
         entity.setOthers(form.getOthers());
         entity.setStatus(1);
         entity.setFavorite(form.isFavorite());

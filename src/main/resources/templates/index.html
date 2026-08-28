@@ -1,2212 +1,1335 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>食材一覧</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- 共通CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- 共通ページCSS -->
+    <link rel="stylesheet" th:href="@{/css/common-page.css}">
+
+    <!-- 下部ナビゲーションCSS -->
+    <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
+
+    <!-- カテゴリー用共通CSS -->
+    <link rel="stylesheet" th:href="@{/css/category.css}">
+
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-
-            font-family:
-                    Arial,
-                    "Noto Sans JP",
-                    sans-serif;
-
-            background: #f7f7f7;
-
-            color: #333;
-
-            padding-bottom: 90px;
-        }
-
-
         /* =========================================
-           メイン
+           食材一覧ページ
         ========================================= */
 
         .food-list-page {
-
             max-width: 1000px;
-
             margin: 0 auto;
-
             padding: 24px 20px;
         }
 
-
         .page-title {
-
             margin: 0 0 20px;
-
             font-size: 24px;
         }
-
 
         /* =========================================
            検索
         ========================================= */
 
         .search-box {
-
             width: 240px;
-
             margin-bottom: 18px;
         }
 
-
         .search-box input {
-
             width: 100%;
-
             height: 38px;
-
             padding: 0 14px;
-
             border: 1px solid #ddd;
-
             border-radius: 8px;
-
             background: #fff;
-
             font-size: 14px;
-
             outline: none;
         }
 
-
         .search-box input:focus {
-
             border-color: #999;
         }
 
-
         /* =========================================
-           カテゴリー
+           カテゴリタブ
         ========================================= */
 
+        /* =========================================
+   カテゴリタブ
+========================================= */
+
         .category-tabs {
-
             display: flex;
-
             gap: 9px;
-
             overflow-x: auto;
-
             padding-bottom: 8px;
-
             margin-bottom: 18px;
+            white-space: nowrap;
+            scrollbar-width: thin;
         }
-
 
         .category-tab {
+            --tab-bg: #ffffff;
+            --tab-border: #e5e5e5;
+            --tab-text: #555555;
+            --badge-bg: #e9e9e9;
+            --badge-border: rgba(0, 0, 0, 0.05);
+            --badge-text: #555555;
 
             flex: 0 0 auto;
-
-            border: none;
-
-            background: #fff;
-
+            border: 1px solid var(--tab-border);
+            background: var(--tab-bg);
             padding: 8px 13px;
-
             border-radius: 20px;
-
             font-size: 13px;
-
-            color: #666;
-
+            color: var(--tab-text);
             cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
         }
 
+        .category-tab:hover {
+            filter: brightness(0.97);
+        }
 
         .category-tab.active {
-
-            background: #333;
-
-            color: #fff;
-        }
-
-
-        .badge {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            min-width: 20px;
-
-            height: 20px;
-
-            margin-left: 4px;
-
-            padding: 0 5px;
-
-            border-radius: 10px;
-
-            background: #e9e9e9;
-
-            color: #555;
-
-            font-size: 11px;
-
             font-weight: bold;
         }
 
-
-        .category-tab.active .badge {
-
-            background: rgba(255, 255, 255, 0.25);
-
-            color: #fff;
+        .category-tab.category-vegetable {
+            --tab-bg: #e9f5eb;
+            --tab-border: #bcd9bf;
+            --badge-bg: #cfead5;
+            --badge-border: rgba(64, 125, 77, 0.12);
+            --badge-text: #4d7e55;
         }
 
+        .category-tab.category-meat {
+            --tab-bg: #fbeaea;
+            --tab-border: #efbcbc;
+            --badge-bg: #f5d4d4;
+            --badge-border: rgba(185, 88, 88, 0.12);
+            --badge-text: #8a3d3d;
+        }
+
+        .category-tab.category-fish {
+            --tab-bg: #eaf2fb;
+            --tab-border: #bdd4ee;
+            --badge-bg: #cfe0ff;
+            --badge-border: rgba(43, 102, 194, 0.15);
+            --badge-text: #2d5da8;
+        }
+
+        .category-tab.category-seasoning {
+            --tab-bg: #f7eee6;
+            --tab-border: #dec7b1;
+            --badge-bg: #f0d9c0;
+            --badge-border: rgba(152, 103, 52, 0.12);
+            --badge-text: #7c5430;
+        }
+
+        .category-tab.category-leftover {
+            --tab-bg: #f1eafa;
+            --tab-border: #d2bfe6;
+            --badge-bg: #e0d1fa;
+            --badge-border: rgba(123, 90, 186, 0.12);
+            --badge-text: #5b3e92;
+        }
+
+        .category-tab.category-drink {
+            --tab-bg: #eaf4fb;
+            --tab-border: #bed9eb;
+            --badge-bg: #d4ebff;
+            --badge-border: rgba(52, 110, 170, 0.12);
+            --badge-text: #2b5e8d;
+        }
+
+        .category-tab.category-preserved {
+            --tab-bg: #fcf4df;
+            --tab-border: #ead39a;
+            --badge-bg: #f3df9a;
+            --badge-border: rgba(166, 122, 26, 0.12);
+            --badge-text: #7a5d1d;
+        }
+
+        .category-tab.category-other {
+            --tab-bg: #f1f1f1;
+            --tab-border: #d5d5d5;
+            --badge-bg: #dfe3e6;
+            --badge-border: rgba(86, 86, 86, 0.12);
+            --badge-text: #4d4d4d;
+        }
+
+        .category-tab.all-category {
+            --tab-bg: #f5f5f5;
+            --tab-border: #dcdcdc;
+            --badge-bg: #eaeaea;
+            --badge-border: rgba(0, 0, 0, 0.05);
+            --badge-text: #555555;
+            padding: 9px 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            margin-left: 4px;
+            padding: 0 5px;
+            border-radius: 10px;
+            background: var(--badge-bg, #e9e9e9);
+            color: var(--badge-text, #555);
+            border: 1px solid var(--badge-border, rgba(0, 0, 0, 0.05));
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .category-tab.active .badge {
+            background: var(--badge-bg, rgba(0, 0, 0, 0.08));
+        }
 
         /* =========================================
            選択時操作バー
         ========================================= */
 
         .selection-toolbar {
-
-            display: none;
-
+            display: flex;
+            visibility: hidden;
             align-items: center;
-
             gap: 8px;
-
             background: #fff;
-
             padding: 10px 12px;
-
             margin-bottom: 8px;
-
             border-radius: 10px;
-
-            box-shadow:
-                    0 2px 8px rgba(0, 0, 0, 0.07);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
         }
-
 
         .selection-toolbar.show {
-
-            display: flex;
+            visibility: visible;
         }
-
 
         .selected-count {
-
             margin-right: auto;
-
             font-size: 13px;
-
             font-weight: bold;
-
             white-space: nowrap;
         }
-
 
         .toolbar-button {
-
             border: 1px solid #ddd;
-
             background: #fff;
-
             padding: 7px 11px;
-
             border-radius: 6px;
-
             font-size: 12px;
-
             cursor: pointer;
-
             white-space: nowrap;
         }
 
-
         .toolbar-button:hover {
-
             background: #f5f5f5;
         }
 
-
         .toolbar-button.danger {
-
             color: #d64545;
-
             border-color: #e8b5b5;
         }
-
 
         /* =========================================
            テーブル
         ========================================= */
 
         .table-wrapper {
-
             background: #fff;
-
             border-radius: 12px;
-
             overflow: hidden;
-
-            box-shadow:
-                    0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
-
         .table-scroll {
-
             max-height: 480px;
-
             overflow-y: auto;
-
             overflow-x: hidden;
         }
 
-
         .food-table {
-
             width: 100%;
-
             table-layout: fixed;
-
             border-collapse: collapse;
         }
 
-
-        /* =========================================
-           テーブルヘッダー固定
-        ========================================= */
-
         .food-table thead {
-
             position: sticky;
-
             top: 0;
-
             z-index: 10;
-
             background: #fafafa;
         }
 
-
         .food-table th {
-
             padding: 13px 10px;
-
             color: #777;
-
             font-size: 12px;
-
             font-weight: normal;
-
             text-align: left;
-
             border-bottom: 1px solid #eee;
-
             white-space: nowrap;
         }
-
 
         .food-table td {
-
             padding: 14px 10px;
-
             font-size: 13px;
-
             border-bottom: 1px solid #eee;
-
             vertical-align: middle;
-
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
         }
 
-
         .food-table tbody tr:last-child td {
-
             border-bottom: none;
         }
 
+        .food-row {
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
 
-        .food-table tbody tr.selected {
+        .food-row:hover {
+            background: #fafafa;
+        }
 
+        .food-row.selected {
             background: #f8fbf8;
         }
-
-
-        /* =========================================
-           チェックボックス列
-           ★ 今回修正
-        ========================================= */
-
-        .col-check {
-
-            width: 42px;
-
-            text-align: center !important;
-
-            vertical-align: middle !important;
-        }
-
-
-        .col-check input[type="checkbox"] {
-
-            display: block;
-
-            margin: 0 auto;
-
-            cursor: pointer;
-        }
-
 
         /* =========================================
            カラム幅
         ========================================= */
 
-        .col-name {
-
-            width: 24%;
-        }
-
-
-        .col-quantity {
-
-            width: 12%;
-        }
-
-
-        .col-expiration {
-
-            width: 18%;
-        }
-
-
-        .col-memo {
-
-            width: 25%;
-        }
-
-
-        .col-favorite {
-
-            width: 10%;
-
+        .col-check {
+            width: 42px;
             text-align: center !important;
-
             vertical-align: middle !important;
         }
 
+        .col-name {
+            width: 22%;
+        }
+
+        .col-category {
+            width: 14%;
+        }
+
+        .col-quantity {
+            width: 12%;
+        }
+
+        .col-expiration {
+            width: 17%;
+        }
+
+        .col-memo {
+            width: 23%;
+        }
+
+        .col-favorite {
+            width: 10%;
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        .col-check input[type="checkbox"] {
+            display: block;
+            margin: 0 auto;
+            cursor: pointer;
+        }
 
         /* =========================================
            食材名
         ========================================= */
 
         .food-name {
-
             font-weight: bold;
         }
 
+        /* =========================================
+           カテゴリ表示
+        ========================================= */
+
+        .food-category {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .food-category.category-vegetable {
+            color: #3f8f4f;
+        }
+
+        .food-category.category-meat {
+            color: #d84b4b;
+        }
+
+        .food-category.category-fish {
+            color: #3f7fc4;
+        }
+
+        .food-category.category-seasoning {
+            color: #9a6a3a;
+        }
+
+        .food-category.category-leftover {
+            color: #8a5fb5;
+        }
+
+        .food-category.category-drink {
+            color: #4f8fc4;
+        }
+
+        .food-category.category-preserved {
+            color: #c18a16;
+        }
+
+        .food-category.category-other {
+            color: #777777;
+        }
 
         /* =========================================
            期限
         ========================================= */
 
         .expiration-date {
-
             font-weight: bold;
         }
 
-
         .expiration-soon {
-
             color: #e08a00;
         }
 
-
         .expiration-expired {
-
             color: #d64545;
         }
-
-
-        .remaining-days {
-
-            display: block;
-
-            margin-top: 3px;
-
-            font-size: 10px;
-
-            color: #999;
-        }
-
 
         /* =========================================
            メモ
         ========================================= */
 
         .memo {
-
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
         }
 
-
         /* =========================================
            お気に入り
-           ★ ハートに変更
         ========================================= */
 
         .favorite-button {
-
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border: none;
-
             background: transparent;
-
-            font-size: 20px;
-
-            line-height: 1;
-
+            border-radius: 50%;
             cursor: pointer;
-
-            padding: 2px;
+            font-size: 18px;
+            color: #bbb;
+            transition: color 0.15s, background-color 0.15s, transform 0.15s;
         }
 
+        .favorite-button:hover {
+            background: #f5f5f5;
+        }
+
+        .favorite-button.active {
+            color: #e5ad21;
+        }
+
+        .favorite-button.loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .favorite-button:active {
+            transform: scale(0.9);
+        }
+
+        .favorite-button.loading i {
+            animation: favorite-loading 0.7s linear infinite;
+        }
+
+        @keyframes favorite-loading {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* =========================================
            モーダル
         ========================================= */
 
         .modal-overlay {
-
             display: none;
-
             position: fixed;
-
             inset: 0;
-
             z-index: 2000;
-
-            background:
-                    rgba(0, 0, 0, 0.45);
-
+            background: rgba(0, 0, 0, 0.45);
             align-items: center;
-
             justify-content: center;
-
             padding: 20px;
         }
 
-
         .modal-overlay.show {
-
             display: flex;
         }
-
 
         .edit-modal {
-
             width: 100%;
-
             max-width: 460px;
-
             background: #fff;
-
             border-radius: 16px;
-
             padding: 24px;
-
-            box-shadow:
-                    0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-
         .modal-header {
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             margin-bottom: 20px;
         }
 
-
         .modal-title {
-
             margin: 0;
-
             font-size: 18px;
         }
 
-
         .modal-progress {
-
             display: block;
-
             margin-top: 4px;
-
             font-size: 12px;
-
             color: #888;
         }
 
-
         .modal-close {
-
             border: none;
-
             background: transparent;
-
             font-size: 22px;
-
             color: #777;
-
             cursor: pointer;
         }
-
 
         /* =========================================
            フォーム
         ========================================= */
 
         .form-group {
-
             margin-bottom: 16px;
         }
 
-
         .form-label {
-
             display: block;
-
             margin-bottom: 6px;
-
             font-size: 12px;
-
             color: #666;
         }
 
-
         .form-input {
-
             width: 100%;
-
             height: 40px;
-
             padding: 0 12px;
-
             border: 1px solid #ddd;
-
             border-radius: 8px;
-
             font-size: 14px;
-
             outline: none;
         }
-
 
         .form-textarea {
-
             width: 100%;
-
             min-height: 80px;
-
             padding: 10px 12px;
-
             border: 1px solid #ddd;
-
             border-radius: 8px;
-
             font-size: 14px;
-
             resize: vertical;
-
             outline: none;
         }
-
 
         .form-input:focus,
         .form-textarea:focus {
-
             border-color: #999;
         }
-
 
         /* =========================================
            モーダルボタン
         ========================================= */
 
         .modal-actions {
-
             display: flex;
-
             justify-content: flex-end;
-
             gap: 8px;
-
             margin-top: 22px;
         }
 
-
         .modal-button {
-
             padding: 9px 16px;
-
             border-radius: 8px;
-
             border: 1px solid #ddd;
-
             background: #fff;
-
             font-size: 13px;
-
             cursor: pointer;
         }
 
-
         .modal-button.primary {
-
             border-color: #4caf50;
-
             background: #4caf50;
-
             color: #fff;
         }
-
-
-        /* =========================================
-           下部ナビ
-        ========================================= */
-
-        .bottom-navigation {
-
-            position: fixed;
-
-            bottom: 0;
-
-            left: 0;
-
-            width: 100%;
-
-            height: 72px;
-
-            background: #fff;
-
-            border-top: 1px solid #e5e5e5;
-
-            display: flex;
-
-            justify-content: space-around;
-
-            align-items: center;
-
-            z-index: 1000;
-        }
-
-
-        .nav-item {
-
-            flex: 1;
-
-            height: 100%;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-            align-items: center;
-
-            gap: 4px;
-
-            text-decoration: none;
-
-            color: #777;
-
-            font-size: 11px;
-        }
-
-
-        .nav-icon {
-
-            font-size: 22px;
-
-            line-height: 1;
-        }
-
-
-        .nav-item.active {
-
-            color: #333;
-
-            font-weight: bold;
-        }
-
-
-        /* =========================================
-           追加ボタン
-        ========================================= */
-
-        .nav-add {
-
-            position: relative;
-
-            top: -22px;
-
-            width: 58px;
-
-            height: 58px;
-
-            border-radius: 50%;
-
-            background: #4caf50;
-
-            color: #fff;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            text-decoration: none;
-
-            font-size: 28px;
-
-            box-shadow:
-                    0 4px 12px rgba(0, 0, 0, 0.2);
-
-            border: 4px solid #f7f7f7;
-        }
-
-
-        .nav-add-label {
-
-            position: absolute;
-
-            top: 62px;
-
-            color: #777;
-
-            font-size: 11px;
-
-            white-space: nowrap;
-        }
-
-
-        /* =========================================
-           PC
-        ========================================= */
-
-        @media (min-width: 601px) {
-
-            .bottom-navigation {
-
-                max-width: 600px;
-
-                left: 50%;
-
-                transform: translateX(-50%);
-
-                border-radius: 16px 16px 0 0;
-
-                box-shadow:
-                        0 -2px 10px rgba(0, 0, 0, 0.08);
-            }
-        }
-
 
         /* =========================================
            スマホ
         ========================================= */
 
         @media (max-width: 600px) {
-
             .food-list-page {
-
-                padding:
-                        20px 12px;
+                padding: 20px 12px;
             }
 
-
             .page-title {
-
                 font-size: 22px;
             }
 
-
             .search-box {
-
                 width: 220px;
             }
 
-
             .table-scroll {
-
                 max-height: 520px;
             }
 
-
             .food-table th,
             .food-table td {
-
-                padding:
-                        11px 5px;
+                padding: 11px 5px;
             }
 
-
             .food-table th {
-
                 font-size: 10px;
             }
 
-
             .food-table td {
-
                 font-size: 11px;
             }
 
-
             .col-check {
-
                 width: 32px;
             }
 
-
             .col-name {
-
                 width: 23%;
             }
 
+            .col-category {
+                width: 14%;
+            }
 
             .col-quantity {
-
                 width: 11%;
             }
 
-
             .col-expiration {
-
                 width: 17%;
             }
 
-
             .col-memo {
-
-                width: 25%;
+                width: 23%;
             }
 
-
             .col-favorite {
-
                 width: 10%;
             }
 
-
             .selection-toolbar {
-
                 gap: 4px;
-
-                padding:
-                        8px;
+                padding: 8px;
             }
 
-
             .toolbar-button {
-
-                padding:
-                        7px 7px;
-
+                padding: 7px 7px;
                 font-size: 10px;
             }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+<main class="dashboard">
 
-<main class="food-list-page">
+    <header class="dashboard-header">
 
-
-    <!-- =========================================
-         タイトル
-    ========================================== -->
-
-    <h1 class="page-title">
-        食材一覧
-    </h1>
-
-
-    <!-- =========================================
-         検索
-    ========================================== -->
-
-    <div class="search-box">
-
-        <input
-                type="text"
-                placeholder="🔍 食材を検索">
-
-    </div>
-
-
-    <!-- =========================================
-         カテゴリー
-    ========================================== -->
-
-    <div class="category-tabs">
-
-
-        <button class="category-tab active">
-
-            すべて
-
-            <span class="badge">
-                32
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            野菜
-
-            <span class="badge">
-                10
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            肉
-
-            <span class="badge">
-                6
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            魚
-
-            <span class="badge">
-                4
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            乳製品
-
-            <span class="badge">
-                5
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            果物
-
-            <span class="badge">
-                4
-            </span>
-
-        </button>
-
-
-        <button class="category-tab">
-
-            その他
-
-            <span class="badge">
-                3
-            </span>
-
-        </button>
-
-
-    </div>
-
-
-    <!-- =========================================
-         選択時操作バー
-    ========================================== -->
-
-    <div
-            id="selectionToolbar"
-            class="selection-toolbar">
-
-
-        <span
-                id="selectedCount"
-                class="selected-count">
-
-            0件選択中
-
-        </span>
-
-
-        <button
-                id="editSelectedButton"
-                class="toolbar-button">
-
-            編集
-
-        </button>
-
-
-        <button
-                class="toolbar-button">
-
-            買い物リストへ追加
-
-        </button>
-
-
-        <button
-                class="toolbar-button">
-
-            消費済み
-
-        </button>
-
-
-        <button
-                class="toolbar-button danger">
-
-            削除
-
-        </button>
-
-
-    </div>
-
-
-    <!-- =========================================
-         テーブル
-    ========================================== -->
-
-    <div class="table-wrapper">
-
-
-        <div class="table-scroll">
-
-
-            <table class="food-table">
-
-
-                <thead>
-
-                <tr>
-
-
-                    <th class="col-check">
-
-                        <input
-                                type="checkbox"
-                                id="selectAll">
-
-                    </th>
-
-
-                    <th class="col-name">
-                        食材名
-                    </th>
-
-
-                    <th class="col-quantity">
-                        量
-                    </th>
-
-
-                    <th class="col-expiration">
-                        期限
-                    </th>
-
-
-                    <th class="col-memo">
-                        メモ
-                    </th>
-
-
-                    <th class="col-favorite">
-                        お気に入り
-                    </th>
-
-
-                </tr>
-
-                </thead>
-
-
-                <tbody>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                牛乳
-                            </span>
-                    </td>
-
-
-                    <td>
-                        1本
-                    </td>
-
-
-                    <td>
-
-                            <span
-                                    class="expiration-date expiration-soon">
-
-                                8/20
-
-                            </span>
-
-                        <span class="remaining-days">
-                                あと1日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            朝食用
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♥
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                豆腐
-                            </span>
-                    </td>
-
-
-                    <td>
-                        2個
-                    </td>
-
-
-                    <td>
-
-                            <span
-                                    class="expiration-date expiration-soon">
-
-                                8/21
-
-                            </span>
-
-                        <span class="remaining-days">
-                                あと2日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            冷蔵庫
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♡
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                豚肉
-                            </span>
-                    </td>
-
-
-                    <td>
-                        300g
-                    </td>
-
-
-                    <td>
-
-                            <span class="expiration-date">
-                                8/25
-                            </span>
-
-                        <span class="remaining-days">
-                                あと6日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            冷凍保存
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♥
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                食パン
-                            </span>
-                    </td>
-
-
-                    <td>
-                        1袋
-                    </td>
-
-
-                    <td>
-
-                            <span
-                                    class="expiration-date expiration-expired">
-
-                                8/18
-
-                            </span>
-
-                        <span class="remaining-days">
-                                期限切れ
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            開封済み
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♡
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                卵
-                            </span>
-                    </td>
-
-
-                    <td>
-                        10個
-                    </td>
-
-
-                    <td>
-
-                            <span class="expiration-date">
-                                8/27
-                            </span>
-
-                        <span class="remaining-days">
-                                あと8日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            冷蔵保存
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♥
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                キャベツ
-                            </span>
-                    </td>
-
-
-                    <td>
-                        1玉
-                    </td>
-
-
-                    <td>
-
-                            <span class="expiration-date">
-                                8/30
-                            </span>
-
-                        <span class="remaining-days">
-                                あと11日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            野菜室
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♡
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                トマト
-                            </span>
-                    </td>
-
-
-                    <td>
-                        3個
-                    </td>
-
-
-                    <td>
-
-                            <span class="expiration-date">
-                                9/1
-                            </span>
-
-                        <span class="remaining-days">
-                                あと13日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            野菜室
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♥
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="col-check">
-
-                        <input
-                                type="checkbox"
-                                class="row-check">
-
-                    </td>
-
-
-                    <td>
-                            <span class="food-name">
-                                ヨーグルト
-                            </span>
-                    </td>
-
-
-                    <td>
-                        2個
-                    </td>
-
-
-                    <td>
-
-                            <span class="expiration-date">
-                                9/3
-                            </span>
-
-                        <span class="remaining-days">
-                                あと15日
-                            </span>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="memo">
-                            朝食用
-                        </div>
-
-                    </td>
-
-
-                    <td class="col-favorite">
-
-                        <button
-                                class="favorite-button">
-
-                            ♡
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-
-                </tbody>
-
-
-            </table>
-
-
+        <div class="page-title-area">
+            <h1 class="page-title">
+                Items index
+            </h1>
         </div>
 
+        <div class="user-info-area">
 
-    </div>
+            <div class="user-area">
 
+                <!-- ログインユーザー名 -->
+                <p class="user-name"
+                   th:text="|${#authentication.name} さん|">
+                    河村さん
+                </p>
 
-</main>
-
-
-<!-- =========================================
-     編集モーダル
-========================================== -->
-
-<div
-        id="editModal"
-        class="modal-overlay">
-
-
-    <div class="edit-modal">
-
-
-        <div class="modal-header">
-
-
-            <div>
-
-                <h2 class="modal-title">
-                    食材を編集
-                </h2>
-
-                <span
-                        id="modalProgress"
-                        class="modal-progress">
-
-                    1 / 1
-
-                </span>
+                <!-- 食材一覧用メッセージ -->
+                <p class="user-message">
+                   食材一覧を確認しましょう
+                </p>
 
             </div>
 
+            <!-- ログアウト -->
+            <form th:action="@{/logout}"
+                  method="post"
+                  style="display:inline;">
 
-            <button
-                    id="closeModal"
-                    class="modal-close">
+                <button class="logout-button"
+                        type="submit">
 
-                ×
+                    <span class="logout-icon">↪</span>
+                    ログアウト
 
-            </button>
+                </button>
 
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label class="form-label">
-                食材名
-            </label>
-
-            <input
-                    id="editFoodName"
-                    class="form-input"
-                    type="text">
+            </form>
 
         </div>
 
-
-        <div class="form-group">
-
-            <label class="form-label">
-                量
-            </label>
-
-            <input
-                    id="editQuantity"
-                    class="form-input"
-                    type="text">
-
-        </div>
+    </header>
 
 
-        <div class="form-group">
+        <!-- 検索 -->
+    <div class="search-box">
+        <input id="searchInput"
+               type="text"
+               placeholder="🔍 食材を検索">
+    </div>
 
-            <label class="form-label">
-                期限
-            </label>
+    <!-- カテゴリ -->
+    <div class="category-tabs">
 
-            <input
-                    id="editExpiration"
-                    class="form-input"
-                    type="date">
+        <!-- すべてタブ -->
+        <button type="button"
+                class="category-tab all-category active"
+                data-category="all">
+            すべて
+            <span class="badge" th:text="${totalCount}">0</span>
+        </button>
 
-        </div>
-
-
-        <div class="form-group">
-
-            <label class="form-label">
-                メモ
-            </label>
-
-            <textarea
-                    id="editMemo"
-                    class="form-textarea"></textarea>
-
-        </div>
-
-
-        <div class="modal-actions">
-
-
-            <button
-                    id="saveNextButton"
-                    class="modal-button primary">
-
-                保存して次へ
-
-            </button>
-
-
-        </div>
-
+        <!-- カテゴリータブ -->
+        <button type="button"
+                th:each="cat : ${categories}"
+                class="category-tab"
+                th:attr="data-category=${cat.id},data-category-name=${cat.name}">
+            <span th:text="${cat.name}">カテゴリ名</span>
+            <span class="badge" th:text="${categoryCounts[cat.id] != null ? categoryCounts[cat.id] : 0}">0</span>
+        </button>
 
     </div>
 
+
+    <!-- 選択時操作バー -->
+    <div id="selectionToolbar"
+         class="selection-toolbar">
+
+        <span id="selectedCount"
+              class="selected-count">
+            0件選択中
+        </span>
+
+        <button type="button"
+                id="editSelectedButton"
+                class="toolbar-button">
+            編集
+        </button>
+
+        <button type="button"
+                class="toolbar-button">
+            買い物リストへ追加
+        </button>
+
+        <button type="button"
+                class="toolbar-button">
+            消費済み
+        </button>
+
+        <button type="button"
+                class="toolbar-button danger">
+            削除
+        </button>
+
+    </div>
+
+    <!-- テーブル -->
+    <div class="table-wrapper">
+
+        <div class="table-scroll">
+
+            <table class="food-table">
+
+                <thead>
+                <tr>
+                    <th class="col-check">
+                        <input type="checkbox" id="selectAll">
+                    </th>
+                    <th class="col-name">食材名</th>
+                    <th class="col-quantity">量</th>
+                    <th class="col-expiration">期限</th>
+                    <th class="col-memo">メモ</th>
+                    <th class="col-favorite">お気に入り</th>
+                </tr>
+                </thead>
+
+                <tbody th:if="${items}" th:each="item : ${items}">
+
+                    <tr class="food-row"
+                        th:attr="data-category=${item.categoryId},data-category-name=${item.categoryName},data-name=${item.name}">
+
+                        <td class="col-check">
+                            <input type="checkbox" class="row-check" th:value="${item.id}">
+                        </td>
+
+                        <td>
+                            <span class="food-name" th:text="${item.name}">食材名</span>
+                        </td>
+
+                        <td th:text="${item.amount}">量</td>
+
+                        <td>
+                            <span class="expiration-date" th:classappend="${item.deadline != null}? '':''" th:text="${item.deadline}">期限</span>
+                        </td>
+
+                        <td>
+                            <div class="memo" th:text="${item.others}">メモ</div>
+                        </td>
+
+                        <td class="col-favorite">
+                            <button type="button"
+                                    class="favorite-button"
+                                    th:classappend="${item.favorite}? ' active' : ''"
+                                    th:attr="aria-label=${item.favorite}? 'お気に入り解除' : 'お気に入り登録', aria-pressed=${item.favorite}">
+                                <i class="fa-solid fa-star"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</main>
+
+<!-- 編集モーダル -->
+<div id="editModal"
+     class="modal-overlay">
+
+    <div class="edit-modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2 class="modal-title">食材を編集</h2>
+
+                <span id="modalProgress"
+                      class="modal-progress">
+                    1 / 1
+                </span>
+            </div>
+
+            <button type="button"
+                    id="closeModal"
+                    class="modal-close">
+                ×
+            </button>
+
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">食材名</label>
+
+            <input id="editFoodName"
+                   class="form-input"
+                   type="text">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">量</label>
+
+            <input id="editQuantity"
+                   class="form-input"
+                   type="text">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">期限</label>
+
+            <input id="editExpiration"
+                   class="form-input"
+                   type="date">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">メモ</label>
+
+            <textarea id="editMemo"
+                      class="form-textarea"></textarea>
+        </div>
+
+        <div class="modal-actions">
+
+            <button type="button"
+                    id="saveNextButton"
+                    class="modal-button primary">
+                保存して次へ
+            </button>
+
+        </div>
+    </div>
 </div>
 
-
-<!-- =========================================
-     下部ナビ
-========================================== -->
-
-<nav class="bottom-navigation">
-
-
-    <a href="#" class="nav-item">
-
-        <span class="nav-icon">
-            🏠
-        </span>
-
-        <span>
-            ダッシュボード
-        </span>
-
-    </a>
-
-
-    <a href="#" class="nav-item active">
-
-        <span class="nav-icon">
-            🥕
-        </span>
-
-        <span>
-            食材一覧
-        </span>
-
-    </a>
-
-
-    <a href="#" class="nav-add">
-
-        ＋
-
-        <span class="nav-add-label">
-            追加
-        </span>
-
-    </a>
-
-
-    <a href="#" class="nav-item">
-
-        <span class="nav-icon">
-            🍳
-        </span>
-
-        <span>
-            レシピ
-        </span>
-
-    </a>
-
-
-    <a href="#" class="nav-item">
-
-        <span class="nav-icon">
-            🛒
-        </span>
-
-        <span>
-            買い物リスト
-        </span>
-
-    </a>
-
-
-</nav>
-
+<!-- 下部ナビゲーション -->
+<div th:replace="~{fragments/bottom-navigation :: bottomNavigation}">
+</div>
 
 <script>
+    /* =========================================
+       共通UI処理
+    ========================================= */
 
+    document.addEventListener("DOMContentLoaded", () => {
+        const modalOverlays = document.querySelectorAll(
+            ".modal-overlay, .shopping-modal-overlay"
+        );
+
+        modalOverlays.forEach(modal => {
+            modal.addEventListener("click", event => {
+                if (event.target !== modal) {
+                    return;
+                }
+
+                modal.classList.remove("show");
+            });
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key !== "Escape") {
+                return;
+            }
+
+            document.querySelectorAll(".modal-overlay.show").forEach(modal => {
+                modal.classList.remove("show");
+            });
+
+            document.querySelectorAll(".shopping-modal-overlay.show").forEach(modal => {
+                modal.classList.remove("show");
+            });
+        });
+    });
 
     /* =========================================
        要素取得
     ========================================= */
 
-    const selectAll =
-        document.getElementById("selectAll");
+    const selectAll = document.getElementById("selectAll");
+    const selectionToolbar = document.getElementById("selectionToolbar");
+    const selectedCount = document.getElementById("selectedCount");
+    const editSelectedButton = document.getElementById("editSelectedButton");
+    const editModal = document.getElementById("editModal");
+    const closeModal = document.getElementById("closeModal");
+    const saveNextButton = document.getElementById("saveNextButton");
+    const modalProgress = document.getElementById("modalProgress");
+    const editFoodName = document.getElementById("editFoodName");
+    const editQuantity = document.getElementById("editQuantity");
+    const editExpiration = document.getElementById("editExpiration");
+    const editMemo = document.getElementById("editMemo");
+    const searchInput = document.getElementById("searchInput");
+    const categoryTabs = document.querySelectorAll(".category-tab");
+    const foodRows = document.querySelectorAll(".food-row");
+    const rowChecks = document.querySelectorAll(".row-check");
 
+    const categoryColorMap = {
+        "野菜": { tabBg: '#e9f5eb', border: '#bcd9bf', badgeBg: '#cfead5', badgeText: '#4d7e55' },
+        "肉": { tabBg: '#fbeaea', border: '#efbcbc', badgeBg: '#f5d4d4', badgeText: '#8a3d3d' },
+        "魚": { tabBg: '#eaf2fb', border: '#bdd4ee', badgeBg: '#cfe0ff', badgeText: '#2d5da8' },
+        "調味料": { tabBg: '#f7eee6', border: '#dec7b1', badgeBg: '#f0d9c0', badgeText: '#7c5430' },
+        "残り物": { tabBg: '#f1eafa', border: '#d2bfe6', badgeBg: '#e0d1fa', badgeText: '#5b3e92' },
+        "飲み物": { tabBg: '#eaf4fb', border: '#bed9eb', badgeBg: '#d4ebff', badgeText: '#2b5e8d' },
+        "保存食": { tabBg: '#fcf4df', border: '#ead39a', badgeBg: '#f3df9a', badgeText: '#7a5d1d' },
+        "その他": { tabBg: '#f1f1f1', border: '#d5d5d5', badgeBg: '#dfe3e6', badgeText: '#4d4d4d' }
+    };
 
-    const rowChecks =
-        document.querySelectorAll(".row-check");
+    function applyCategoryTabColor(tab) {
+        const categoryName = tab.dataset.categoryName || tab.textContent.trim();
+        const palette = categoryColorMap[categoryName];
 
+        if (!palette) {
+            return;
+        }
 
-    const selectionToolbar =
-        document.getElementById("selectionToolbar");
+        tab.style.setProperty('--tab-bg', palette.tabBg);
+        tab.style.setProperty('--tab-border', palette.border);
+        tab.style.setProperty('--badge-bg', palette.badgeBg);
+        tab.style.setProperty('--badge-text', palette.badgeText);
+        tab.style.setProperty('--badge-border', 'rgba(0, 0, 0, 0.08)');
+    }
 
-
-    const selectedCount =
-        document.getElementById("selectedCount");
-
-
-    const editSelectedButton =
-        document.getElementById("editSelectedButton");
-
-
-    const editModal =
-        document.getElementById("editModal");
-
-
-    const closeModal =
-        document.getElementById("closeModal");
-
-
-    const saveNextButton =
-        document.getElementById("saveNextButton");
-
-
-    const modalProgress =
-        document.getElementById("modalProgress");
-
-
-    const editFoodName =
-        document.getElementById("editFoodName");
-
-
-    const editQuantity =
-        document.getElementById("editQuantity");
-
-
-    const editMemo =
-        document.getElementById("editMemo");
-
+    categoryTabs.forEach(tab => applyCategoryTabColor(tab));
 
     let editingItems = [];
-
     let editingIndex = 0;
+    let selectedCategories = new Set();
 
+    /* =========================================
+       レコード全体選択
+    ========================================= */
+
+    foodRows.forEach(row => {
+        row.addEventListener("click", event => {
+            if (event.target.closest(".row-check")) {
+                return;
+            }
+
+            if (event.target.closest(".favorite-button")) {
+                return;
+            }
+
+            const checkbox = row.querySelector(".row-check");
+            checkbox.checked = !checkbox.checked;
+
+            updateSelection();
+        });
+    });
 
     /* =========================================
        選択状態更新
     ========================================= */
 
     function updateSelection() {
+        const visibleRows = Array.from(foodRows).filter(
+            row => row.style.display !== "none"
+        );
 
+        const selectedRows = Array.from(rowChecks).filter(
+            checkbox => checkbox.checked
+        );
 
-        const selected =
-            document.querySelectorAll(
-                ".row-check:checked"
-            );
+        const count = selectedRows.length;
 
-
-        const count =
-            selected.length;
-
-
-        rowChecks.forEach(check => {
-
-            const row =
-                check.closest("tr");
+        foodRows.forEach(row => {
+            const checkbox = row.querySelector(".row-check");
 
             row.classList.toggle(
                 "selected",
-                check.checked
+                checkbox.checked
             );
-
         });
 
-
         if (count > 0) {
-
-            selectionToolbar.classList.add(
-                "show"
-            );
-
-            selectedCount.textContent =
-                count + "件選択中";
-
+            selectionToolbar.classList.add("show");
+            selectedCount.textContent = count + "件選択中";
         } else {
-
-            selectionToolbar.classList.remove(
-                "show"
-            );
-
+            selectionToolbar.classList.remove("show");
         }
 
-
         selectAll.checked =
-            rowChecks.length > 0 &&
-            Array.from(rowChecks)
-                .every(
-                    checkbox =>
-                        checkbox.checked
-                );
+            visibleRows.length > 0 &&
+            visibleRows.every(
+                row => row.querySelector(".row-check").checked
+            );
 
+        selectAll.indeterminate =
+            visibleRows.some(
+                row => row.querySelector(".row-check").checked
+            ) && !selectAll.checked;
     }
-
 
     /* =========================================
        全選択
     ========================================= */
 
-    selectAll.addEventListener(
-        "change",
-        function () {
+    selectAll.addEventListener("change", () => {
+        const visibleRows = Array.from(foodRows).filter(
+            row => row.style.display !== "none"
+        );
 
-            rowChecks.forEach(
-                checkbox => {
+        visibleRows.forEach(row => {
+            const checkbox = row.querySelector(".row-check");
+            checkbox.checked = selectAll.checked;
+        });
 
-                    checkbox.checked =
-                        selectAll.checked;
-
-                }
-            );
-
-            updateSelection();
-
-        }
-    );
-
+        updateSelection();
+    });
 
     /* =========================================
        個別選択
     ========================================= */
 
-    rowChecks.forEach(
-        checkbox => {
+    rowChecks.forEach(checkbox => {
+        checkbox.addEventListener("change", updateSelection);
+    });
 
-            checkbox.addEventListener(
-                "change",
-                updateSelection
-            );
+    /* =========================================
+       カテゴリ選択
+    ========================================= */
 
-        }
-    );
+    categoryTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const category = tab.dataset.category;
 
+            if (category === "all") {
+                selectedCategories.clear();
+
+                categoryTabs.forEach(categoryTab => {
+                    categoryTab.classList.remove("active");
+                });
+
+                tab.classList.add("active");
+                applyFilters();
+
+                return;
+            }
+
+            document.querySelector(
+                '.category-tab[data-category="all"]'
+            ).classList.remove("active");
+
+            if (selectedCategories.has(category)) {
+                selectedCategories.delete(category);
+                tab.classList.remove("active");
+            } else {
+                selectedCategories.add(category);
+                tab.classList.add("active");
+            }
+
+            if (selectedCategories.size === 0) {
+                document.querySelector(
+                    '.category-tab[data-category="all"]'
+                ).classList.add("active");
+            }
+
+            applyFilters();
+        });
+    });
+
+    /* =========================================
+       検索
+    ========================================= */
+
+    searchInput.addEventListener("input", applyFilters);
+
+    /* =========================================
+       フィルタ適用
+    ========================================= */
+
+    function applyFilters() {
+        const keyword = searchInput.value.trim().toLowerCase();
+
+        foodRows.forEach(row => {
+            const category = row.dataset.category;
+            const name = row.dataset.name.toLowerCase();
+
+            const categoryMatched =
+                selectedCategories.size === 0 ||
+                selectedCategories.has(category);
+
+            const searchMatched =
+                keyword === "" ||
+                name.includes(keyword);
+
+            row.style.display =
+                categoryMatched && searchMatched
+                    ? ""
+                    : "none";
+        });
+
+        updateSelection();
+    }
+
+    /* =========================================
+       お気に入り
+       非同期モック
+    ========================================= */
+
+    document.querySelectorAll(".favorite-button").forEach(button => {
+        button.addEventListener("click", async event => {
+            event.stopPropagation();
+
+            const currentState =
+                button.classList.contains("active");
+
+            const newState = !currentState;
+
+            button.classList.add("loading");
+
+            try {
+                await mockFavoriteRequest(newState);
+
+                button.classList.toggle(
+                    "active",
+                    newState
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    String(newState)
+                );
+
+                button.setAttribute(
+                    "aria-label",
+                    newState
+                        ? "お気に入り解除"
+                        : "お気に入り登録"
+                );
+            } catch (error) {
+                console.error(
+                    "お気に入り更新に失敗しました。",
+                    error
+                );
+            } finally {
+                button.classList.remove("loading");
+            }
+        });
+    });
+
+    /* =========================================
+       お気に入り更新モック
+    ========================================= */
+
+    function mockFavoriteRequest(favorite) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                console.log(
+                    "お気に入り更新:",
+                    favorite
+                );
+
+                resolve();
+            }, 300);
+        });
+    }
 
     /* =========================================
        編集開始
     ========================================= */
 
-    editSelectedButton.addEventListener(
-        "click",
-        function () {
+    editSelectedButton.addEventListener("click", () => {
+        const selectedRows = Array.from(
+            document.querySelectorAll(".row-check:checked")
+        );
 
-
-            const selectedRows =
-                Array.from(
-                    document.querySelectorAll(
-                        ".row-check:checked"
-                    )
-                );
-
-
-            if (
-                selectedRows.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            editingItems =
-                selectedRows.map(
-                    checkbox => {
-
-                        const row =
-                            checkbox.closest(
-                                "tr"
-                            );
-
-
-                        return {
-
-                            name:
-                                row
-                                    .querySelector(
-                                        ".food-name"
-                                    )
-                                    .textContent
-                                    .trim(),
-
-                            quantity:
-                                row.cells[2]
-                                    .textContent
-                                    .trim(),
-
-                            memo:
-                                row
-                                    .querySelector(
-                                        ".memo"
-                                    )
-                                    .textContent
-                                    .trim(),
-
-                            row:
-                            row
-
-                        };
-
-                    }
-                );
-
-
-            editingIndex = 0;
-
-
-            showEditItem();
-
+        if (selectedRows.length === 0) {
+            return;
         }
-    );
 
+        editingItems = selectedRows.map(checkbox => {
+            const row = checkbox.closest("tr");
+
+            return {
+                name: row.querySelector(".food-name").textContent.trim(),
+                quantity: row.cells[3].textContent.trim(),
+                expiration: row.cells[4].textContent.trim(),
+                memo: row.querySelector(".memo").textContent.trim(),
+                row: row
+            };
+        });
+
+        editingIndex = 0;
+
+        showEditItem();
+    });
 
     /* =========================================
        編集画面表示
     ========================================= */
 
     function showEditItem() {
-
-
-        const item =
-            editingItems[
-                editingIndex
-                ];
-
+        const item = editingItems[editingIndex];
 
         modalProgress.textContent =
-            (editingIndex + 1)
-            + " / "
-            + editingItems.length;
+            (editingIndex + 1) +
+            " / " +
+            editingItems.length;
 
-
-        editFoodName.value =
-            item.name;
-
-
-        editQuantity.value =
-            item.quantity;
-
-
-        editMemo.value =
-            item.memo;
-
+        editFoodName.value = item.name;
+        editQuantity.value = item.quantity;
+        editMemo.value = item.memo;
 
         if (
-            editingIndex
-            ===
+            editingIndex ===
             editingItems.length - 1
         ) {
-
             saveNextButton.textContent =
                 "保存して完了";
-
         } else {
-
             saveNextButton.textContent =
                 "保存して次へ";
-
         }
 
-
-        editModal.classList.add(
-            "show"
-        );
-
+        editModal.classList.add("show");
     }
-
 
     /* =========================================
        保存
     ========================================= */
 
-    saveNextButton.addEventListener(
-        "click",
-        function () {
+    saveNextButton.addEventListener("click", () => {
+        const item = editingItems[editingIndex];
 
+        item.row.querySelector(".food-name").textContent =
+            editFoodName.value;
 
-            const item =
-                editingItems[
-                    editingIndex
-                    ];
+        item.row.cells[3].textContent =
+            editQuantity.value;
 
+        item.row.querySelector(".memo").textContent =
+            editMemo.value;
 
-            item.row
-                .querySelector(
-                    ".food-name"
-                )
-                .textContent =
-                editFoodName.value;
+        item.row.dataset.name =
+            editFoodName.value;
 
-
-            item.row.cells[2]
-                .textContent =
-                editQuantity.value;
-
-
-            item.row
-                .querySelector(
-                    ".memo"
-                )
-                .textContent =
-                editMemo.value;
-
-
-            if (
-                editingIndex
-                <
-                editingItems.length - 1
-            ) {
-
-                editingIndex++;
-
-                showEditItem();
-
-            } else {
-
-                closeEditModal();
-
-            }
-
+        if (
+            editingIndex <
+            editingItems.length - 1
+        ) {
+            editingIndex++;
+            showEditItem();
+        } else {
+            closeEditModal();
         }
-    );
-
+    });
 
     /* =========================================
        モーダルを閉じる
@@ -2217,19 +1340,17 @@
         closeEditModal
     );
 
-
     function closeEditModal() {
-
-        editModal.classList.remove(
-            "show"
-        );
-
+        editModal.classList.remove("show");
     }
 
+    /* =========================================
+       初期表示
+    ========================================= */
 
+    updateSelection();
 </script>
 
-
 </body>
-
 </html>
+```

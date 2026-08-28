@@ -601,3 +601,13 @@ button {
     .action-area { bottom: 78px; }
     .consume-button { min-height: 42px; padding: 0 18px; font-size: 12px; }
 }
+
+
+/* ========================================
+   買い物リスト画面 共通レイアウト
+======================================== */
+
+.shopping-list-page {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+}

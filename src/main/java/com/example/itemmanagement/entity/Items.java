@@ -23,6 +23,9 @@ public class Items {
 	@Size(max = 20, message = "量は20文字以内で入力してください")
 	private String amount;
 
+	@Size(max = 20, message = "前回購入量は20文字以内で入力してください")
+    private String purchaseAmount;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate deadline;
 

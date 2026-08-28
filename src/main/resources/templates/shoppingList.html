@@ -1,165 +1,522 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-	
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ff8c42">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <script defer src="/js/pwa.js"></script>
-	<link rel="stylesheet" th:href="@{/css/style.css}">
-	<link rel="stylesheet" th:href="@{/css/shopping-list.css}">
-	<link rel="stylesheet" th:href="@{/css/popup.css}">
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0">
 
-	<!-- Font Awesome -->
-	<link rel="stylesheet" 
-	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<title>賞味期限管理 - 買い物リスト</title>
 
+	<!-- ★ FontAwesome (アイコンライブラリ) の読み込みを追加 ★ -->
+	<link rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <title>買い物リスト</title>
+	<!-- 共通CSS -->
+	<link rel="stylesheet"
+	      th:href="@{/css/style.css}">
 
+	<!-- 共通ページCSS -->
+	<link rel="stylesheet"
+	      th:href="@{/css/common-page.css}">
+
+	<!-- 下部ナビゲーションCSS -->
+	<link rel="stylesheet"
+	      th:href="@{/css/bottom-navigation.css}">
+
+	<!-- カテゴリー用共通CSS -->
+	<link rel="stylesheet"
+	      th:href="@{/css/category.css}">
+
+	<!-- 買い物リスト固有CSS -->
+	<link rel="stylesheet"
+	      th:href="@{/css/shopping-list.css}">
 </head>
+
 <body>
-	<h1 class="shopping-title">📝 買い物リスト</h1>
 
-	<div class="memo-container">
-		<div class="bulk-actions">
-			<button type="button" class="button" onclick="openNewItemModal()">
-				<i class="fa-solid fa-plus"></i> 新規追加
+<main class="dashboard">
+
+	<!-- =========================
+         Header
+    ========================= -->
+
+	<header class="dashboard-header">
+
+		<div class="page-title-area">
+			<h1 class="page-title">
+				ShoppingList
+			</h1>
+		</div>
+
+		<div class="user-info-area">
+
+			<div class="user-area">
+
+				<!-- ログインユーザー名 -->
+				<p class="user-name"
+				   th:text="|${#authentication.name} さん|">
+					河村さん
+				</p>
+
+				<!-- 買い物リスト用メッセージ -->
+				<p class="user-message">
+					買い忘れのないようチェックしましょう
+				</p>
+
+			</div>
+
+			<!-- ログアウト -->
+			<form th:action="@{/logout}"
+			      method="post"
+			      style="display:inline;">
+
+				<button class="logout-button"
+				        type="submit">
+
+					<span class="logout-icon">↪</span>
+					ログアウト
+
+				</button>
+
+			</form>
+
+		</div>
+
+	</header>
+
+
+	<!-- =========================
+         Main
+    ========================= -->
+
+	<section class="shopping-list-container">
+
+		<!-- =========================
+             Add Buttons
+        ========================= -->
+
+		<section class="shopping-list-add-buttons">
+
+			<button type="button"
+			        class="shopping-list-add-button"
+			        id="openAddModalButton">
+
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+
+				新規追加
+
 			</button>
 
-			<button type="button" id="bulkDeleteBtn" class="button">
-				<i class="fa-solid fa-trash"></i> 削除
+
+			<button type="button"
+			        class="shopping-list-add-button"
+			        id="openFavoriteModalButton">
+
+                <span class="icon">
+                    <i class="fa-solid fa-star"></i>
+                </span>
+
+				お気に入り
+
 			</button>
 
-			<button type="button" id="bulkPurchaseBtn" class="button">
-				<i class="fa-solid fa-cart-shopping"></i> 購入済みにする
+
+			<button type="button"
+			        class="shopping-list-add-button"
+			        id="openFoodModalButton">
+
+				<span class="icon">
+                    <i class="fa-solid fa-clock"></i>
+                </span>
+
+				　購入履歴
+
+			</button>
+
+		</section>
+
+
+		<!-- =========================
+             Shopping List
+        ========================= -->
+
+		<section class="shopping-list-card">
+
+			<!-- List Header -->
+
+			<div class="shopping-list-header-row">
+
+				<div>
+					確認
+				</div>
+
+				<div>
+					食材
+				</div>
+
+				<div>
+					量
+				</div>
+
+			</div>
+
+
+			<!-- List -->
+
+			<div id="shoppingList">
+
+				<div class="shopping-item"
+				     th:each="item : ${slvm.listItems}"
+				     th:attr="data-id=${item.id},
+				     		  data-item-id=${item.itemId},
+         			          data-name=${item.name},
+         				      data-amount=${item.amount},
+         					  data-category-id=${item.categoryId},
+         					  data-favorite=${item.favorite}">
+
+					<div class="shopping-item__check">
+
+						<button type="button"
+						        class="shopping-check-button"
+						        th:attr="aria-label=${item.name + 'を購入済みにする'}">
+						</button>
+
+					</div>
+
+
+					<div class="shopping-item__food">
+
+						<div class="shopping-item__food-name"
+						     th:text="${item.name}">
+							食材名
+						</div>
+
+					</div>
+
+
+					<div class="shopping-item__quantity"
+					     th:text="${item.amount}">
+						量
+					</div>
+
+				</div>
+
+			</div>
+
+		</section>
+
+
+		<!-- =========================
+             Action Buttons
+        ========================= -->
+
+		<div class="shopping-list-action-area">
+
+			<button type="button"
+			        class="shopping-list-action-button shopping-list-purchase-button"
+			        id="purchaseButton">
+
+				✓ 購入済みにする
+
+			</button>
+
+
+			<button type="button"
+			        class="shopping-list-action-button shopping-list-delete-button"
+			        id="deleteButton">
+
+				🗑 削除
+
 			</button>
 
 		</div>
 
-	    <table id="shoppingListTable">
-	        <tr>
-				<th>
-				  <input type="checkbox" id="selectAllShopping">
-				</th>
-	            <th>食材</th>
-	            <th>量</th>
-	            <th class="hidden">カテゴリ</th>
-	            <th class="hidden">購入日</th>
-	            <th class="hidden">購入済み</th>
-				<th></th>
-	        </tr>
+	</section>
 
-	        <tr th:each="item : ${slvm.listItems}">
-				<td>
-				<input type="checkbox"
-		               class="shopping-checkbox"
-		               th:value="${item.id}"
-		               th:data-name="${item.name}"
-		               th:data-category-id="${item.categoryId}"
-		               th:data-favorite="${item.favorite}">
-				</td>
-	            <td>
-	                <span th:text="${item.name}"></span>
-	            </td>
-	            <td th:text="${item.amount}"></td>
-	            <td class="hidden" th:text="${item.categoryName}"></td>
-	            <td class="hidden" th:text="${item.purchaseDate}"></td>
-	            <td class="hidden" th:text="${item.purchasedFlg}"></td>
-	        </tr>
-	    </table>
-	</div>
-
-	<!-- 戻るボタン -->
-	<button type="button" onclick="goBack()" class="button">食材一覧へ戻る</button>
+</main>
 
 
-	<!-- ★購入済みポップアップ -->
-	<div id="purchasedModal" class="modal-overlay hidden">
-	    <div class="modal-content">
-	        <h2> 食材一覧へ登録</h2>
+<!-- =========================
+     Add Modal
+========================= -->
 
-			<div id="modalMessage" class="modal-message"></div>
+<div class="shopping-modal-overlay"
+     id="addModal">
 
-	        <form id="purchasedForm">
-	            <input type="hidden" name="shoppingListId" id="shoppingListId">
-				<input type="hidden" id="modalFavoriteField">
+	<div class="shopping-modal">
 
-	            <div>
-	                <label>食材名：</label>
-					<!-- ★JSでセット -->
-					 <input type="text" id="itemName" name="itemName" readonly>
-	            </div>
-				
-				<div>
-				    <label>カテゴリー：</label>
-				    <select id="categoryId" name="categoryId" required>
-				        <option value="">-- 選択してください --</option>
-				        <option th:each="cat : ${slvm.categories}"
-				                th:value="${cat.id}" 
-				                th:text="${cat.name}">
-				        </option>
-				    </select>
+		<h2>
+			食材を追加
+		</h2>
+
+		<p class="shopping-modal-description">
+			食材名と量を入力してください。
+		</p>
+
+		<div class="shopping-form-group">
+
+			<label for="newFoodName">
+				食材名
+			</label>
+
+			<input type="text"
+			       id="newFoodName"
+			       placeholder="例：キャベツ">
+
+		</div>
+
+		<div class="shopping-form-group">
+
+			<div class="shopping-new-quantity-row">
+
+				<!-- 量 -->
+				<div class="shopping-new-quantity-field">
+
+					<label for="newFoodQuantity">
+						量
+					</label>
+
+					<input type="number"
+					       id="newFoodQuantity"
+					       value="1"
+					       min="1"
+					       step="1">
+				</div>
+				<!-- 単位 -->
+				<div class="shopping-new-quantity-field">
+
+					<label for="newFoodUnit">
+						単位
+					</label>
+
+					<select id="newFoodUnit"
+					        class="shopping-new-unit-select">
+
+						<option value="">- 指定なし</option>
+						<option value="個">個</option>
+						<option value="パック">パック</option>
+						<option value="袋">袋</option>
+						<option value="g">g</option>
+						<option value="本">本</option>
+						<option value="箱">箱</option>
+
+					</select>
+
 				</div>
 
-	            <div>
-	                <label>量：</label>
-	                <input type="text" id="amount" name="amount" required>
-	            </div>
+			</div>
 
-	            <div>
-	                <label>期限：</label>
-	                <input type="date" id="deadline" name="deadline">
-	            </div>
+		</div>
 
-	            <div>
-	                <label>メモ：</label>
-	                <input type="text" id="others" name="others">
-	            </div>
+		<div class="shopping-form-group">
 
-				<div class="form-row">
-				</div>
+			<label for="newFoodCategory">
+				カテゴリー
+			</label>
 
-	            <div class="modal-buttons">
-	                <button type="button" onclick="submitPurchased()">食材一覧へ追加</button>
-	                <button type="button" onclick="closeModal()">キャンセル</button>
-	            </div>
-	        </form>
-	    </div>
-	</div>
-	
-	<!-- 新規追加用モーダル -->
-	<div id="newItemModal" class="modal-overlay hidden">
-	    <div class="modal-content">
-	        <h2>新しい食材を追加</h2>
+			<select id="newFoodCategory">
 
-			<div id="newItemModalMessage" class="modal-message"></div>
+				<option th:each="category : ${slvm.categories}"
+				        th:value="${category.id}"
+				        th:text="${category.name}">
+				</option>
 
-	        <form id="newItemForm">
-	            <div class="form-row">
-	                <label for="newItemName">購入するもの：</label>
-	                <input type="text" id="newItemName" name="name" required>
-	            </div>
+			</select>
 
-	            <div class="form-row">
-	                <label for="newItemAmount">量：</label>
-	                <input type="text" id="newItemAmount" name="amount" >  　<!-- 量　は必須入力にしない -->
-	            </div>
+		</div>
 
-	            <div class="modal-buttons">
-	                <button type="button" onclick="submitNewItem()">追加</button>
-	                <button type="button" onclick="closeNewItemModal()">キャンセル</button>
-	            </div>
-	        </form>
-	    </div>
+		<div class="shopping-modal-actions">
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-cancel"
+			        id="closeAddModalButton">
+				キャンセル
+			</button>
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-confirm"
+			        id="addFoodButton">
+				追加する
+			</button>
+
+		</div>
+
 	</div>
 
-	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-	<script src="/js/common.js"></script>
-	<script src="/js/shoppingList.js"></script>
+</div>
+
+
+<!-- =========================
+     Selection Modal
+========================= -->
+
+<!-- =========================
+     Selection Modal
+========================= -->
+
+<div class="shopping-modal-overlay"
+     id="selectionModal">
+
+	<div class="shopping-modal">
+
+		<h2 id="selectionTitle">
+			食材を選択
+		</h2>
+
+		<p class="shopping-modal-description">
+			追加する食材を選択してください。
+		</p>
+
+		<div class="shopping-selection-list"
+		     id="selectionList">
+		</div>
+
+		<div class="shopping-modal-actions">
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-cancel"
+			        id="closeSelectionModalButton">
+				キャンセル
+			</button>
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-confirm"
+			        id="selectionAddButton">
+				追加する
+			</button>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+<!-- =========================
+     Quantity Modal
+========================= -->
+
+<div class="shopping-modal-overlay"
+     id="quantityModal">
+
+	<div class="shopping-modal">
+
+		<h2 id="quantityTitle">
+			数量を入力
+		</h2>
+
+		<p class="shopping-modal-description">
+			買い物リストに追加する数量を入力してください。
+		</p>
+
+		<div class="shopping-quantity-input-area">
+
+			<input type="number"
+			       id="quantityInput"
+			       min="1"
+			       step="1">
+
+			<span id="quantityUnit">
+                個
+            </span>
+
+		</div>
+
+		<div class="shopping-modal-actions">
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-cancel"
+			        id="cancelQuantityButton">
+				キャンセル
+			</button>
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-confirm"
+			        id="confirmQuantityButton">
+				決定
+			</button>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+<!-- =========================
+     Purchase Confirmation
+========================= -->
+
+<div class="shopping-modal-overlay"
+     id="purchaseModal">
+
+	<div class="shopping-modal">
+
+		<h2>
+			購入した食材を確認
+		</h2>
+
+		<p class="shopping-modal-description">
+
+			以下の食材を購入済みとして
+			食材一覧へ追加します。
+
+			<br>
+
+			購入日は本日の日付を登録します。
+			期限は今後、ジャンルに応じて自動設定します。
+
+		</p>
+
+		<div class="shopping-confirm-list"
+		     id="confirmList">
+		</div>
+
+		<div class="shopping-modal-actions">
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-cancel"
+			        id="cancelPurchaseButton">
+				キャンセル
+			</button>
+
+			<button type="button"
+			        class="shopping-modal-button shopping-modal-button-confirm"
+			        id="completePurchaseButton">
+				確定する
+			</button>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+<!-- =========================
+     Bottom Navigation
+========================= -->
+
+<div th:replace="~{fragments/bottom-navigation :: bottomNavigation}">
+</div>
+
+
+<!-- =========================
+     JavaScript
+========================= -->
+
+<script th:inline="javascript">
+	const favoriteItemsFromServer =
+			/*[[${slvm.favoriteItems}]]*/ [];
+</script>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/shoppingList.js}"></script>
+
 </body>
 </html>
