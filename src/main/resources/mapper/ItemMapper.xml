@@ -66,6 +66,16 @@
    		 	id = #{id}			<!-- #{id} が Mapper 引数の id に置き換わる -->
    		 AND user_id = #{userId}
 	</update>
+
+	<update id="stopAll">
+		UPDATE items
+		SET status = 0
+		WHERE id IN
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		AND user_id = #{userId}
+	</update>
 	
 	<select id="findById" resultType="com.example.itemmanagement.entity.Items">
     SELECT 

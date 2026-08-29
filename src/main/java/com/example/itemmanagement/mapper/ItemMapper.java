@@ -15,6 +15,8 @@ public interface ItemMapper {
 	int add(Items entity);
 	
 	int stop(@Param("id") Integer id,@Param("userId") Integer userId); //statsを0に変更（消費済み）するメソッド
+
+	int stopAll(@Param("ids") List<Integer> ids, @Param("userId") Integer userId); // 複数IDをまとめて status = 0 に変更
 	         
 	
 	Items findById(@Param("id") Integer id,@Param("userId") Integer userId);

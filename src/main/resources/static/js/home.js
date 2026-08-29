@@ -154,7 +154,7 @@ document.getElementById("bulkDeleteBtn").addEventListener("click", function () {
 
 function deleteItems(ids) {
 
-    fetch("/items/bulk-delete", {
+    fetch("/items/bulk-stop", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

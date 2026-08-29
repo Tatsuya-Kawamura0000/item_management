@@ -51,4 +51,13 @@ public class UpdateItemService {
 
     }
 
+    @Transactional
+    public void bulkStopFromItems(List<Integer> ids, Integer userId) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+
+        mapper.stopAll(ids, userId);
+    }
+
 }

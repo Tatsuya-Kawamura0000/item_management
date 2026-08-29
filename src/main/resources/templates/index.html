@@ -16,6 +16,9 @@
     <!-- 共通ページCSS -->
     <link rel="stylesheet" th:href="@{/css/common-page.css}">
 
+    <!-- ポップアップCSS -->
+    <link rel="stylesheet" th:href="@{/css/popup.css}">
+
     <!-- 下部ナビゲーションCSS -->
     <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
 
@@ -563,6 +566,52 @@
             outline: none;
         }
 
+        .quantity-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .quantity-field {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quantity-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .quantity-field input,
+        .quantity-field select {
+            width: 100%;
+            box-sizing: border-box;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .quantity-field input {
+            text-align: right;
+        }
+
+        .quantity-field input:focus,
+        .quantity-field select:focus {
+            border-color: #7651c8;
+            box-shadow: 0 0 0 3px rgba(118, 81, 200, 0.08);
+        }
+
+        .quantity-unit-select {
+            cursor: pointer;
+        }
+
         .form-textarea {
             width: 100%;
             min-height: 80px;
@@ -775,19 +824,17 @@
         </button>
 
         <button type="button"
+                id="addToShoppingBtn"
                 class="toolbar-button">
             買い物リストへ追加
         </button>
 
         <button type="button"
-                class="toolbar-button">
+                id="consumeSelectedButton"
+                class="toolbar-button danger">
             消費済み
         </button>
 
-        <button type="button"
-                class="toolbar-button danger">
-            削除
-        </button>
 
     </div>
 
@@ -827,7 +874,9 @@
                         <td th:text="${item.amount}">量</td>
 
                         <td>
-                            <span class="expiration-date" th:classappend="${item.deadline != null}? '':''" th:text="${item.deadline}">期限</span>
+                            <span class="expiration-date"
+                                  th:attr="data-deadline=${item.deadline}"
+                                  th:text="${item.deadline != null ? #temporals.format(item.deadline, 'M/d') : ''}">期限</span>
                         </td>
 
                         <td>
@@ -838,7 +887,9 @@
                             <button type="button"
                                     class="favorite-button"
                                     th:classappend="${item.favorite}? ' active' : ''"
-                                    th:attr="aria-label=${item.favorite}? 'お気に入り解除' : 'お気に入り登録', aria-pressed=${item.favorite}">
+                                    th:attr="data-id=${item.id}, data-favorite=${item.favorite},
+                                             aria-label=${item.favorite}? 'お気に入り解除' : 'お気に入り登録',
+                                             aria-pressed=${item.favorite}">
                                 <i class="fa-solid fa-star"></i>
                             </button>
                         </td>
@@ -886,11 +937,40 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">量</label>
+            <div class="quantity-row">
+                <div class="quantity-field">
+                    <label class="form-label" for="editQuantity">量</label>
+                    <input id="editQuantity"
+                           class="form-input"
+                           type="number"
+                           min="1"
+                           step="1">
+                </div>
 
-            <input id="editQuantity"
-                   class="form-input"
-                   type="text">
+                <div class="quantity-field">
+                    <label class="form-label" for="editUnit">単位</label>
+                    <select id="editUnit"
+                            class="form-input quantity-unit-select">
+                        <option value="">- 指定なし</option>
+                        <option value="個">個</option>
+                        <option value="パック">パック</option>
+                        <option value="袋">袋</option>
+                        <option value="g">g</option>
+                        <option value="本">本</option>
+                        <option value="箱">箱</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">カテゴリ</label>
+
+            <select id="editCategory" class="form-input">
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"></option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -929,7 +1009,34 @@
        共通UI処理
     ========================================= */
 
+    function formatShortExpirationDate(dateValue) {
+        if (!dateValue) {
+            return "";
+        }
+
+        const parsedDate = new Date(`${dateValue}T00:00:00`);
+        if (Number.isNaN(parsedDate.getTime())) {
+            return dateValue;
+        }
+
+        const month = parsedDate.getMonth() + 1;
+        const day = parsedDate.getDate();
+        const currentYear = new Date().getFullYear();
+        const year = parsedDate.getFullYear();
+
+        if (year === currentYear) {
+            return `${month}/${day}`;
+        }
+
+        return `${String(year).slice(-2)}/${month}/${day}`;
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".expiration-date[data-deadline]").forEach(element => {
+            const deadline = element.dataset.deadline;
+            element.textContent = formatShortExpirationDate(deadline);
+        });
+
         const modalOverlays = document.querySelectorAll(
             ".modal-overlay, .shopping-modal-overlay"
         );
@@ -963,16 +1070,57 @@
        要素取得
     ========================================= */
 
+    function showGlobalToast(message, type = "success") {
+        let toast = document.getElementById("globalToast");
+
+        if (!toast) {
+            toast = document.createElement("div");
+            toast.id = "globalToast";
+            toast.className = "custom-modal-popup";
+            document.body.appendChild(toast);
+        }
+
+        toast.className = `custom-modal-popup ${type}`;
+        toast.innerHTML = `
+            <div class="popup-content">
+                <i class="fa-solid ${type === "success" ? "fa-circle-check" : "fa-circle-exclamation"}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        toast.style.display = "block";
+        clearTimeout(window.__toastTimeoutId);
+        window.__toastTimeoutId = setTimeout(() => {
+            toast.style.display = "none";
+        }, 1500);
+    }
+
+    async function bulkConsumeSelectedItems(ids) {
+        const response = await fetch("/items/bulk-stop", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(ids)
+        });
+
+        if (!response.ok) {
+            throw new Error("消費済み更新に失敗しました");
+        }
+    }
+
     const selectAll = document.getElementById("selectAll");
     const selectionToolbar = document.getElementById("selectionToolbar");
     const selectedCount = document.getElementById("selectedCount");
     const editSelectedButton = document.getElementById("editSelectedButton");
+    const consumeSelectedButton = document.getElementById("consumeSelectedButton");
     const editModal = document.getElementById("editModal");
     const closeModal = document.getElementById("closeModal");
     const saveNextButton = document.getElementById("saveNextButton");
     const modalProgress = document.getElementById("modalProgress");
     const editFoodName = document.getElementById("editFoodName");
     const editQuantity = document.getElementById("editQuantity");
+    const editUnit = document.getElementById("editUnit");
     const editExpiration = document.getElementById("editExpiration");
     const editMemo = document.getElementById("editMemo");
     const searchInput = document.getElementById("searchInput");
@@ -1101,6 +1249,106 @@
         checkbox.addEventListener("change", updateSelection);
     });
 
+    if (consumeSelectedButton) {
+       consumeSelectedButton.addEventListener("click", async () => {
+           const selectedRows = Array.from(document.querySelectorAll(".row-check:checked"));
+           const ids = selectedRows
+               .map(checkbox => Number(checkbox.value))
+               .filter(id => Number.isFinite(id));
+
+           if (ids.length === 0) {
+               showGlobalToast("食材を選択してください", "error");
+               return;
+           }
+
+           if (!confirm(`選択した ${ids.length} 件の食材を消費済みにしますか？`)) {
+               return;
+           }
+
+           try {
+               await bulkConsumeSelectedItems(ids);
+               selectedRows.forEach(checkbox => {
+                   const row = checkbox.closest("tr");
+                   if (row) {
+                       row.remove();
+                   }
+               });
+               updateSelection();
+               showGlobalToast("消費済みにしました");
+               setTimeout(() => {
+                   window.location.reload();
+               }, 1500);
+           } catch (error) {
+               console.error(error);
+               showGlobalToast("消費済みの更新に失敗しました", "error");
+           }
+       });
+    }
+
+    // 買い物リストへ追加（複数対応）
+    const addToShoppingBtn = document.getElementById('addToShoppingBtn');
+
+    if (addToShoppingBtn) {
+       addToShoppingBtn.addEventListener('click', async () => {
+           const selectedRows = Array.from(document.querySelectorAll('.row-check:checked'));
+           if (selectedRows.length === 0) {
+               showGlobalToast('食材を選択してください', 'error');
+               return;
+           }
+
+           // ids と表示用の名前リストを作る
+           const ids = selectedRows.map(cb => Number(cb.value)).filter(id => Number.isFinite(id));
+           const names = selectedRows.map(cb => {
+               const row = cb.closest('tr');
+               return row ? row.dataset.name || row.querySelector('.food-name')?.textContent.trim() : '';
+           }).filter(n => n && n.length > 0);
+
+           if (ids.length === 0) {
+               showGlobalToast('食材IDが取得できませんでした', 'error');
+               return;
+           }
+
+           if (!confirm(`選択した ${ids.length} 件の食材を買い物リストに追加しますか？`)) {
+               return;
+           }
+
+           try {
+               const resp = await fetch('/items/bulk-add', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify(ids)
+               });
+
+               if (resp.ok) {
+                   // 成功メッセージ — 名前をできれば表示（最大3件）
+                   let msg;
+                   if (names.length === 1) {
+                       msg = `${names[0]} を買い物リストへ追加しました！`;
+                   } else if (names.length <= 3) {
+                       msg = `${names.join('、')} を買い物リストへ追加しました！`;
+                   } else {
+                       msg = `${names.slice(0,3).join('、')} ほか ${names.length - 3} 件を買い物リストへ追加しました！`;
+                   }
+
+                   showGlobalToast(msg);
+
+                   // 選択状態を解除して UI を更新
+                   selectedRows.forEach(cb => cb.checked = false);
+                   updateSelection();
+
+               } else {
+                   // サーバからのメッセージ（重複など）を受け取って文言調整
+                   const text = await resp.text();
+                   showGlobalToast(text, 'error');
+               }
+
+           } catch (err) {
+               console.error(err);
+               showGlobalToast('通信エラーが発生しました', 'error');
+           }
+       });
+    }
+
     /* =========================================
        カテゴリ選択
     ========================================= */
@@ -1180,70 +1428,82 @@
 
     /* =========================================
        お気に入り
-       非同期モック
+       実際のDB更新を行う
     ========================================= */
+
+    async function toggleFavoriteRequest(itemId) {
+       const response = await fetch(`/items/favorite-toggle/${itemId}`, {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           }
+       });
+
+       if (!response.ok) {
+           throw new Error("お気に入り更新に失敗しました");
+       }
+
+       return await response.json();
+    }
 
     document.querySelectorAll(".favorite-button").forEach(button => {
-        button.addEventListener("click", async event => {
-            event.stopPropagation();
+       button.addEventListener("click", async event => {
+           event.stopPropagation();
 
-            const currentState =
-                button.classList.contains("active");
+           const itemId = button.dataset.id;
+           if (!itemId) {
+               return;
+           }
 
-            const newState = !currentState;
+           const currentState = button.classList.contains("active");
+           const nextState = !currentState;
 
-            button.classList.add("loading");
+           button.classList.add("loading");
 
-            try {
-                await mockFavoriteRequest(newState);
+           try {
+               const result = await toggleFavoriteRequest(itemId);
+               const favorite = Boolean(result.favorite);
 
-                button.classList.toggle(
-                    "active",
-                    newState
-                );
+               button.classList.toggle("active", favorite);
+               button.dataset.favorite = String(favorite);
+               button.setAttribute("aria-pressed", String(favorite));
+               button.setAttribute("aria-label", favorite ? "お気に入り解除" : "お気に入り登録");
 
-                button.setAttribute(
-                    "aria-pressed",
-                    String(newState)
-                );
-
-                button.setAttribute(
-                    "aria-label",
-                    newState
-                        ? "お気に入り解除"
-                        : "お気に入り登録"
-                );
-            } catch (error) {
-                console.error(
-                    "お気に入り更新に失敗しました。",
-                    error
-                );
-            } finally {
-                button.classList.remove("loading");
-            }
-        });
+               if (nextState !== favorite) {
+                   throw new Error("お気に入り状態がサーバと一致していません");
+               }
+           } catch (error) {
+               console.error("お気に入り更新に失敗しました。", error);
+               button.classList.toggle("active", currentState);
+               button.dataset.favorite = String(currentState);
+               button.setAttribute("aria-pressed", String(currentState));
+               button.setAttribute("aria-label", currentState ? "お気に入り解除" : "お気に入り登録");
+           } finally {
+               button.classList.remove("loading");
+           }
+       });
     });
-
-    /* =========================================
-       お気に入り更新モック
-    ========================================= */
-
-    function mockFavoriteRequest(favorite) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                console.log(
-                    "お気に入り更新:",
-                    favorite
-                );
-
-                resolve();
-            }, 300);
-        });
-    }
 
     /* =========================================
        編集開始
     ========================================= */
+
+    function parseAmountWithUnit(rawAmount) {
+        const value = (rawAmount || '').trim();
+        if (!value) {
+            return { quantity: '', unit: '' };
+        }
+
+        const match = value.match(/^([0-9]+(?:\.[0-9]+)?)(.*)$/);
+        if (!match) {
+            return { quantity: value, unit: '' };
+        }
+
+        return {
+            quantity: match[1],
+            unit: match[2].trim()
+        };
+    }
 
     editSelectedButton.addEventListener("click", () => {
         const selectedRows = Array.from(
@@ -1256,12 +1516,18 @@
 
         editingItems = selectedRows.map(checkbox => {
             const row = checkbox.closest("tr");
+            const amountCell = row.querySelector("td:nth-child(3)");
+            const parsedAmount = parseAmountWithUnit(amountCell ? amountCell.textContent.trim() : '');
 
             return {
+                id: Number(checkbox.value),
                 name: row.querySelector(".food-name").textContent.trim(),
-                quantity: row.cells[3].textContent.trim(),
-                expiration: row.cells[4].textContent.trim(),
+                quantity: parsedAmount.quantity,
+                unit: parsedAmount.unit,
+                expiration: row.querySelector(".expiration-date") ? row.querySelector(".expiration-date").dataset.deadline : '',
                 memo: row.querySelector(".memo").textContent.trim(),
+                categoryId: row.dataset.category ? Number(row.dataset.category) : null,
+                categoryName: row.dataset.categoryName || '',
                 row: row
             };
         });
@@ -1283,9 +1549,16 @@
             " / " +
             editingItems.length;
 
-        editFoodName.value = item.name;
-        editQuantity.value = item.quantity;
-        editMemo.value = item.memo;
+        editFoodName.value = item.name || "";
+        editQuantity.value = item.quantity || "";
+        editUnit.value = item.unit || "";
+        editMemo.value = item.memo || "";
+        editExpiration.value = item.expiration || "";
+
+        // set category select value if available
+        if (typeof item.categoryId !== 'undefined' && document.getElementById('editCategory')) {
+            document.getElementById('editCategory').value = item.categoryId;
+        }
 
         if (
             editingIndex ===
@@ -1305,29 +1578,68 @@
        保存
     ========================================= */
 
-    saveNextButton.addEventListener("click", () => {
+    saveNextButton.addEventListener("click", async () => {
         const item = editingItems[editingIndex];
 
-        item.row.querySelector(".food-name").textContent =
-            editFoodName.value;
+        const payload = {
+            name: editFoodName.value,
+            amount: `${editQuantity.value}${editUnit.value || ''}`,
+            deadline: editExpiration.value || null,
+            others: editMemo.value,
+            categoryId: document.getElementById('editCategory') ? Number(document.getElementById('editCategory').value) : item.categoryId
+        };
 
-        item.row.cells[3].textContent =
-            editQuantity.value;
+        try {
+            const resp = await fetch(`/items/update/${item.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-        item.row.querySelector(".memo").textContent =
-            editMemo.value;
+            if (!resp.ok) {
+                throw new Error('更新に失敗しました');
+            }
 
-        item.row.dataset.name =
-            editFoodName.value;
+            // 更新成功 -> テーブル表示を更新
+            if (item.row) {
+                item.row.querySelector(".food-name").textContent = payload.name;
+                const amountCell = item.row.querySelector("td:nth-child(3)");
+                if (amountCell) amountCell.textContent = payload.amount;
 
-        if (
-            editingIndex <
-            editingItems.length - 1
-        ) {
-            editingIndex++;
-            showEditItem();
-        } else {
-            closeEditModal();
+                const expEl = item.row.querySelector('.expiration-date');
+                if (expEl) {
+                    expEl.dataset.deadline = payload.deadline || '';
+                    expEl.textContent = formatShortExpirationDate(payload.deadline);
+                }
+
+                const memoEl = item.row.querySelector('.memo');
+                if (memoEl) memoEl.textContent = payload.others || '';
+
+                // update dataset for category
+                if (payload.categoryId) {
+                    item.row.dataset.category = String(payload.categoryId);
+                    const catSelect = document.getElementById('editCategory');
+                    if (catSelect) {
+                        const catName = catSelect.options[catSelect.selectedIndex].text;
+                        item.row.dataset.categoryName = catName;
+                    }
+                }
+
+                item.row.dataset.name = payload.name;
+            }
+
+            // move to next or finish
+            if (editingIndex < editingItems.length - 1) {
+                editingIndex++;
+                showEditItem();
+            } else {
+                closeEditModal();
+                showGlobalToast(editingItems.length + " 件編集しました");
+            }
+
+        } catch (err) {
+            console.error(err);
+            showGlobalToast('更新に失敗しました', 'error');
         }
     });
 
