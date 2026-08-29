@@ -77,7 +77,8 @@
             display: flex;
             gap: 9px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            overflow-y: visible;
+            padding: 4px 0 10px;
             margin-bottom: 18px;
             white-space: nowrap;
             scrollbar-width: thin;
@@ -95,19 +96,42 @@
             border: 1px solid var(--tab-border);
             background: var(--tab-bg);
             padding: 8px 13px;
-            border-radius: 20px;
+            border-radius: 20px 20px 0 0;
             font-size: 13px;
             color: var(--tab-text);
             cursor: pointer;
-            transition: background-color 0.15s, border-color 0.15s;
+            transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, filter 0.18s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 1;
+            overflow: visible;
         }
 
         .category-tab:hover {
             filter: brightness(0.97);
+            transform: translateY(-2px);
         }
 
         .category-tab.active {
             font-weight: bold;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7), 0 8px 18px rgba(0, 0, 0, 0.12);
+            border-width: 3px;
+            border-bottom-width: 3px;
+            border-color: color-mix(in srgb, var(--tab-border) 70%, black 30%);
+            position: relative;
+            top: 0;
+            z-index: 2;
+            margin-bottom: -1px;
+        }
+
+        .category-tab.active {
+            background: color-mix(in srgb, var(--tab-bg) 88%, white 12%);
+            overflow: visible;
+        }
+
+        .category-tab.active .badge {
+            transform: scale(1.04);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25), 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .category-tab.category-vegetable {
@@ -118,12 +142,24 @@
             --badge-text: #4d7e55;
         }
 
+        .category-tab.category-vegetable.active {
+            background: linear-gradient(180deg, #e0f3e5 0%, #d5f0db 100%);
+            border-color: #7ea981;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(89, 151, 104, 0.18);
+        }
+
         .category-tab.category-meat {
             --tab-bg: #fbeaea;
             --tab-border: #efbcbc;
             --badge-bg: #f5d4d4;
             --badge-border: rgba(185, 88, 88, 0.12);
             --badge-text: #8a3d3d;
+        }
+
+        .category-tab.category-meat.active {
+            background: linear-gradient(180deg, #fce6e6 0%, #f8d8d8 100%);
+            border-color: #d17d7d;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(189, 96, 96, 0.18);
         }
 
         .category-tab.category-fish {
@@ -134,12 +170,24 @@
             --badge-text: #2d5da8;
         }
 
+        .category-tab.category-fish.active {
+            background: linear-gradient(180deg, #e5f0ff 0%, #d4e7ff 100%);
+            border-color: #8aa5d7;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(74, 116, 204, 0.18);
+        }
+
         .category-tab.category-seasoning {
             --tab-bg: #f7eee6;
             --tab-border: #dec7b1;
             --badge-bg: #f0d9c0;
             --badge-border: rgba(152, 103, 52, 0.12);
             --badge-text: #7c5430;
+        }
+
+        .category-tab.category-seasoning.active {
+            background: linear-gradient(180deg, #f8eedf 0%, #f0dfc8 100%);
+            border-color: #c39359;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(160, 110, 59, 0.18);
         }
 
         .category-tab.category-leftover {
@@ -150,12 +198,24 @@
             --badge-text: #5b3e92;
         }
 
+        .category-tab.category-leftover.active {
+            background: linear-gradient(180deg, #efe9ff 0%, #e4d8ff 100%);
+            border-color: #a588d7;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(125, 96, 173, 0.18);
+        }
+
         .category-tab.category-drink {
             --tab-bg: #eaf4fb;
             --tab-border: #bed9eb;
             --badge-bg: #d4ebff;
             --badge-border: rgba(52, 110, 170, 0.12);
             --badge-text: #2b5e8d;
+        }
+
+        .category-tab.category-drink.active {
+            background: linear-gradient(180deg, #edf8ff 0%, #d8efff 100%);
+            border-color: #8cb2d1;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(54, 111, 170, 0.18);
         }
 
         .category-tab.category-preserved {
@@ -166,12 +226,24 @@
             --badge-text: #7a5d1d;
         }
 
+        .category-tab.category-preserved.active {
+            background: linear-gradient(180deg, #fff5d2 0%, #f8e7ae 100%);
+            border-color: #d4af4f;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(171, 135, 42, 0.18);
+        }
+
         .category-tab.category-other {
             --tab-bg: #f1f1f1;
             --tab-border: #d5d5d5;
             --badge-bg: #dfe3e6;
             --badge-border: rgba(86, 86, 86, 0.12);
             --badge-text: #4d4d4d;
+        }
+
+        .category-tab.category-other.active {
+            background: linear-gradient(180deg, #f0f0f0 0%, #e4e4e4 100%);
+            border-color: #a6a6a6;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(102, 102, 102, 0.12);
         }
 
         .category-tab.all-category {
@@ -183,6 +255,12 @@
             padding: 9px 15px;
             font-size: 14px;
             color: #555;
+        }
+
+        .category-tab.all-category.active {
+            background: linear-gradient(180deg, #f1f1f1 0%, #e7e7e7 100%);
+            border-color: #b1b1b1;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 5px 14px rgba(87, 87, 87, 0.14);
         }
 
         .badge {
@@ -302,6 +380,21 @@
             white-space: nowrap;
         }
 
+        .food-table td:nth-child(4) {
+            padding-left: 8px;
+            text-align: center;
+        }
+
+        .col-expiration {
+            width: 17%;
+            text-align: center !important;
+        }
+
+        .col-expiration .expiration-header-text {
+            display: block;
+            text-align: center;
+        }
+
         .food-table tbody tr:last-child td {
             border-bottom: none;
         }
@@ -415,14 +508,46 @@
         ========================================= */
 
         .expiration-date {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 72px;
+            width: 100%;
+            max-width: 110px;
             font-weight: bold;
+            line-height: 1.2;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .expiration-date .expiration-icon {
+            flex: 0 0 12px;
+            width: 12px;
+            font-size: 12px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .expiration-date > span:last-child {
+            display: inline-block;
+            min-width: 48px;
+            text-align: center;
         }
 
         .expiration-soon {
             color: #e08a00;
         }
 
+        .expiration-soon .expiration-icon {
+            color: #e08a00;
+        }
+
         .expiration-expired {
+            color: #d64545;
+        }
+
+        .expiration-expired .expiration-icon {
             color: #d64545;
         }
 
@@ -852,7 +977,9 @@
                     </th>
                     <th class="col-name">食材名</th>
                     <th class="col-quantity">量</th>
-                    <th class="col-expiration">期限</th>
+                    <th class="col-expiration">
+                        <span class="expiration-header-text">期限</span>
+                    </th>
                     <th class="col-memo">メモ</th>
                     <th class="col-favorite">お気に入り</th>
                 </tr>
@@ -1031,10 +1158,40 @@
         return `${String(year).slice(-2)}/${month}/${day}`;
     }
 
+    function applyExpirationState(element) {
+        const deadline = element.dataset.deadline;
+        if (!deadline) {
+            element.classList.remove("expiration-soon", "expiration-expired");
+            element.innerHTML = "";
+            return;
+        }
+
+        const targetDate = new Date(`${deadline}T00:00:00`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const diffDays = Math.ceil((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        element.classList.remove("expiration-soon", "expiration-expired");
+
+        let iconClass = "";
+        if (diffDays < 0) {
+            element.classList.add("expiration-expired");
+            iconClass = "fa-solid fa-circle-exclamation";
+        } else if (diffDays <= 3) {
+            element.classList.add("expiration-soon");
+            iconClass = "fa-solid fa-triangle-exclamation";
+        }
+
+        const formattedDate = formatShortExpirationDate(deadline);
+        element.innerHTML = iconClass
+            ? `<i class="expiration-icon ${iconClass}"></i><span>${formattedDate}</span>`
+            : `<i class="expiration-icon" aria-hidden="true" style="visibility:hidden;"></i><span>${formattedDate}</span>`;
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".expiration-date[data-deadline]").forEach(element => {
-            const deadline = element.dataset.deadline;
-            element.textContent = formatShortExpirationDate(deadline);
+            applyExpirationState(element);
         });
 
         const modalOverlays = document.querySelectorAll(
@@ -1407,7 +1564,8 @@
 
         foodRows.forEach(row => {
             const category = row.dataset.category;
-            const name = row.dataset.name.toLowerCase();
+            const name = (row.dataset.name || row.querySelector(".food-name")?.textContent || "").toLowerCase();
+            const memo = (row.querySelector(".memo")?.textContent || "").toLowerCase();
 
             const categoryMatched =
                 selectedCategories.size === 0 ||
@@ -1415,7 +1573,8 @@
 
             const searchMatched =
                 keyword === "" ||
-                name.includes(keyword);
+                name.includes(keyword) ||
+                memo.includes(keyword);
 
             row.style.display =
                 categoryMatched && searchMatched
@@ -1609,7 +1768,7 @@
                 const expEl = item.row.querySelector('.expiration-date');
                 if (expEl) {
                     expEl.dataset.deadline = payload.deadline || '';
-                    expEl.textContent = formatShortExpirationDate(payload.deadline);
+                    applyExpirationState(expEl);
                 }
 
                 const memoEl = item.row.querySelector('.memo');
