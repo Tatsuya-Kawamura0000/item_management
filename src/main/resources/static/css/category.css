@@ -1,0 +1,39 @@
+/**
+ * 食材カテゴリ共通CSS
+ */
+
+/* ========================================
+   Category Colors
+======================================== */
+
+.category-vegetable {
+    color: #3f8f4f;
+}
+
+.category-meat {
+    color: #d84b4b;
+}
+
+.category-fish {
+    color: #3f7fc4;
+}
+
+.category-seasoning {
+    color: #9a6a3a;
+}
+
+.category-leftover {
+    color: #8a5fb5;
+}
+
+.category-drink {
+    color: #4f8fc4;
+}
+
+.category-preserved {
+    color: #c18a16;
+}
+
+.category-other {
+    color: #777777;
+}

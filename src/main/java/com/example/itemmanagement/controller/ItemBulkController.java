@@ -7,10 +7,7 @@ import com.example.itemmanagement.service.UpdateItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +23,18 @@ public class ItemBulkController {
         this.shoppingListBulkService = shoppingListBulkService;
     }
 
+    @PostMapping("/bulk-stop")
+    @ResponseBody
+    public ResponseEntity<?> bulkStop(@RequestBody List<Integer> ids,
+                                     @AuthenticationPrincipal LoginUser loginUser){
+
+        Integer userId = loginUser.getId();
+
+        updateItemService.bulkStopFromItems(ids, userId);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/bulk-delete")
     @ResponseBody
     public ResponseEntity<?> bulkDelete(@RequestBody List<Integer> ids,
@@ -34,6 +43,19 @@ public class ItemBulkController {
         Integer userId = loginUser.getId();
 
         updateItemService.bulkDeleteFromItems(ids, userId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateItemAjax(@PathVariable("id") int id,
+                                            @RequestBody com.example.itemmanagement.entity.Items item,
+                                            @AuthenticationPrincipal LoginUser loginUser) {
+
+        Integer userId = loginUser.getId();
+
+        updateItemService.updateItem(id, userId, item);
 
         return ResponseEntity.ok().build();
     }
@@ -52,7 +74,7 @@ public class ItemBulkController {
         // 重複が1つでもあればまとめて返す
         if(!duplicatedItems.isEmpty()){
             String message = String.join("、", duplicatedItems)
-                    + " はすでに買い物リストに存在していました";
+                    + " はすでに買い物リストに追加しています";
 
             return ResponseEntity
                     .badRequest()

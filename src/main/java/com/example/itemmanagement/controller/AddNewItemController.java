@@ -13,7 +13,7 @@ import com.example.itemmanagement.security.LoginUser;
 import com.example.itemmanagement.service.AddToShoppingListService;
 
 @RestController
-@RequestMapping("/shoppingList")
+@RequestMapping("/shopping-list")
 public class AddNewItemController {
 
     @Autowired

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>賞味期限管理 - Dashboard</title>
+    <!-- CSS読み込み -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/common-page.css}">
+    <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/popup.css}">
+</head>
+<body>
+
+<main class="dashboard">
+    <div th:replace="~{fragments/page-header :: pageHeader(
+    'Dashboard',
+    '食材の期限を確認しましょう'
+)}"></div>
+
+    <!-- サマリーカード -->
+    <section class="summary-grid">
+        <div class="summary-card total">
+            <span class="summary-label">アイテム数</span>
+            <span id="totalCount" class="summary-number" th:text="${summary.totalCount}">0</span>
+        </div>
+        <div class="summary-card soon">
+            <span class="summary-label">期限間近</span>
+            <span id="soonCount" class="summary-number" th:text="${summary.warningCount}">0</span>
+        </div>
+        <div class="summary-card expired">
+            <span class="summary-label">期限切れ</span>
+            <span id="expiredCount" class="summary-number" th:text="${summary.expiredCount}">0</span>
+        </div>
+    </section>
+
+    <!-- SOON セクション -->
+    <section class="section soon">
+        <div class="section-header">
+            <h2 class="section-title">SOON</h2>
+        </div>
+        <div class="item-scroll" id="soonList">
+            <article class="food-card soon-card" th:each="food : ${soonFoods}" th:attr="data-id=${food.id}">
+                <div class="food-card-top">
+                    <h3 class="food-card-name" th:text="${food.name}">牛乳</h3>
+                </div>
+                <div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M/d')}">8/20</div>
+                <div class="food-card-details">
+                    <div class="food-card-detail">
+                        <span class="detail-label">量</span>
+                        <span th:text="${food.amount}">1本</span>
+                    </div>
+                    <div class="food-card-detail">
+                        <span class="detail-label">メモ</span>
+                        <span class="food-card-note" th:text="${food.others}">朝食用</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- EXPIRED セクション -->
+    <section class="section expired">
+        <div class="section-header">
+            <h2 class="section-title">EXPIRED</h2>
+        </div>
+        <div class="item-scroll" id="expiredList">
+            <article class="food-card expired-card" th:each="food : ${expiredFoods}" th:attr="data-id=${food.id}">
+                <div class="food-card-top">
+                    <h3 class="food-card-name" th:text="${food.name}">食パン</h3>
+                </div>
+                <div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M/d')}">8/18</div>
+                <div class="food-card-details">
+                    <div class="food-card-detail">
+                        <span class="detail-label">量</span>
+                        <span th:text="${food.amount}">1袋</span>
+                    </div>
+                    <div class="food-card-detail">
+                        <span class="detail-label">メモ</span>
+                        <span class="food-card-note" th:text="${food.others}">開封済み</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<!-- 選択時に浮き出る「消費済みにする」ボタン -->
+<div class="action-area">
+    <button id="consumeButton" class="consume-button" type="button">
+        <span class="trash-icon">🗑</span>
+        <span>消費済みにする</span>
+        <span id="selectedCount" class="consume-count">0</span>件
+    </button>
+</div>
+
+<!-- ポップアップモーダル -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-container">
+        <h3 class="modal-title">消費の確認</h3>
+        <p id="modalMessage" class="modal-message">選択した食材を消費済みにしますか？</p>
+        <div class="modal-actions">
+            <button id="cancelBtn" class="modal-btn cancel" type="button">キャンセル</button>
+            <button id="confirmBtn" class="modal-btn confirm" type="button">消費する</button>
+        </div>
+    </div>
+</div>
+
+<!-- 下部ナビゲーションの呼び出し -->
+<div th:replace="~{fragments/bottom-navigation :: bottomNavigation}"></div>
+
+<!-- JSの読み込み -->
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

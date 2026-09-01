@@ -1,395 +1,827 @@
-/* =========================
-   ベース
-========================= */
-body {
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f6f7;
-    color: #4A2E1F;
-    font-family: 'BIZ UDP Gothic', sans-serif;
-}
+/**
+ * 買い物リスト画面専用CSS
+ */
 
-/* タイトル */
-.shopping-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 2.4rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: #6b4c3b;
-    text-align: center;
-    margin: 20px 0 30px;
-}
+/* ========================================
+   Header
+======================================== */
 
-/* =========================
-   レイアウト
-========================= */
-.container,
-.memo-container {
-    max-width: 900px;
-    margin: 0 auto; /* ← 画面中央に配置 */
+.shopping-header {
     background: #ffffff;
-    padding: 20px 26px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #eeeeee;
 }
 
-/* =========================
-   テーブル
-========================= */
-table {
+.shopping-header__title-area {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.shopping-header__title-area h1 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 700;
+    color: #222;
+}
+
+.shopping-header__login-user {
+    margin: 5px 0 0;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.shopping-header__title-area p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* ========================================
+   Main
+======================================== */
+
+.shopping-list-container {
     width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed !important;
-    margin-top: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 18px 16px 110px;
 }
 
 
-th, td {
-    padding: 14px 10px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: center;
-    vertical-align: middle;
+/* ========================================
+   Add Buttons
+======================================== */
+
+.shopping-list-add-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+.shopping-list-add-button {
+    border: none;
+    border-radius: 12px;
+    background: #f5f2ff;
+    color: #7651c8;
+    padding: 12px 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition:
+            background-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.shopping-list-add-button:hover {
+    background: #e9e1ff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(118, 81, 200, 0.12);
+}
+
+.shopping-list-add-button:active {
+    transform: translateY(0);
+}
+
+.shopping-list-add-button .icon {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+
+/* ========================================
+   Shopping List Card
+======================================== */
+
+.shopping-list-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ========================================
+   Shopping List Header
+======================================== */
+
+.shopping-list-header-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-bottom: 1px solid #eeeeee;
+    color: #888;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-list-header-row > div:last-child {
+    text-align: right;
+}
+
+
+/* ========================================
+   Shopping Item
+======================================== */
+
+.shopping-item {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px;
+    align-items: center;
+    min-height: 64px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition:
+            background-color 0.2s ease,
+            opacity 0.2s ease;
+}
+
+.shopping-item:last-child {
+    border-bottom: none;
+}
+
+.shopping-item.checked {
+    background: #faf8ff;
+}
+
+
+/* ========================================
+   Check Button
+======================================== */
+
+.shopping-item__check {
+    display: flex;
+    align-items: center;
+}
+
+.shopping-check-button {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 2px solid #7651c8;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition:
+            transform 0.2s ease,
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.shopping-check-button:hover {
+    transform: scale(1.08);
+}
+
+.shopping-check-button:focus-visible {
+    outline: 3px solid rgba(118, 81, 200, 0.2);
+    outline-offset: 2px;
+}
+
+.shopping-item.checked .shopping-check-button {
+    background: #7651c8;
+    border-color: #7651c8;
+}
+
+.shopping-item.checked .shopping-check-button::after {
+    content: "✓";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -52%);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   Food
+======================================== */
+
+.shopping-item__food {
+    min-width: 0;
+}
+
+.shopping-item__food-name {
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-th {
-    background-color: #f0f0f0;
+    font-size: 15px;
     font-weight: 600;
+    color: #333;
 }
 
-/* 食材列 */
-td:nth-of-type(2) {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #4A2E1F;
+.shopping-item.checked .shopping-item__food-name {
+    color: #aaa;
+    text-decoration: line-through;
 }
 
-/* 量列 */
-td:nth-of-type(3) {
-    width: 80px;
+.shopping-item__category {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #f1f1f1;
+    color: #777;
+    font-size: 10px;
 }
 
-/* 非表示列 */
-.hidden {
-    display: none;
-}
-
-/* 1列目：チェック */
-table th:nth-of-type(1),
-table td:nth-of-type(1) {
-    width: 40px !important;
-    min-width: 40px !important;
-    text-align: center;
-}
-
-/* 2列目：食材 */
-table th:nth-of-type(2),
-table td:nth-of-type(2) {
-    width: 260px !important;
-    min-width: 200px !important;
-    text-align: center;
-    padding-left: 12px;
-}
-
-/* 3列目：量 */
-table th:nth-of-type(3),
-table td:nth-of-type(3) {
-    width: 120px !important;
-    min-width: 100px !important;
-    text-align: center;
-}
-
-/* 4〜6列目 */
-table th:nth-of-type(4),
-table td:nth-of-type(4),
-table th:nth-of-type(5),
-table td:nth-of-type(5),
-table th:nth-of-type(6),
-table td:nth-of-type(6) {
-    width: 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-}
-
-/* 7列目：空欄（操作列） */
-table th:nth-of-type(7),
-table td:nth-of-type(7) {
-    width: 40px !important;
-    min-width: 40px !important;
+.shopping-item__quantity {
+    color: #555;
+    font-size: 14px;
+    text-align: right;
 }
 
 
+/* ========================================
+   Action Buttons
+======================================== */
 
-/* =========================
-   ボタン
-========================= */
-.button {
-    background-color: #ffffff;
-    border: 1px solid #d0d0d0;
-    border-radius: 24px;
-    padding: 25px 32px;
-    font-weight: 600;
+.shopping-list-action-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.shopping-list-action-button {
+    flex: 1;
+    border: none;
+    border-radius: 13px;
+    padding: 13px 8px;
     cursor: pointer;
-    color: #4A2E1F;
-    box-shadow: none;
-    font-size: 1.2rem;
+    font-weight: 700;
+    font-size: 13px;
+    transition:
+            background-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
 }
 
-.button:hover {
-    background-color: #f5f5f5;
-}
-
-/* 新規追加ボタン */
-.add-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: 28px;
-    background-color: #f7d9b5;
-    border: 1.5px solid #d0d0d0;
-    color: #6b4c3b;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.add-btn:hover {
-    background-color: #f3cba0;
-}
-
-/* =========================
-   まとめて操作ボタン
-========================= */
-.bulk-actions {
-    display: flex;
-    gap: 12px;
-    margin: 20px 0;
-}
-
-.bulk-actions .button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 18px 32px;
-    font-size: 1.2rem;
-    border-radius: 24px;
-}
-
-
-.bulk-actions .button i {
-    font-size: 20px;
-}
-
-/* =========================
-   モーダル
-========================= */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-}
-
-.modal-overlay.show {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 20px 26px;
-    border-radius: 12px;
-    width: 380px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.modal-buttons button {
-    padding: 8px 18px;
-    border-radius: 18px;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-}
-
-.modal-buttons button:hover {
-    background: #f5f5f5;
-}
-
-/* =========================
-   モーダルポップアップメッセージ
-========================= */
-
-.modal-message {
-    opacity: 0;
-    transition: 0.3s ease;
-    min-height: 20px; /* 位置ブレ防止 */
-}
-
-.modal-message.show {
-    opacity: 1;
-}
-
-.modal-message.success {
-    color: #6b4c3b;
-}
-
-.modal-message.error {
-    color: #c27a7a;
-}
-
-/* =========================
-  まとめて操作エリアの調整
-========================= */
-
-.bulk-actions {
-    display: flex;
-    justify-content: flex-start; /* 左詰めに固定 */
-    align-items: center;
-    gap: 12px;                  /* ボタン同士の間隔 */
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-/* ボタン共通のサイズ微調整 */
-.button {
-    background-color: #ffffff;
-    border: 1px solid #d0d0d0;
-    border-radius: 24px;
-    padding: 12px 24px;        /* 25px 32pxから少し小さくしてスッキリさせます */
-    font-weight: 600;
-    cursor: pointer;
-    color: #4A2E1F;
-    font-size: 1rem;           /* 1.2remから調整 */
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;       /* 文字の改行を防ぐ */
-    transition: all 0.2s;
-}
-
-.button:hover {
-    background-color: #f5f5f5;
+.shopping-list-action-button:hover {
     transform: translateY(-1px);
 }
 
-/* 戻るボタンを少し離すための個別設定 */
-.back-btn {
-    margin-top: 20px;
+.shopping-list-purchase-button {
+    background: #7651c8;
+    color: #ffffff;
 }
 
-/* =========================
-   PWA / モバイル表示
-========================= */
-@media (max-width: 640px) {
-    body {
-        padding: 12px;
-        overflow-x: hidden;
+.shopping-list-purchase-button:hover {
+    background: #6540b4;
+    box-shadow: 0 5px 14px rgba(118, 81, 200, 0.2);
+}
+
+.shopping-list-delete-button {
+    background: #fff0f0;
+    color: #d84b4b;
+}
+
+.shopping-list-delete-button:hover {
+    background: #ffe2e2;
+}
+
+
+/* ========================================
+   Modal Overlay
+======================================== */
+
+.shopping-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2000;
+}
+
+.shopping-modal-overlay.show {
+    display: flex;
+}
+
+
+/* ========================================
+   Modal
+======================================== */
+
+.shopping-modal {
+    width: 100%;
+    max-width: 430px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 22px;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    animation: shoppingModalIn 0.2s ease;
+}
+
+@keyframes shoppingModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
     }
 
-    .shopping-title {
-        margin: 8px 0 16px;
-        font-size: 1.7rem;
-        letter-spacing: 0.06em;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 
-    .memo-container {
-        padding: 12px;
-        border-radius: 12px;
-        box-sizing: border-box;
+}
+
+.shopping-modal h2 {
+    margin: 0 0 8px;
+    color: #222;
+    font-size: 19px;
+}
+
+.shopping-modal-description {
+    margin: 0 0 18px;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* 日付ヘッダーのテキスト色（背景色）を紫にする */
+.shopping-selection-date {
+    color: #8a2be2;             /* 紫色（BlueViolet）の文字色 */
+    font-weight: bold;          /* 太字 */
+    background-color: #f3e8ff;
+}
+
+
+/* ========================================
+   Modal Actions
+======================================== */
+
+.shopping-modal-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.shopping-modal-button {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition:
+            background-color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.shopping-modal-button:hover {
+    transform: translateY(-1px);
+}
+
+.shopping-modal-button-cancel {
+    background: #eeeeee;
+    color: #555;
+}
+
+.shopping-modal-button-cancel:hover {
+    background: #e2e2e2;
+}
+
+.shopping-modal-button-confirm {
+    background: #7651c8;
+    color: #ffffff;
+}
+
+.shopping-modal-button-confirm:hover {
+    background: #6540b4;
+}
+
+
+/* ========================================
+   Form
+======================================== */
+
+.shopping-form-group {
+    margin-bottom: 14px;
+}
+
+.shopping-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #444;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-form-group input,
+.shopping-form-group select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    font-family: inherit;
+}
+
+.shopping-form-group input:focus,
+.shopping-form-group select:focus {
+    border-color: #7651c8;
+    box-shadow: 0 0 0 3px rgba(118, 81, 200, 0.1);
+}
+
+/* ========================================
+   New Food Quantity / Unit
+======================================== */
+
+.shopping-new-quantity-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.shopping-new-quantity-field {
+    flex: 1;
+    min-width: 0;
+}
+
+.shopping-new-quantity-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #444;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-new-quantity-field input,
+.shopping-new-quantity-field select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    font-family: inherit;
+}
+
+.shopping-new-quantity-field input {
+    text-align: right;
+}
+
+.shopping-new-quantity-field input:focus,
+.shopping-new-quantity-field select:focus {
+    border-color: #7651c8;
+    box-shadow: 0 0 0 3px rgba(118, 81, 200, 0.1);
+}
+
+.shopping-new-unit-select {
+    cursor: pointer;
+}
+
+/* ========================================
+   Selection Modal
+======================================== */
+
+.shopping-selection-list {
+    max-height: 320px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+.shopping-selection-category {
+    padding: 8px 4px;
+    margin-top: 4px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-selection-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* left content + right quantity area */
+    gap: 10px;
+    padding: 12px 8px;
+    border-bottom: 1px solid #eeeeee;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* 量のブロックが適切に縮むようにし、単位のブロックは固定幅を維持する*/
+.shopping-selection-food {
+    flex: 1 1 auto;
+    min-width: 0; /* enable text truncation */
+}
+
+/* 数量入力＋単位のための固定スロット（枠）、右揃え */
+.shopping-selection-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* align to the right edge */
+    gap: 8px;
+    flex: 0 0 120px; /* reserve fixed space so rows align */
+    box-sizing: border-box;
+}
+
+/* 固定幅の数値入力フォーム */
+.shopping-selection-quantity-input {
+    width: 56px; /* compact width (50-60px) */
+    max-width: 56px;
+    min-width: 56px;
+    box-sizing: border-box;
+    padding: 8px 6px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: right;
+}
+
+.shopping-selection-quantity-input:focus {
+    border-color: #7651c8;
+    box-shadow: 0 0 0 3px rgba(118, 81, 200, 0.08);
+    outline: none;
+}
+
+/* 単位エリアのレイアウト崩れ（ガタつき）を防ぐための固定幅*/
+.shopping-selection-quantity-unit {
+    display: inline-block;
+    width: 64px; /* fixed width for stability */
+    min-width: 64px;
+    text-align: left;
+    color: #666;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.shopping-selection-item:hover {
+    background: #faf8ff;
+}
+
+.shopping-selection-item.selected {
+    background: #f5f2ff;
+    box-shadow: inset 4px 0 0 #7651c8;
+}
+
+.shopping-selection-food {
+    min-width: 0;
+}
+
+.shopping-selection-food-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #333;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.shopping-selection-food-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    color: #999;
+    font-size: 11px;
+}
+
+.shopping-selection-add-button {
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 9px;
+    background: #eee7ff;
+    color: #7651c8;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-selection-add-button:hover {
+    background: #e2d7ff;
+}
+
+/* ========================================
+   Selection Modal Header
+======================================== */
+
+.shopping-selection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.shopping-selection-header .shopping-modal-description {
+    margin: 0;
+    flex: 1;
+}
+
+.shopping-selection-header .shopping-selection-add-button {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 9px;
+    background: #7651c8;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shopping-selection-header .shopping-selection-add-button:hover {
+    background: #6540b4;
+}
+
+/* ========================================
+   Stock Status
+======================================== */
+
+.shopping-stock-status {
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.shopping-stock-out {
+    background: #ffe1e1;
+    color: #d44747;
+}
+
+.shopping-stock-low {
+    background: #fff4cf;
+    color: #c18a16;
+}
+
+
+/* ========================================
+   Quantity Modal
+======================================== */
+
+.shopping-quantity-input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+#quantityInput {
+    flex: 1;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    outline: none;
+    font-size: 18px;
+    text-align: right;
+}
+
+#quantityInput:focus {
+    border-color: #7651c8;
+    box-shadow: 0 0 0 3px rgba(118, 81, 200, 0.1);
+}
+
+#quantityUnit {
+    min-width: 45px;
+    color: #555;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   Purchase Confirmation
+======================================== */
+
+.shopping-confirm-list {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #f8f8fa;
+}
+
+.shopping-confirm-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 13px;
+}
+
+.shopping-confirm-item:last-child {
+    border-bottom: none;
+}
+
+.shopping-confirm-date {
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: #f0ebff;
+    color: #7651c8;
+    font-size: 10px;
+}
+
+
+/* ========================================
+   Mobile
+======================================== */
+
+@media (max-width: 600px) {
+
+    .shopping-header {
+        padding: 16px 14px 13px;
     }
 
-    .bulk-actions {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-        margin: 0 0 12px;
+    .shopping-header__title-area h1 {
+        font-size: 22px;
     }
 
-    .bulk-actions .button {
-        justify-content: center;
-        min-width: 0;
-        padding: 10px 4px;
-        border-radius: 14px;
-        font-size: 0.72rem;
-        line-height: 1.25;
-        white-space: normal;
+    .shopping-list-container {
+        padding: 16px 12px 110px;
     }
 
-    .bulk-actions .button i {
+    .shopping-list-add-buttons {
+        gap: 7px;
+        margin-bottom: 30px;
+    }
+
+    .shopping-list-add-button {
+        padding: 11px 4px;
+        font-size: 11px;
+    }
+
+    .shopping-list-add-button .icon {
+        font-size: 19px;
+    }
+
+    .shopping-list-header-row,
+    .shopping-item {
+        grid-template-columns: 45px 1fr 75px;
+    }
+
+    .shopping-list-header-row {
+        padding: 11px 12px;
+    }
+
+    .shopping-item {
+        padding: 8px 12px;
+    }
+
+    .shopping-item__food-name {
         font-size: 14px;
     }
 
-    #shoppingListTable {
-        margin-top: 0;
+    .shopping-item__quantity {
+        font-size: 13px;
     }
 
-    #shoppingListTable th,
-    #shoppingListTable td {
-        padding: 10px 4px;
-        font-size: 0.82rem;
+    .shopping-modal {
+        padding: 20px 16px;
+        border-radius: 18px;
     }
 
-    #shoppingListTable th:nth-of-type(1),
-    #shoppingListTable td:nth-of-type(1) {
-        width: 28px !important;
-        min-width: 28px !important;
+    /* Modal selection adjustments for small screens */
+    .shopping-selection-list {
+        max-height: 280px;
     }
 
-    #shoppingListTable th:nth-of-type(2),
-    #shoppingListTable td:nth-of-type(2) {
-        width: auto !important;
-        min-width: 0 !important;
-        text-align: left;
+    .shopping-selection-item {
+        padding: 10px 8px;
     }
 
-    #shoppingListTable th:nth-of-type(3),
-    #shoppingListTable td:nth-of-type(3) {
-        width: 58px !important;
-        min-width: 48px !important;
+    .shopping-selection-quantity {
+        flex: 0 0 110px; /* slightly smaller reserved space on narrow screens */
+        gap: 6px;
     }
 
-    body > .button {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-top: 12px;
-        padding: 12px;
-        box-sizing: border-box;
+    .shopping-selection-quantity-input {
+        width: 52px;
+        min-width: 52px;
+        max-width: 52px;
+        padding: 7px 6px;
+        font-size: 16px; /* larger touch target */
     }
 
-    .modal-content {
-        width: auto;
-        max-width: calc(100vw - 32px);
-        max-height: calc(100dvh - 32px);
-        overflow-y: auto;
-        padding: 18px;
-        box-sizing: border-box;
+    .shopping-selection-quantity-unit {
+        width: 56px;
+        min-width: 56px;
+        font-size: 14px;
     }
 
-    .modal-content input,
-    .modal-content select {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .modal-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-
-    .modal-buttons button {
-        padding: 10px 6px;
-    }
 }
+
+

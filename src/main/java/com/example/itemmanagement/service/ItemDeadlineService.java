@@ -18,9 +18,12 @@ public class ItemDeadlineService {
 
                 if (days < 0) {
                     item.setMessage("期限切れです");
+                    item.setExpired(true);
+                    item.setExpiringSoon(false);
                 } else if (days <= 3) {
                     item.setMessage("期限間近");
                     item.setExpiringSoon(true);
+                    item.setExpired(false);
                 } else {
                     item.setMessage("");
                 }

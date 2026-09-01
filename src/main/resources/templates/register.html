@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ff8c42">
+    <meta name="theme-color" content="#2f7d32">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <script defer src="/js/pwa.js"></script>
     <title>ユーザー登録</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
 </head>
-<body>
+<body class="auth-page register-page">
+    <main class="auth-card">
+        <header class="auth-header">
+            <div class="auth-badge"><i class="fa-solid fa-user-plus"></i></div>
+            <h1 class="auth-title">ユーザー登録</h1>
+            <p class="auth-subtitle">新しいアカウントを作成して始めましょう</p>
+        </header>
 
-<h2>ユーザー登録</h2>
+        <form class="auth-form" th:action="@{/register}" th:object="${registerForm}" method="post">
+            <div class="auth-form-row">
+                <label for="loginId">ユーザー名</label>
+                <input id="loginId" type="text" th:field="*{loginId}" placeholder="ユーザー名を入力">
+                <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" class="auth-error"></p>
+            </div>
 
-<form th:action="@{/register}"th:object="${registerForm}" method="post">
+            <div class="auth-form-row">
+                <label for="password">パスワード</label>
+                <input id="password" type="password" th:field="*{password}" placeholder="パスワードを入力">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="auth-error"></p>
+            </div>
 
-	<div>
-	    <label>ユーザー名</label>
-	    <input type="text" th:field="*{loginId}">
-	    <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}" style="color:red"></p>
-	</div>
+            <div class="auth-form-row">
+                <label for="confirmPassword">確認用パスワード</label>
+                <input id="confirmPassword" type="password" th:field="*{confirmPassword}" placeholder="もう一度入力">
+                <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="auth-error"></p>
+                <p th:if="${confirmPassworderrorMessage}" th:text="${confirmPassworderrorMessage}" class="auth-error"></p>
+            </div>
 
-	<div>
-	    <label>パスワード</label>
-	    <input type="password" th:field="*{password}">
-	    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></p>
-	</div>
+            <div class="auth-form-row">
+                <label for="email">メールアドレス</label>
+                <input id="email" type="email" th:field="*{email}" placeholder="example@example.com">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="auth-error"></p>
+            </div>
 
-	<div>
-	    <label>確認用パスワード</label>
-	    <input type="password" th:field="*{confirmPassword}">
-	    <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color:red"></p>
-		<p th:if="${confirmPassworderrorMessage}" th:text="${confirmPassworderrorMessage}" style="color:red;"></p>
-	</div>
+            <button type="submit" class="auth-button">登録する</button>
+            <p th:if="${errorMessage}" th:text="${errorMessage}" class="auth-error"></p>
+        </form>
 
-	<div>
-	    <label>メールアドレス</label>
-	    <input type="email" th:field="*{email}">
-	    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></p>
-	</div>
-	
-	<div>
-	    <button type="submit">登録</button>
-	</div>
-	
-	<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
-
-</form>
-
-<p>
-    <a th:href="@{/login}">ログイン画面へ戻る</a>
-</p>
-
+        <div class="auth-footer">
+            <a th:href="@{/login}" class="auth-link">ログイン画面へ戻る</a>
+        </div>
+    </main>
 </body>
 </html>

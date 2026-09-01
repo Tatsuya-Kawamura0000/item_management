@@ -1,1424 +1,613 @@
-/* =========================
-   ベース
-========================= */
+/* ========================================
+   基本設定
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    padding: 20px;
-    background-color: #f5f6f7;
-    color: #4A2E1F;
-    font-family: 'BIZ UDP Gothic', sans-serif;
+    padding: 0 0 90px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+    background: #f6f8f6;
+    color: #333;
 }
 
-h1 {
-    text-align: center;
+button {
+    font-family: inherit;
 }
 
-/* =========================
-   タイトル
-========================= */
-.page-title,
-.shopping-title,
-h1 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: #6b4c3b;
-    text-align: center;
-    margin: 20px 0 30px;
-}
 
-/* =========================
-   ポップアップメッセージ
-========================= */
+/* ========================================
+   メイン
+======================================== */
 
-.popup-message {
-    display: inline-block;   /* ←これ重要 */
-    margin-left: 12px;
-    font-size: 25px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;     /* ←改行防止 */
-}
-
-/* 表示時 */
-.popup-message.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.popup-success { color: #6b4c3b; }
-.popup-error { color: #c27a7a; }
-
-/* =========================
-   レイアウト
-========================= */
-.container {
-    max-width: 1000px;
+.dashboard {
+    width: 100%;
+    max-width: 1100px;
     margin: 0 auto;
+    padding: 24px 20px 40px;
 }
 
-.top-actions-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+/* ========================================
+   ヘッダー
+======================================== */
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.page-title-area {
     margin-bottom: 20px;
 }
 
-.right-section {
-    display: flex;
-    gap: 10px;
-}
-
-/* =========================
-   テーブル外枠
-========================= */
-.table-wrapper {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-/* =========================
-   期限アラート
-========================= */
-
-/* 期限アラート */
-/* 期限アラート（修正版） */
-.deadline-alert {
-    background: #fff6e6;
-    border: 1px solid #e6dcc6;
-    padding: 12px 24px;
-    border-radius: 12px;
-    margin: 20px auto;
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-right: 15%;
-}
-
-/* 期限切れ（強調：くすみレッド） */
-.deadline-alert .expired {
-    color: #c27a7a;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* 期限間近（注意：くすみオレンジ） */
-.deadline-alert .warning {
-    color: #cfa87c;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* アイコンの色を合わせる */
-.deadline-alert .expired i.fa-circle-exclamation {
-    color: #c27a7a;
-}
-.deadline-alert .warning i.fa-triangle-exclamation {
-    color: #cfa87c;
-}
-
-/* 小さな調整：モバイルでの折り返し */
-@media (max-width: 640px) {
-    .deadline-alert { flex-direction: column; align-items: flex-start; width: 95%; }
-}
-
-/* 左側のテキストグループ */
-.alert-info-group {
-    display: flex;
-    gap: 24px;
-    font-size: 18px;
-    margin-right: auto; /* これにより、ボタンとの間の隙間を自動で埋めてボタンを右へ押し出す */
-}
-
-/* --- レシピ管理ボタンの専用デザイン --- */
-.recipe-manage-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: white;
-    border: 1px solid #e6dcc6;
-    border-radius: 20px;
-    color: #8b6b57;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.recipe-manage-btn:hover {
-    background: #fafafa;
-    border-color: #d0c0a0;
-    color: #6b4c3b;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* ボタン内のアイコンサイズ固定 */
-.recipe-manage-btn .icon-main {
-    width: 20px;
-    height: 20px;
-    stroke: #cfa87c;
-}
-
-.recipe-manage-btn .icon-arrow {
-    width: 14px;
-    height: 14px;
-    opacity: 0;
-    transform: translateX(-5px);
-    transition: all 0.3s ease;
-}
-
-.recipe-manage-btn:hover .icon-arrow {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* モバイル対応： */
-@media (max-width: 640px) {
-    .deadline-alert {
-        flex-direction: row; /* 横並びを強制 */
-        justify-content: space-between;
-        padding: 10px 12px; /* 余白を少し狭く */
-        width: 95%; /* 画面幅いっぱいに使う */
-        gap: 8px;
-    }
-
-    .alert-info-group {
-        flex-direction: row; /* 横並びを強制 */
-        gap: 10px; /* アイテム間の距離を縮める */
-        font-size: 14px; /* 文字を少し小さくして収まりを良くする */
-        flex-wrap: wrap; /* 万が一入り切らない場合はここだけ改行を許可 */
-    }
-
-    .recipe-manage-btn {
-        padding: 6px 12px; /* ボタンを少しコンパクトに */
-        font-size: 12px;
-        flex-shrink: 0; /* ボタンが潰れないように固定 */
-    }
-
-    .recipe-manage-btn .icon-main {
-        width: 14px; /* アイコンも少し小さく */
-        height: 14px;
-    }
-}
-
-/* =========================
-   テーブル
-========================= */
-
-/* 基本 */
-.table-container table,
-.table-wrapper table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* 列幅をCSSで安定させる */
-    box-sizing: border-box;
-}
-
-/* 行の区切り */
-.table-container table tr {
-    border-bottom: 1px solid #e0e0e0;
-    min-height: 72px;               /* ← 行の高さを広げる（例: 72px） */
-}
-/* ヘッダ */
-.table-container table th {
-    background-color: #f0f0f0;
-    padding: 12px 8px;
-    text-align: center;
-    vertical-align: middle;
-    font-weight: 600;
-    box-sizing: border-box;
-}
-
-/* セル共通 */
-.table-container table td {
-    padding: 10px 8px;
-    text-align: center;
-    vertical-align: middle;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-}
-
-/* 列幅（HTML列順に合わせる）
-   想定: 1=チェック, 2=食材, 3=カテゴリー(hidden), 4=量, 5=期限, 6=メモ, 7=操作 */
-.table-container table th:nth-of-type(1),
-.table-container table td:nth-of-type(1) {
-    width: 40px;
-    padding: 6px 4px;
-}
-
-/* 食材列（2列目） */
-.table-container table th:nth-of-type(2),
-.table-container table td:nth-of-type(2) {
-    font-size: 1.15rem !important;
-    width: 240px !important;        /* ここで幅を指定 */
-    min-width: 160px !important;    /* 最小幅 */
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    text-align: center !important;  /* 中央揃えにしたい場合 */
-    vertical-align: middle !important;
-    box-sizing: border-box !important;
-}
-
-/* A: ヘッダと食材セルを中央揃え */
-.table-container table th:nth-of-type(2),
-.table-container table td:nth-of-type(2) {
-
-}
-
-/* カテゴリ列（3列目）は hidden なら幅を取らない */
-.table-container table th:nth-of-type(3),
-.table-container table td:nth-of-type(3) {
-    display: none;
-    width: 0;
-    padding: 0;
-}
-
-/* 量列（4列目）を狭く固定 */
-.table-container table th:nth-of-type(4),
-.table-container table td:nth-of-type(4) {
-    width: 48px;
-    min-width: 40px;
-    padding: 6px 6px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.95rem;
-    line-height: 1;
-}
-
-/* 期限列（5列目） */
-.table-container table th:nth-of-type(5),
-.table-container table td:nth-of-type(5) {
-    font-size: 1.05rem !important;
-    width: 270px;
-    text-align: center;
-    padding: 8px 8px;
-    box-sizing: border-box;
-}
-
-/* メモ列（6列目）は可変幅、中央揃えにする場合はここで指定 */
-.table-container table th:nth-of-type(6),
-.table-container table td:nth-of-type(6) {
-    /* メモ列が狭くなりすぎないよう自動幅にする */
-    width: auto !important;
-    text-align: center; /* 中央揃えにしたい場合 */
-    padding: 8px 10px !important;
-    white-space: normal; /* メモは折り返し可にするなら normal に */
-}
-
-/* 操作列（7列目） */
-.table-container table th:nth-of-type(7),
-.table-container table td:nth-of-type(7) {
-    width: 150px;
-    padding: 6px 8px;
-    text-align: center;
-}
-
-/* 食材ラベル（food-label）の幅調整 */
-.table-container .food-label {
-    font-size: 1.05rem !important;
-    width: 200px !important;
-    min-width: 140px !important;
-    padding: 12px 14px !important;  /* 縦の余白を増やす */
-    box-sizing: border-box !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    min-height: 48px !important;
-    line-height: 1.2 !important;
-}
-
-/* チェックボックスの余白を詰める */
-.table-container .item-checkbox {
+.page-title {
     margin: 0;
-    display: inline-block;
-    vertical-align: middle;
+    font-size: 28px;
+    font-weight: 750;
+    color: #222;
+    letter-spacing: 0.02em;
 }
 
-/* =========================
-   期限セル
-========================= */
+.user-info-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-top: 1px solid #e2e7e3;
+    border-bottom: 1px solid #e2e7e3;
+}
 
-.deadline-cell {
+.user-area {
+    min-width: 0;
+}
+
+.user-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    color: #4d7057;
+    white-space: nowrap;
+}
+
+.user-message {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+}
+
+.logout-button {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 5px;
+    padding: 7px 11px;
+    border: 1px solid #dedede;
+    border-radius: 9px;
+    background: #fff;
+    color: #777;
+    font-size: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    color: #444;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logout-icon {
+    font-size: 13px;
+}
+
+
+/* ========================================
+   サマリーカード
+======================================== */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
-}
-/* 期限セル内の強調（アイコンと日付） */
-.table-container .deadline-cell {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-    min-height: 44px;
-    line-height: 1.25 !important;
-    vertical-align: middle;
+    margin-bottom: 36px;
 }
 
-.deadline-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+.summary-card {
+    position: relative;
+    min-width: 0;
+    padding: 17px 15px;
+    border-radius: 16px;
+    background: #fff;
+    cursor: default;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.045);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.deadline-icon {
-    font-size: 18px;
-    flex: 0 0 24px;            /* 固定幅でアイコン位置を安定化 */
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
 }
 
-.icon-danger { color: #c27a7a; }
-.icon-warning { color: #cfa87c; }
-
-/* ハート・編集アイコン */
-.table-container .heart-btn,
-.table-container .edit-btn,
-.table-container .deadline-icon{
-    height: 40px !important;
-    min-width: 40px !important;
-    padding: 0 !important;
-    margin: 0 !important;
+.summary-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.table-container .heart-btn i,
-.table-container .deadline-icon i {
-    font-size: 18px;
+.summary-number {
+    display: block;
+    font-size: 27px;
+    font-weight: 700;
     line-height: 1;
 }
 
-/* 編集アイコン */
-.table-container .edit-btn i,
-.edit-btn i {
-    color: #a88a78 !important;   /* 淡いこげ茶 */
-    font-size: 20px !important;
-    line-height: 1 !important;
-    transition: color 0.12s ease, transform 0.08s ease;
+.summary-card.total {
+    border: 1px solid #b9dec4;
 }
 
-/* ホバー時に少し濃くする */
-.table-container .edit-btn:hover i,
-.edit-btn:hover i {
-    color: #8b6b57 !important;   /* ホバー色（やや濃い） */
-    transform: translateY(-1px);
+.summary-card.total .summary-label {
+    color: #39965a;
 }
 
-/* 操作セル内の間隔を詰める */
-.table-container .action-cell {
-    display: inline-flex;
+.summary-card.total .summary-number {
+    color: #27854a;
+}
+
+.summary-card.soon {
+    border: 1px solid #e6cf83;
+}
+
+.summary-card.soon .summary-label {
+    color: #c18a16;
+}
+
+.summary-card.soon .summary-number {
+    color: #b67b0c;
+}
+
+.summary-card.expired {
+    border: 1px solid #e8bcbc;
+}
+
+.summary-card.expired .summary-label {
+    color: #d04c4c;
+}
+
+.summary-card.expired .summary-number {
+    color: #c83d3d;
+}
+
+
+/* ========================================
+   セクション・横スクロール
+======================================== */
+
+.section {
+    margin-bottom: 34px;
+}
+
+.section-header {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 0;
+    margin-bottom: 13px;
 }
 
-/* テーブル全体のパディング微調整（必要なら上書き） */
-.table-container table th,
-.table-container table td {
-    padding-top: 14px !important;   /* 上下パディングを増やす */
-    padding-bottom: 14px !important;
-    text-align: center;
-    vertical-align: middle;
+.section-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.section.soon .section-title {
+    color: #c18a16;
+}
+
+.section.expired .section-title {
+    color: #d04c4c;
+}
+
+.item-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 3px 13px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.item-scroll::-webkit-scrollbar {
+    height: 5px;
+}
+
+.item-scroll::-webkit-scrollbar-thumb {
+    background: #d7d7d7;
+    border-radius: 10px;
+}
+
+.item-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* ========================================
+   食材カード & 選択時の色変更
+======================================== */
+
+.food-card {
+    position: relative;
+    flex: 0 0 180px;
+    min-height: 155px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.soon-card {
+    border: 2px solid #e8c75b;
+}
+
+.soon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+.expired-card {
+    border: 2px solid #df7777;
+}
+
+.expired-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+/* 選択状態（背景色変更） */
+.soon-card.selected {
+    background: #fff9df;
+    transform: translateY(-4px);
+    border: 2px solid #e8c75b;
+    box-shadow: 0 8px 22px rgba(197, 148, 20, 0.16);
+}
+
+.expired-card.selected {
+    background: #fff1f1;
+    transform: translateY(-4px);
+    border: 2px solid #df7777;
+    box-shadow: 0 8px 22px rgba(190, 55, 55, 0.14);
+}
+
+.food-card-top {
+    margin-bottom: 10px;
+}
+
+.food-card-name {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    box-sizing: border-box;
 }
 
-/* レスポンシブ：狭い画面では列幅を調整 */
-/* レスポンシブ：狭い画面では幅を縮める */
-@media (max-width: 640px) {
-    .table-container table th:nth-of-type(2),
-    .table-container table td:nth-of-type(2) {
-        width: 140px !important;
-        min-width: 100px !important;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-    }
-    .table-container .food-label {
-        width: 120px !important;
-        min-width: 80px !important;
-        padding: 6px 8px !important;
-    }
+.food-card-date {
+    margin-bottom: 13px;
+    font-size: 26px;
+    font-weight: 750;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
 }
 
-
-/* =========================
-   食品セル
-========================= */
-td.food-cell {
-    white-space: normal;
-    text-align: center;
+.soon-card .food-card-date {
+    color: #c18a16;
 }
 
-/* ラベル */
-.food-label {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 120px;
-    min-height: 40px;
-    padding: 0 12px;
-    border-radius: 16px;
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
-    margin: 0 auto !important;
+.expired-card .food-card-date {
+    color: #d04c4c;
 }
 
-.food-label.category-1 { background-color: #f8c9d3; }
-.food-label.category-2 { background-color: #cfe3ff; }
-.food-label.category-3 { background-color: #cdeed6; }
-.food-label.category-7 { background-color: #fff0c9; }
-
-/* =========================
-   ボタン
-========================= */
-.button,
-input[type="submit"] {
-    background-color: #ffffff !important;
-    border: 1px solid #d0d0d0 !important;
-    border-radius: 18px !important;
-    padding: 6px 14px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    color: inherit !important;
-    box-shadow: none !important;
-}
-
-.button:hover,
-input[type="submit"]:hover {
-    background-color: #f5f5f5 !important;
-    transform: none !important;
-}
-
-.add-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    padding: 12px 24px !important;
-    border-radius: 28px !important;
-    background-color: #f7d9b5 !important;
-    border: 1.5px solid #d0d0d0 !important;
-    color: #6b4c3b !important;
-    text-decoration: none !important;
-    font-weight: 600 !important;
-}
-
-.add-btn:hover {
-    background-color: #f3cba0 !important;
-}
-
-/* =========================
-   バスケットボタン
-========================= */
-.basket-btn {
-    background-color: #e8d8c8 !important;
-    color: #4A2E1F !important;
-    padding: 12px 24px !important;
-    border-radius: 28px !important;
-    text-decoration: none !important;
-    font-weight: 600 !important;
-    border: 1px solid rgba(0,0,0,0.06) !important;
-}
-
-.basket-btn:hover {
-    background-color: #d9c7b5;
-}
-
-/* =========================
-   まとめて操作ボタン
-========================= */
-
-.bulk-actions {
-    display: flex;
-    gap: 16px;
-    margin: 24px 0;
-    align-items: center;
-}
-
-.bulk-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 22px;
-    border-radius: 28px;
-    font-weight: 800;
-    cursor: pointer;
-    border: none;
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    transition: transform 0.08s ease, filter 0.12s ease;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-/* 消費済みにするボタン */
-.bulk-btn.delete {
-    padding: 30px 28px;
-    font-size: 1.05rem;
-    background: linear-gradient(180deg, #ef5350 0%, #e53935 100%);
-    border: 1px solid rgba(0,0,0,0.06);
-    color: #fff;
-}
-
-.bulk-btn.delete:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.98);
-}
-
-/* 買い物リストへ追加ボタン　*/
-.bulk-btn.shopping {
-    padding: 30px 28px;
-    font-size: 1.05rem;
-    background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%);
-    border: 1px solid rgba(0,0,0,0.06);
-    color: #fff;
-}
-
-/* レシピを提案してもらうボタン　*/
-
-.bulk-btn.recipe {
-    padding: 30px 28px;
-    font-size: 1.05rem;
-    background-color: #ff8c42;
-    color: white;
-}
-
-.bulk-btn.recipe:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.98);
-}
-
-/* 買い物ホバー */
-.bulk-btn.shopping:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.98);
-}
-
-.bulk-btn i {
-    font-size:30px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-/* レシピコンテナ */
-.recipe-container {
+.food-card-details {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #fcfcfc;
-    border-radius: 12px;
+    gap: 5px;
 }
 
-/* 削除・買い物ボタンの並び */
-.basic-actions {
+.food-card-detail {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-/* レシピカード */
-
-.recipe-options {
-    display: flex;
-    flex-direction: row; /* 縦から横並びに変更 */
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-
-/* セレクトボックスの見た目カスタマイズ */
-.custom-select {
-    border: none !important; /* 外枠を消す */
-    background-color: transparent !important; /* 背景を親に任せる */
-    padding: 0 !important;
-    margin: 0;
-    font-size: 12px; /* タグと同じサイズ */
-    font-weight: 600; /* タグと同じ太さ */
-    color: #666;
-    cursor: pointer;
-    outline: none;
-    -webkit-appearance: none; /* デフォルトの矢印を消す（お好みで） */
-    appearance: none;
-}
-
-
-.custom-select:focus {
-    border-color: #ff8c00;
-}
-
-/* ヒントテキスト */
-.hint-text {
+    gap: 6px;
     font-size: 11px;
     color: #888;
 }
 
-/* ボタンの共通調整 */
-.bulk-btn {
-    height: 45px;
-    padding: 0 20px;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.detail-label {
+    color: #aaa;
+}
+
+.food-card-note {
+    overflow: hidden;
     white-space: nowrap;
-}
-
-/* レシピカード内のレイアウト微調整 */
-.recipe-generator-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 2px solid #ffefe5;
-    border-radius: 16px; /* 少し丸みを強く */
-    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.1); /* ほんのりオレンジの影 */
-}
-
-.option-group-extra {
-    display: flex;
-    gap: 6px;
-    padding: 6px 14px; /* タグと同じ余白 */
-    flex-wrap: wrap;
-    display: flex;
-    align-items: center;
-    color: #e67e22;
-    background-color: #f9f9f9; /* タグと同じ背景 */
-    border: 1px solid #ddd; /* タグと同じ枠線 */
-    border-radius: 20px; /* タグと同じ丸み */
-    transition: all 0.2s ease;
-}
-
-/* ジャンル選択の中のアイコン */
-.option-group i {
-    color: #ff8c42; /* オレンジで統一 */
-    font-size: 14px;
-}
-
-/* ジャンルが選択されている（お任せ以外）の時に色を変える演出 */
-.option-group:has(.custom-select:not([value=""])) {
-    background-color: #ffefe5;
-    border-color: #ff8c42;
-    color: #ff8c42;
-}
-
-.option-group:has(.custom-select:not([value=""])) .custom-select {
-    color: #666;
+    text-overflow: ellipsis;
 }
 
 
+/* ========================================
+   消費済みボタン
+======================================== */
 
-/* --- 修正ポイント：ジャンル選択時のカラー設定 --- */
-.tag-checkbox.genre-tag:has(select:valid) {
-    background-color: #ffefe5;
-    border-color: #ff8c42;
-    color: #ff8c42;
-}
-
-/* ジャンルが選択された時だけアイコンもオレンジにする */
-.tag-checkbox.genre-tag:has(select:valid) i {
-    color: #ff8c42;
-}
-
-/* ジャンルが選択された時だけ文字色もオレンジにする */
-.tag-checkbox.genre-tag:has(select:valid) .custom-select {
-    color: #ff8c42;
-}
-
-.tag-checkbox {
-    cursor: pointer;
-}
-
-.tag-checkbox input {
-    display: none; /* 実際のチェックボックスは隠す */
-}
-
-.tag-checkbox span {
-    display: inline-block;
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    background-color: #f9f9f9;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-/* チェックが入った時のスタイル */
-.tag-checkbox input:checked + span {
-    background-color: #ffefe5;
-    border-color: #ff8c42;
-    color: #ff8c42;
-    box-shadow: 0 2px 5px rgba(255, 140, 66, 0.2);
-}
-
-/* レシピボタンのサイズ調整（他と合わせる） */
-.bulk-btn.recipe {
-    height: auto; /* 高さを固定せずパディングで調整 */
-    padding: 15px 25px;
-    font-size: 1rem;
-    border-radius: 12px;
-}
-
-/* チェックが入った時のスタイル */
-.tag-checkbox input:checked + span {
-    background-color: #ffefe5;
-    border-color: #ff8c42;
-    color: #ff8c42;
-    box-shadow: 0 2px 5px rgba(255, 140, 66, 0.2);
-}
-
-/* 食材指定モードがONのとき、テーブルのチェックボックス周辺を強調 */
-.highlight-selection-mode .item-checkbox {
-    outline: 2px solid #ff7800;
-    outline-offset: 2px;
-    box-shadow: 0 0 10px rgba(255, 120, 0, 0.5);
-    transition: all 0.3s;
-}
-
-/* 指定モード時にチェックを入れた行をより目立たせる */
-.highlight-selection-mode tr:has(.item-checkbox:checked) {
-    background-color: #fff4e5 !important;
-}
-
-/* ジャンルタグ専用のスタイル */
-.tag-checkbox.genre-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    background-color: #f9f9f9;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    height: 30px; /* 他のタグと高さを揃える（環境に合わせて調整） */
-    box-sizing: border-box;
-}
-
-/* ジャンルタグ内のアイコン */
-.tag-checkbox.genre-tag i {
-    color: #888;
-    font-size: 13px;
-    transition: color 0.2s;
-}
-
-/* セレクトボックス自体のスタイルを消してタグに馴染ませる */
-.custom-select {
-    border: none !important;
-    background: transparent !important;
-    outline: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    cursor: pointer;
-    -webkit-appearance: none; /* ブラウザ標準の矢印を消す */
-    appearance: none;
-}
-
-
-/* セレクトボックスにフォーカスが当たった時の親の見た目 */
-.tag-checkbox.genre-tag:focus-within {
-    border-color: #ff8c42;
-    box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2);
-}
-
-/* 選択状態に関わらず、ドロップダウンリスト内の文字色をリセット */
-.custom-select option {
-    background-color: #ffffff; /* 背景は常に白 */
-    color: #333333;           /* 文字色は常に濃いグレー/黒 */
-    font-weight: normal;       /* 太字を解除 */
-}
-
-/* =========================
-   まとめて操作エリア（レイアウト調整）
-========================= */
-
-.bulk-actions {
-    display: flex;
-    justify-content: space-between; /* これで左のボタン群と右のレシピカードを離す */
-    align-items: center;
-    gap: 16px;
-    margin: 24px 0;
-    width: 100%;
-}
-
-.basic-actions {
-    display: flex;
-    align-items: center; /* 縦方向の中央揃え */
-    gap: 12px;
-    flex-wrap: nowrap; /* 勝手に改行されないように */
-}
-
-/* 左側ボタン2つの高さを統一し、パディングを調整 */
-.bulk-btn.delete,
-.bulk-btn.shopping {
-    height: 80px; /* 高さを明示的に指定 */
-    padding: 0 24px; /* 上下パディングをリセットし、横だけ指定 */
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px; /* レシピカードの角丸に合わせる */
-}
-
-/* アイコンサイズが大きすぎた場合の調整（ボタンの高さに収める） */
-.bulk-btn.delete i,
-.bulk-btn.shopping i {
-    font-size: 20px; /* 30pxから少し小さくしてバランス調整 */
-}
-
-/* レシピコンテナを右側に配置 */
-.recipe-container {
-    margin: 0; /* 余計なマージンを削除 */
-    padding: 0;
-    background-color: transparent; /* 二重の背景を防ぐ */
-}
-
-/* レシピカード自体の調整 */
-.recipe-generator-card {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px 20px; /* パディングを少しタイトにして高さを合わせる */
-    min-height: 80px; /* 左のボタンと高さを合わせる */
-    background-color: #fff;
-    border: 2px solid #ffefe5;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.1);
-}
-
-/* レシピ提案ボタンの高さも統一 */
-.bulk-btn.recipe {
-    height: 70px; 
-    height: 70px;
-    padding: 0 20px;
-    font-size: 0.95rem;
-    border-radius: 10px;
-}
-
-
-
-/* =========================
-   アクション（ハート・編集）
-========================= */
-.action-cell {
+.action-area {
+    position: sticky;
+    bottom: 84px;
+    z-index: 50;
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 12px;
-}
-
-.heart-btn,
-.edit-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: none !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-
-.heart-btn i,
-.edit-btn i {
-    font-size: 30px !important;
-    line-height: 1 !important;
-    color: #9aa0a6;
-}
-
-.heart-btn i.active {
-    color: #ec8aa3 !important;
-}
-
-
-
-/* =========================
-   フィルター・検索
-========================= */
-.filter-form {
-    display: flex;
-    gap: 10px;
-    background-color: #f1f2f3;
-    padding: 10px 15px;
-    border-radius: 12px;
-}
-
-.search-bar {
-    display: flex;
-    justify-content: space-between;
-    margin: 15px 0;
-}
-
-.search-input {
-    padding: 8px 12px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-}
-
-/* ===== 検索ボタン ===== */
-.search-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 40px !important;
-    height: 40px !important;
-    padding: 0 !important;
-    border-radius: 20px !important;
-    border: none !important;
-    background: #7dbb7d !important; /* 元の緑 */
-    color: #fff !important;
-    cursor: pointer !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
-}
-
-/* 検索アイコンのサイズと縦揃え */
-.search-btn i {
-    font-size: 16px !important;
-    line-height: 1 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* 検索ボタンのホバー */
-.search-btn:hover {
-    filter: brightness(0.95) !important;
-    transform: translateY(-1px) !important;
-}
-
-/* 検索入力とボタンの間隔を安定化 */
-.search-form { gap: 8px !important; align-items: center !important; }
-
-/* =========================
-   タブ
-========================= */
-.category-tabs {
-    display: flex;
-    gap: 10px;
-    margin: 50px 0 20px;
-}
-
-.alltab {
-    padding: 23px 24px;
-    font-weight: 800;
-    border-radius: 20px;
-    background: #f7d9b5;
-    color: #4A2E1F;
-    position: relative;
-}
-
-.tab {
-    padding: 20px 21px;
-    border-radius: 20px;
-    background: #FFF6E5;
-    color: #4A2E1F;
-    position: relative;
-}
-
-.allab.active {
-    background: #EADBC8;
-    color: #333;
-}
-
-.tab.active {
-    background: #EADBC8;
-    color: #333;
-}
-
-.alltab.select:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.98);
-}
-
-.tab.select:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.98);
-}
-
-.category-tabs a {
-    text-decoration: none !important;
-}
-
-.category-tabs a,
-.category-tabs a:hover,
-.category-tabs a:visited {
-    text-decoration: none !important;
-}
-
-/* ===== 通知バッジ ===== */
-
-.badge {
-    position: absolute !important;
-    top: -8px !important;
-    right: -8px !important;
-    background: linear-gradient(#e8d8c8, #c9a98a) !important;
-    color: #fff !important;
-    border-radius: 50% !important;
-    font-size: 13px !important;
-    min-width: 18px !important;
-    height: 18px !important;
-    line-height: 18px !important;
-    text-align: center !important;
-    padding: 0 3px !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.35) !important;
-    font-weight: 700 !important;
-    display: inline-block !important;
-    transform: none !important;
-}
-
-/* 0のときは非表示にする場合 */
-.badge[data-count="0"] { display: none !important; }
-
-
-/* =========================
-   その他
-========================= */
-.hidden {
-    display: none;
-}
-
-.logout-btn {
-    background-color: #6b4c3b;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-}
-
-/* =========================
-   PWA / モバイル表示
-========================= */
-@media (max-width: 640px) {
-    body {
-        padding: 12px;
-        overflow-x: hidden;
-    }
-
-    .page-title {
-        margin: 8px 0 16px;
-        font-size: 1.8rem;
-        letter-spacing: 0.06em;
-    }
-
-    .welcome-message {
-        margin: 0 0 12px;
-        font-size: 1rem;
-    }
-
-    .deadline-alert {
-        width: auto;
-        margin: 12px 0;
-        padding: 12px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    .alert-info-group {
-        justify-content: space-between;
-        gap: 8px;
-        font-size: 0.9rem;
-    }
-
-    .recipe-manage-btn {
-        justify-content: center;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 10px 12px;
-        font-size: 0.9rem;
-    }
-
-    .search-bar {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-        margin: 12px 0;
-    }
-
-    .search-form {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto auto;
-        width: 100%;
-    }
-
-    .search-input {
-        min-width: 0;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .searchItems {
-        max-width: 74px;
-    }
-
-    .action-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-
-    .basket-btn,
-    .add-btn {
-        justify-content: center;
-        min-width: 0;
-        padding: 10px 8px !important;
-        font-size: 0.85rem;
-        white-space: nowrap;
-    }
-
-    .category-tabs {
-        gap: 8px;
-        margin: 16px -12px 12px;
-        padding: 4px 12px 8px;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .category-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .category-tabs a {
-        flex: 0 0 auto;
-    }
-
-    .alltab,
-    .tab {
-        padding: 12px 16px;
-        border-radius: 16px;
-        font-size: 0.9rem;
-    }
-
-    .bulk-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        margin: 12px 0;
-    }
-
-    .basic-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        width: 100%;
-    }
-
-    .bulk-btn.delete,
-    .bulk-btn.shopping {
-        width: 100%;
-        min-width: 0;
-        height: 50px;
-        padding: 0 8px;
-        font-size: 0.82rem;
-        white-space: normal;
-    }
-
-    .bulk-btn.delete i,
-    .bulk-btn.shopping i {
-        font-size: 16px;
-    }
-
-    .recipe-container,
-    .recipe-generator-card {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .recipe-generator-card {
-        flex-direction: column;
-        align-items: stretch;
-        min-height: 0;
-        gap: 10px;
-        padding: 12px;
-    }
-
-    .option-group-extra {
-        justify-content: center;
-        padding: 8px;
-    }
-
-    .bulk-btn.recipe {
-        width: 100%;
-        height: 46px;
-        padding: 0 12px;
-        justify-content: center;
-        font-size: 0.9rem;
-    }
-
-    .table-wrapper {
-        padding: 8px;
-        border-radius: 12px;
-        overflow-x: hidden;
-    }
-
-    .table-container table th,
-    .table-container table td {
-        padding: 8px 4px !important;
-        font-size: 0.76rem;
-    }
-
-    .table-container table th:nth-of-type(1),
-    .table-container table td:nth-of-type(1) {
-        width: 30px;
-    }
-
-    .table-container table th:nth-of-type(2),
-    .table-container table td:nth-of-type(2) {
-        width: 104px !important;
-        min-width: 0 !important;
-    }
-
-    .table-container table th:nth-of-type(4),
-    .table-container table td:nth-of-type(4) {
-        width: 42px;
-        min-width: 0;
-    }
-
-    .table-container table th:nth-of-type(5),
-    .table-container table td:nth-of-type(5) {
-        width: 76px;
-        min-width: 0;
-        font-size: 0.7rem !important;
-    }
-
-    .table-container table th:nth-of-type(6),
-    .table-container table td:nth-of-type(6) {
-        display: none;
-    }
-
-    .table-container table th:nth-of-type(7),
-    .table-container table td:nth-of-type(7) {
-        width: 64px;
-        min-width: 0;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-
-    .table-container .food-label {
-        width: 92px !important;
-        min-width: 0 !important;
-        min-height: 34px;
-        padding: 4px !important;
-        font-size: 0.82rem !important;
-        overflow-wrap: anywhere;
-    }
-
-    .table-container .deadline-cell {
-        gap: 2px !important;
-        min-height: 0;
-    }
-
-    .table-container .deadline-icon {
-        display: none;
-    }
-
-    .table-container .heart-btn,
-    .table-container .edit-btn {
-        min-width: 28px !important;
-        height: 28px !important;
-    }
-
-    .heart-btn i,
-    .edit-btn i {
-        font-size: 20px !important;
-    }
-}
-
-/* =========================
-   モーダル
-========================= */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    box-sizing: border-box;
-}
-
-.modal-overlay.show {
-    display: flex;
-}
-
-.modal-content {
-    background-color: #fff;
-    width: min(400px, 100%);
-    max-height: calc(100dvh - 32px);
-    padding: 20px;
-    border-radius: 16px;
-    box-sizing: border-box;
-    overflow-y: auto;
-}
-
-/* =========================
-   レシピ提案モーダル
-========================= */
-
-/* 食材指定ON時は、モーダルの背景部分だけクリック可能にする */
-.modal-overlay.allow-background-interaction {
+    margin-top: -5px;
     pointer-events: none;
 }
 
-/* モーダル本体は引き続き操作可能 */
-.modal-overlay.allow-background-interaction .modal-content {
+.consume-button {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 24px;
+    background: #d04c4c;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(208, 76, 76, 0.25);
     pointer-events: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-@media (max-width: 640px) {
-    .recipe-modal-content {
-        width: 100%;
-        max-width: 420px;
-        max-height: calc(100dvh - 32px);
-        padding: 20px 16px;
-        border-radius: 16px;
+.consume-button.show {
+    display: flex;
+}
+
+.consume-button:hover {
+    transform: translateY(-2px);
+    background: #c13f3f;
+    box-shadow: 0 10px 22px rgba(208, 76, 76, 0.32);
+}
+
+.trash-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.consume-count {
+    opacity: 0.75;
+}
+
+
+/* ========================================
+   ポップアップモーダル
+======================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: #fff;
+    width: 90%;
+    max-width: 340px;
+    padding: 24px 20px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
+}
+
+.modal-overlay.show .modal-container {
+    transform: scale(1);
+}
+
+.modal-title {
+    margin: 0 0 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #222;
+}
+
+.modal-message {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 11px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-btn.cancel {
+    background: #f0f2f0;
+    color: #666;
+}
+
+.modal-btn.cancel:hover {
+    background: #e4e8e4;
+}
+
+.modal-btn.confirm {
+    background: #d04c4c;
+    color: #fff;
+}
+
+.modal-btn.confirm:hover {
+    background: #c13f3f;
+}
+
+
+/* ========================================
+   下部ナビゲーション
+======================================== */
+
+.bottom-navigation {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid #e8e8e8;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.045);
+    backdrop-filter: blur(12px);
+}
+
+.nav-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-decoration: none;
+    color: #999;
+    font-size: 10px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-item:hover {
+    transform: translateY(-2px);
+    color: #555;
+}
+
+.nav-item.active {
+    color: #333;
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.nav-add {
+    position: relative;
+    top: -18px;
+    flex: 0 0 58px;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #3f9c5b;
+    color: #fff;
+    text-decoration: none;
+    font-size: 29px;
+    box-shadow: 0 6px 18px rgba(48, 125, 68, 0.28);
+    border: 4px solid #f6f8f6;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-add:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 23px rgba(48, 125, 68, 0.34);
+}
+
+.nav-add-label {
+    position: absolute;
+    top: 61px;
+    color: #999;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+
+/* レスポンシブ設計 (PC・スマホ) */
+@media (min-width: 601px) {
+    .bottom-navigation {
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 18px 18px 0 0;
     }
+}
+
+@media (max-width: 600px) {
+    .dashboard { padding: 18px 14px 32px; }
+    .page-title { font-size: 24px; }
+    .user-name { font-size: 13px; }
+    .summary-grid { gap: 7px; margin-bottom: 31px; }
+    .summary-card { padding: 14px 8px; border-radius: 13px; text-align: center; }
+    .summary-label { font-size: 10px; }
+    .summary-number { font-size: 22px; }
+    .food-card { flex-basis: 170px; min-height: 150px; padding: 15px; border-radius: 14px; }
+    .food-card-name { font-size: 16px; }
+    .food-card-date { font-size: 23px; }
+    .bottom-navigation { height: 68px; }
+    .nav-icon { font-size: 19px; }
+    .nav-item { font-size: 9px; }
+    .nav-add { flex-basis: 54px; width: 54px; height: 54px; font-size: 26px; }
+    .nav-add-label { top: 57px; }
+    .action-area { bottom: 78px; }
+    .consume-button { min-height: 42px; padding: 0 18px; font-size: 12px; }
+}
+
+
+/* ========================================
+   買い物リスト画面 共通レイアウト
+======================================== */
+
+.shopping-list-page {
+    width: 100%;
+    min-height: calc(100vh - 72px);
 }

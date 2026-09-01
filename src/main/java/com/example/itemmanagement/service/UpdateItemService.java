@@ -37,7 +37,7 @@ public class UpdateItemService {
     public void bulkDelete(List<Integer> ids, Integer userId) {
 
         for (Integer id : ids) {
-            shoppingListMapper.stop(id, userId);
+            mapper.deleteFromShoppingList(id, userId);
         }
 
     }
@@ -49,6 +49,15 @@ public class UpdateItemService {
             mapper.stop(id, userId);
         }
 
+    }
+
+    @Transactional
+    public void bulkStopFromItems(List<Integer> ids, Integer userId) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+
+        mapper.stopAll(ids, userId);
     }
 
 }

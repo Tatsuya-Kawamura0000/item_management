@@ -1,47 +1,519 @@
+/* ========================================
+   食材追加画面
+======================================== */
 
-/* フォーム全体をカード化して中央に配置 */
-.form-wrapper {
-    max-width: 720px;           /* フォームの最大幅（好みで調整） */
+.add-page {
     width: 100%;
-    margin: 36px auto;          /* 横中央寄せ、上下マージン */
-    background: #ffffff;        /* カード背景 */
-    padding: 28px 32px;         /* 内側余白 */
-    border-radius: 14px;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.08);
-    box-sizing: border-box;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
 }
 
-/* タイトルの余白調整 */
-.form-wrapper h1 {
-    margin-top: 0;
-    margin-bottom: 18px;
-    text-align: center;
-    font-size: 1.9rem;
-    color: #6b4c3b;
+
+/* ========================================
+   ヘッダー
+======================================== */
+
+.add-header {
+    margin-bottom: 36px;
 }
 
-/* フォーム要素を幅いっぱいに */
-.form-wrapper .form-row input[type="text"],
-.form-wrapper .form-row input[type="password"],
-.form-wrapper .form-row input[type="date"],
-.form-wrapper .form-row select,
-.form-wrapper .form-row textarea {
-    width: 100%;
-    box-sizing: border-box;
+.add-header .page-title-area {
+    margin-bottom: 20px;
 }
 
-/* ボタン類の見た目調整（右寄せや中央寄せはお好みで） */
-.form-wrapper .form-actions,
-.form-wrapper .form-footer {
-    text-align: center;
-    margin-top: 18px;
+.page-description {
+    margin: 7px 0 0;
+    font-size: 12px;
+    color: #999;
 }
 
-/* 小さい画面での余白調整 */
-@media (max-width: 720px) {
-    .form-wrapper {
-        margin: 18px 12px;
-        padding: 20px;
-        border-radius: 12px;
+
+/* ========================================
+   追加方法
+======================================== */
+
+.add-method-section {
+    margin-bottom: 28px;
+}
+
+.add-method-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+/* ========================================
+   追加方法カード
+======================================== */
+
+.add-method-card {
+    position: relative;
+    min-height: 235px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding: 24px;
+
+    border-radius: 18px;
+    background: #fff;
+
+    text-decoration: none;
+    text-align: left;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.045);
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.add-method-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+}
+
+
+/* ========================================
+   手動追加
+======================================== */
+
+.manual-card {
+    border: 1px solid #b9dec4;
+}
+
+.manual-card:hover {
+    border-color: #79bd8d;
+}
+
+
+/* ========================================
+   レシート読み取り
+======================================== */
+
+.receipt-card {
+    border: 1px solid #d8e4dc;
+}
+
+.receipt-card:hover {
+    border-color: #79bd8d;
+}
+
+
+/* ========================================
+   アイコン
+======================================== */
+
+.method-icon-wrapper {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    border-radius: 16px;
+
+    background: #eaf6ed;
+    color: #3f9c5b;
+}
+
+.method-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+
+/* ========================================
+   カード内テキスト
+======================================== */
+
+.method-content {
+    padding-right: 30px;
+}
+
+.method-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 9px;
+    font-weight: 750;
+
+    letter-spacing: 0.16em;
+
+    color: #83a18b;
+}
+
+.method-title {
+    margin: 0 0 9px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    color: #2d342f;
+}
+
+.method-description {
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color: #888;
+}
+
+
+/* ========================================
+   矢印
+======================================== */
+
+.method-arrow {
+    position: absolute;
+
+    right: 22px;
+    bottom: 20px;
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f3f7f4;
+    color: #3f9c5b;
+
+    font-size: 16px;
+
+    transition:
+            transform 0.2s ease,
+            background-color 0.2s ease;
+}
+
+.add-method-card:hover .method-arrow {
+    transform: translateX(4px);
+    background: #e5f2e8;
+}
+
+
+/* ========================================
+   レシート案内
+======================================== */
+
+.receipt-guide {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 17px 19px;
+
+    border: 1px solid #e5ebe6;
+    border-radius: 15px;
+
+    background: #fff;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.035);
+}
+
+.guide-icon {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #f1f7f2;
+    color: #3f9c5b;
+
+    font-size: 20px;
+}
+
+.guide-content h2 {
+    margin: 0 0 4px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #3b463e;
+}
+
+.guide-content p {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: #999;
+}
+
+
+/* Common modal and suggestion styles (applies to all sizes) */
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    background: transparent;
+
+    color: #999;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.modal-close:hover { color: #555; }
+
+.modal-primary-button, .modal-secondary-button {
+    width: 48%;
+    min-height: 42px;
+    border: none;
+    border-radius: 11px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.modal-primary-button {
+    background: #3f9c5b;
+    color: #fff;
+}
+
+.modal-primary-button:hover { background: #35894e; }
+
+.modal-secondary-button {
+    background: #f0f2f0;
+    color: #666;
+}
+
+.modal-secondary-button:hover { background: #e4e8e4; }
+
+/* Suggestions dropdown below input */
+.suggestions {
+    margin-top: 6px;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+    text-align: left;
+    padding: 6px 6px;
+}
+
+.suggestion-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.suggestion-item + .suggestion-item { margin-top: 6px; }
+
+.suggestion-item:hover { background: #f4f7f4; }
+
+
+/* ========================================
+   スマートフォン
+======================================== */
+
+@media (max-width: 600px) {
+
+    .add-page {
+        padding: 18px 14px 32px;
     }
+
+    .add-header {
+        margin-bottom: 30px;
+    }
+    .add-method-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .add-method-card {
+        min-height: 185px;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .method-icon-wrapper {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 17px;
+    }
+
+    .method-icon {
+        font-size: 25px;
+    }
+
+    .method-title {
+        font-size: 17px;
+    }
+
+    .receipt-guide {
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    /* ========================================
+   レシート読み取りモーダル
+======================================== */
+
+    .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+
+        width: 32px;
+        height: 32px;
+
+        border: none;
+        background: transparent;
+
+        color: #999;
+
+        font-size: 25px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+    .modal-close:hover {
+        color: #555;
+    }
+
+
+    /* カメラアイコン */
+    .modal-camera-icon {
+        width: 64px;
+        height: 64px;
+
+        margin: 0 auto 17px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 18px;
+
+        background: #eaf6ed;
+        color: #3f9c5b;
+    }
+
+    .modal-camera-icon svg {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    /* カメラ起動ボタン */
+    .camera-start-button {
+        width: 100%;
+        min-height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        border: none;
+        border-radius: 12px;
+
+        background: #3f9c5b;
+        color: #fff;
+
+        font-size: 13px;
+        font-weight: 650;
+
+        cursor: pointer;
+
+        box-shadow:
+                0 6px 15px rgba(48, 125, 68, 0.20);
+
+        transition:
+                background-color 0.2s ease,
+                transform 0.2s ease;
+    }
+
+    .camera-start-button:hover {
+        background: #35894e;
+        transform: translateY(-2px);
+    }
+
+    .camera-button-icon {
+        width: 19px;
+        height: 19px;
+    }
+
+
+    /* 手動追加ボタン */
+    .modal-secondary-button {
+        width: 100%;
+        min-height: 42px;
+
+        margin-top: 10px;
+
+        border: none;
+        border-radius: 11px;
+
+        background: #f0f2f0;
+        color: #666;
+
+        font-size: 12px;
+
+        cursor: pointer;
+
+        transition:
+                background-color 0.2s ease;
+    }
+
+    .modal-secondary-button:hover {
+        background: #e4e8e4;
+    }
+
+    /* "追加する" button */
+    #manualAddButton {
+        background: #28a745; /* Bootstrap success green */
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.18);
+    }
+
+    #manualAddButton:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+
+    #manualAddButton.shopping-modal-button {
+        padding: 13px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
 }

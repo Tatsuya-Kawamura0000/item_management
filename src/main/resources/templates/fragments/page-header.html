@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+
+<div th:fragment="pageHeader(title, message)">
+
+    <header class="page-header">
+
+        <!-- ページタイトル -->
+        <div class="page-title-area">
+            <h1 class="page-title"
+                th:text="${title}">
+                Dashboard
+            </h1>
+        </div>
+
+        <!-- ユーザー情報 -->
+        <div class="user-info-area">
+
+            <div class="user-area">
+
+                <!-- ログインユーザー名 -->
+                <p class="user-name"
+                   th:text="|${#authentication.name} さん|">
+                    〇〇さん
+                </p>
+
+                <!-- 画面ごとのメッセージ -->
+                <p class="user-message"
+                   th:text="${message}">
+                    食材の期限を確認しましょう
+                </p>
+
+            </div>
+
+            <!-- ログアウト -->
+            <form th:action="@{/logout}"
+                  method="post"
+                  style="display:inline;">
+
+                <button class="logout-button"
+                        type="submit">
+
+                    <span class="logout-icon">↪</span>
+                    ログアウト
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </header>
+
+</div>
+
+</body>
+</html>

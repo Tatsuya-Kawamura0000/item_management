@@ -23,6 +23,9 @@ public class Items {
 	@Size(max = 20, message = "量は20文字以内で入力してください")
 	private String amount;
 
+	@Size(max = 20, message = "前回購入量は20文字以内で入力してください")
+    private String purchaseAmount;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate deadline;
 
@@ -37,6 +40,8 @@ public class Items {
 	private String categoryName;
 	
 	private boolean expiringSoon;		//期限が3日以内であれば、true
+
+	private boolean expired;          // ★期限切れであれば、true (追加)
 	
 	private boolean favorite;
 	

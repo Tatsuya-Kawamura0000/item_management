@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="bottomNavigation">
+    <nav class="bottom-navigation">
+        <a th:href="@{/dashboard}" class="nav-item nav-dashboard" data-nav="dashboard">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path></svg>
+            </span>
+            <span>ダッシュボード</span>
+        </a>
+        <a th:href="@{/foods}" class="nav-item nav-foods" data-nav="foods">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg>
+            </span>
+            <span>食材一覧</span>
+        </a>
+        <a th:href="@{/foods/add}" class="nav-add">
+            <span class="nav-add-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+            </span>
+            <span class="nav-add-label">追加</span>
+        </a>
+        <a th:href="@{/recipes}" class="nav-item nav-recipes" data-nav="recipes">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M4 13h11"></path><path d="M4 13a6 6 0 0 0 12 0"></path><path d="M15 13l5-5"></path><path d="M18 6l2 2"></path></svg>
+            </span>
+            <span>レシピ</span>
+        </a>
+        <a th:href="@{/shopping-list}" class="nav-item nav-shopping" data-nav="shopping">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
+            </span>
+            <span>買い物リスト</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const path = window.location.pathname || '/';
+            const routeMap = {
+                dashboard: '/dashboard',
+                foods: '/foods',
+                recipes: '/recipes',
+                shopping: '/shopping-list'
+            };
+
+            let activeNav = 'dashboard';
+            Object.entries(routeMap).forEach(([key, value]) => {
+                if (path === value || path.startsWith(value + '/')) {
+                    activeNav = key;
+                }
+            });
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.nav === activeNav);
+            });
+        });
+    </script>
+</div>
+</html>

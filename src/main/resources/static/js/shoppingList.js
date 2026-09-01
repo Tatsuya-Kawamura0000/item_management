@@ -1,401 +1,773 @@
+/**
+ * 買い物リスト画面用 JavaScript
+ *
+ * このファイルでは、
+ * 買い物リスト画面固有の処理を管理する。
+ *
+ * ・チェック操作
+ * ・食材追加
+ * ・お気に入り / 食材一覧からの追加
+ * ・数量入力
+ * ・購入済み処理
+ * ・一括削除
+ * ・モーダル操作
+ */
 
 
-// shoppingList.js
+/* =========================
+   State
+========================= */
 
-let purchaseQueue = [];
-let currentIndex = 0;
+/**
+ * 現在開いている選択一覧の種類
+ * "favorite"：お気に入り
+ * "food"    ：食材一覧
+ */
+let currentSelectionType = null;
 
-// ------------------------------
-// モーダル操作
-// ------------------------------
-function openModal(id, name) {
-    const modal = document.getElementById("purchasedModal");
+/**
+ * 数量入力中の食材
+ */
+let selectedFood = null;
 
-    document.getElementById("shoppingListId").value = id;
-    document.getElementById("itemName").value = name;
 
-    modal.classList.add("show")
+/* =========================
+   Login User
+========================= */
+
+const loginUserName = "河村";
+const loginUserElement = document.getElementById("loginUserName");
+
+if (loginUserElement) {
+    loginUserElement.textContent = loginUserName;
 }
 
-function closeModal() {
-    document.getElementById("purchasedModal")
-        .classList.remove("show");
-}
+
+/* =========================
+   Event Registration
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /*
+     * 新規追加モーダル関連
+     */
+    document.getElementById("openAddModalButton")?.addEventListener("click", openAddModal);
+    document.getElementById("closeAddModalButton")?.addEventListener("click", () => closeModal("addModal"));
+    document.getElementById("addFoodButton")?.addEventListener("click", addNewFood);
+
+    /*
+     * お気に入り・食材一覧モーダル関連
+     */
+    document.getElementById("openFavoriteModalButton")?.addEventListener("click", () => openSelectionModal("favorite"));
+    document.getElementById("openFoodModalButton")?.addEventListener("click", () => openSelectionModal("food"));
+    document.getElementById("closeSelectionModalButton")?.addEventListener("click", () => closeModal("selectionModal"));
+    document.getElementById("selectionAddButton")?.addEventListener("click", addSelectedFoods);
+
+    /*
+     * 数量入力モーダル関連
+     */
+    document.getElementById("cancelQuantityButton")?.addEventListener("click", cancelQuantityModal);
+    document.getElementById("confirmQuantityButton")?.addEventListener("click", confirmQuantity);
+
+    /*
+     * 購入確認モーダル関連
+     */
+    document.getElementById("cancelPurchaseButton")?.addEventListener("click", () => closeModal("purchaseModal"));
+    document.getElementById("completePurchaseButton")?.addEventListener("click", completePurchase);
+    document.getElementById("purchaseButton")?.addEventListener("click", purchaseSelected);
+
+    /*
+     * 削除処理 (API連携)
+     */
+    document.getElementById("deleteButton")?.addEventListener("click", handleDeleteSelected);
+
+    /*
+     * 初期表示処理
+     */
+    registerCheckEvents();
+    updateCount();
+});
 
 
-// ------------------------------
-// 食材一覧に追加
-// ------------------------------
-function submitPurchased() {
+/* =========================
+   Delete API
+========================= */
 
-    // デバッグ用
-    console.log("submitPurchased called");
+/**
+ * 選択された買い物リストアイテムを一括削除する
+ */
+async function handleDeleteSelected() {
+    const checkedItems = document.querySelectorAll('.shopping-item.checked');
 
-    const id = document.getElementById("shoppingListId").value;
-    const name = document.getElementById("itemName").value;
-    const amount = document.getElementById("amount").value;
-    const deadline = document.getElementById("deadline").value;
-    const others = document.getElementById("others").value;
-    const categoryId = document.getElementById("categoryId").value;
-    const favorite = document.getElementById("modalFavoriteField").value;
-
-    if (!categoryId) {
-        showModalMessage("カテゴリーを選択してください", "error");
+    if (checkedItems.length === 0) {
+        alert('削除する項目を選択してください。');
         return;
     }
 
-    const data = { id, name, amount, deadline, others, categoryId ,favorite};
+    if (!confirm('選択した項目を買い物リストから削除しますか？')) {
+        return;
+    }
 
-	fetch('/shoppingList/${id}/move-to-items', {
-	    method: 'POST',
-	    headers: { 'Content-Type': 'application/json' },
-	    body: JSON.stringify(data)
-	})
-	.then(async response => {
-	    const resJson = await response.json();
-	    if (!response.ok) {
-	        // 文字数オーバーの場合
-	        if(resJson.error === "length") {
-	            throw new Error("量は20文字以内,メモは100文字以内で入力してください");
-	        } else {
-	            throw new Error("登録に失敗しました 　※文字数オーバーしていませんか？");
-	        }
-	    }
-	    return resJson;
-	})
-        .then(item => {
+    const selectedIds = Array.from(checkedItems).map(item => parseInt(item.getAttribute('data-id'), 10));
 
-            showModalMessage("追加しました", "success");
+    try {
+        const token = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
 
-            currentIndex++;
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token && header) {
+            headers[header] = token;
+        }
 
-            if(currentIndex < purchaseQueue.length){
-                openPurchaseModal();
-            } else {
-                // showModalMessage("すべて食材一覧に追加しました", "success"); // これはモーダル内メッセージ
-
-                // ★ 修正：モーダルを閉じてから、中央ポップアップを出してリロード
-                closeModal();
-                showPopupAndReload("すべて食材一覧に追加しました！", "success");
-            }
-
-        })
-
-        .catch(error => {
-            console.error(error);
-
-            showModalMessage(error.message, "error");
+        const response = await fetch('/shoppingList/bulk-delete', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(selectedIds)
         });
 
-}
-
-
-$(function () {
-
-    const modalHeartBtn = $('#modalFavoriteButton i');
-    const modalField = $('#modalFavoriteField');
-
-    // 初期色（0ならグレー、1ならピンク）
-    modalHeartBtn.css('color', modalField.val() === "1" ? '#d81b60' : 'gray');
-
-    // クリックで切り替え
-    $('#modalFavoriteButton').click(function () {
-        let fav = modalField.val() === "1" ? "0" : "1";  // 0 ⇄ 1
-        modalField.val(fav);
-        modalHeartBtn.css('color', fav === "1" ? '#d81b60' : 'gray');
-    });
-
-});
-
-// ------------------------------
-// 食材一覧へ戻る
-// ------------------------------
-function goBack() {
-    window.location.href = '/';
-}
-
-// ------------------------------
-// ポップアップ自動消去
-// ------------------------------
-window.addEventListener('DOMContentLoaded', function() {
-    const popup = document.getElementById('popupMessage');
-    if (popup) {
-        setTimeout(() => {
-            popup.style.transition = "opacity 0.5s ease-out";
-            popup.style.opacity = '0';
-            setTimeout(() => popup.remove(), 500);
-        }, 2500);
+        if (response.ok) {
+            checkedItems.forEach(item => item.remove());
+            updateCount();
+        } else {
+            alert('削除処理に失敗しました。');
+        }
+    } catch (error) {
+        console.error('Error deleting items:', error);
+        alert('通信エラーが発生しました。');
     }
-});
+}
 
-// ------------------------------
-// チェックボックス関連
-// ------------------------------
-function checkAll() {
-    document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
-        cb.checked = true;
-        highlightRow(cb);
+
+/* =========================
+   Check
+========================= */
+
+/**
+ * 買い物リストのチェック状態を変更する。
+ */
+function toggleCheck(button) {
+    const item = button.closest(".shopping-item");
+    if (!item) {
+        return;
+    }
+    item.classList.toggle("checked");
+}
+
+/**
+ * 買い物リスト内のチェックボタンにクリックイベントを設定する。
+ */
+function registerCheckEvents() {
+    const buttons = document.querySelectorAll(".shopping-check-button");
+    buttons.forEach(button => {
+        button.addEventListener("click", () => toggleCheck(button));
     });
 }
 
-function uncheckAll() {
-    document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
-        cb.checked = false;
-        highlightRow(cb);
-    });
-}
 
-function highlightRow(checkbox) {
-    const row = checkbox.closest('tr');
-    if (checkbox.checked) {
-        row.classList.add('selected-row');
-    } else {
-        row.classList.remove('selected-row');
+/* =========================
+   Count
+========================= */
+
+/**
+ * 現在の買い物リスト件数を更新する。
+ */
+function updateCount() {
+    const items = document.querySelectorAll(".shopping-item");
+    const count = items.length;
+    const itemCount = document.getElementById("itemCount");
+
+    if (itemCount) {
+        itemCount.textContent = count;
     }
 }
 
-// ------------------------------
-// 新規追加モーダル操作（★グローバルスコープに出す）
-// ------------------------------
-function openNewItemModal() {
-    document.getElementById("newItemName").value = "";
-    document.getElementById("newItemAmount").value = "";
-    const modal = document.getElementById("newItemModal");
-    modal.style.display = "block";
+
+/* =========================
+   New Food
+========================= */
+
+function openAddModal() {
+    document.getElementById("addModal")?.classList.add("show");
 }
 
-function closeNewItemModal() {
-    const modal = document.getElementById("newItemModal");
-    modal.style.display = "none";
-}
+async function addNewFood() {
+    const name = document.getElementById("newFoodName")?.value.trim();
+    const quantity = document.getElementById("newFoodQuantity")?.value.trim();
+    const unit = document.getElementById("newFoodUnit")?.value;
+    const categoryId = document.getElementById("newFoodCategory")?.value;
 
-function submitNewItem() {
-
-    const name = document.getElementById("newItemName").value;
-    const amount = document.getElementById("newItemAmount").value;
-
-    if (!name) {
-        showNewItemModalMessage("食材名を入力してください", "error");
+    if (!name || !quantity) {
+        alert("食材名と量を入力してください。");
         return;
     }
 
-    if (name.length > 50) {
-        showNewItemModalMessage("購入するものは50文字以内で入力してください", "error");
-        return;
-    }
+    const displayQuantity = `${quantity}${unit || ""}`;
 
-    if (amount.length > 20) {
-        showNewItemModalMessage("量は20文字以内で入力してください", "error");
-        return;
-    }
+    try {
+        const response = await fetch("/shopping-list/add-new", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                amount: displayQuantity,
+                categoryId: Number(categoryId)
+            })
+        });
 
-    fetch("/shoppingList/add-new", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name: name,
-            amount: amount
-        })
-    })
-        .then(response => response.json())
-        .then(item => {
+        if (!response.ok) {
+            throw new Error("買い物リストへの登録に失敗しました。");
+        }
 
-            // ★ 追加したデータをテーブルに反映
-            addRowToTable(item);
-            showNewItemModalMessage("追加しました","success");
+        const savedItem = await response.json();
 
-            // 入力クリア
-            document.getElementById("newItemName").value = "";
-            document.getElementById("newItemAmount").value = "";
+        addShoppingItem(savedItem.id, name, displayQuantity, categoryId);
 
-            // フォーカス戻す
-            document.getElementById("newItemName").focus();
-        })
-    .catch(error => {
+        document.getElementById("newFoodName").value = "";
+        document.getElementById("newFoodQuantity").value = "1";
+        closeModal("addModal");
+
+        updateCount();
+
+    } catch (error) {
         console.error(error);
-        showNewItemModalMessage("登録に失敗しました","error");
-    });
+        alert("食材の登録に失敗しました。");
+    }
 }
 
-function showNewItemModalMessage(message, type = "success") {
 
-    const el = document.getElementById("newItemModalMessage");
+/* =========================
+   Shopping Item
+========================= */
 
-    el.textContent = message;
-    el.className = "modal-message show " + type;
+function addShoppingItem(id, name, quantity, categoryId) {
+    const item = document.createElement("div");
+    item.className = "shopping-item";
 
-    setTimeout(() => {
-        el.classList.remove("show");
-    }, 2000);
-}
+    item.dataset.id = id;
+    item.dataset.name = name;
+    item.dataset.amount = quantity;
+    item.dataset.categoryId = categoryId;
 
-function addRowToTable(item) {
+    item.innerHTML = `
+        <div class="shopping-item__check">
+            <button
+                type="button"
+                class="shopping-check-button"
+                aria-label="${escapeHtml(name)}を購入済みにする">
+            </button>
+        </div>
 
-    const table = document.getElementById("shoppingListTable");
+        <div class="shopping-item__food">
+            <div class="shopping-item__food-name">
+                ${escapeHtml(name)}
+            </div>
+        </div>
 
-    // 最後の行に追加
-    const row = table.insertRow(-1);
-
-    // チェックボックス
-    const cell1 = row.insertCell(0);
-    cell1.innerHTML = `
-        <input type="checkbox"
-            class="shopping-checkbox"
-            value="${item.id}"
-            data-name="${item.name}"
-            data-category-id="${item.categoryId}"
-            data-favorite="${item.favorite}">
+        <div class="shopping-item__quantity">
+            ${escapeHtml(quantity)}
+        </div>
     `;
 
-    // 食材名
-    const cell2 = row.insertCell(1);
-    cell2.textContent = item.name;
+    document.getElementById("shoppingList")?.appendChild(item);
 
-    // 量
-    const cell3 = row.insertCell(2);
-    cell3.textContent = item.amount;
-
-    // hidden列（カテゴリ）
-    const cell4 = row.insertCell(3);
-    cell4.classList.add("hidden");
-    cell4.textContent = item.categoryName || "";
-
-    // hidden列（購入日）
-    const cell5 = row.insertCell(4);
-    cell5.classList.add("hidden");
-
-    // hidden列（購入済み）
-    const cell6 = row.insertCell(5);
-    cell6.classList.add("hidden");
-
-    // 空セル
-    const cell7 = row.insertCell(6);
+    const checkButton = item.querySelector(".shopping-check-button");
+    checkButton?.addEventListener("click", () => toggleCheck(checkButton));
 }
 
 
+/* =========================
+   Food Data & Categories
+========================= */
 
-// ------------------------------
-// DOM読み込み後にやること
-// ------------------------------
-window.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('input[name="selectedItems"]').forEach(cb => {
-        cb.addEventListener('change', () => highlightRow(cb));
-        highlightRow(cb);
-    });
-});
+const categoryOrder = [
+    "野菜",
+    "肉",
+    "魚",
+    "卵・乳製品",
+    "乳製品",
+    "パン",
+    "その他"
+];
 
+function getCategoryClass(category) {
+    const categoryClassMap = {
+        "肉": "category-meat",
+        "魚": "category-fish",
+        "野菜": "category-vegetable",
+        "その他": "category-other",
+        "調味料": "category-seasoning",
+        "残り物": "category-leftover",
+        "飲み物": "category-drink",
+        "保存食": "category-preserved"
+    };
 
-// ------------------------------
-// 全選択操作
-// ------------------------------
-
-
-document.getElementById("selectAllShopping").addEventListener("change", function(){
-
-    const checked = this.checked;
-
-    const checkboxes = document.querySelectorAll(".shopping-checkbox");
-
-    checkboxes.forEach(cb=>{
-        cb.checked = checked;
-    });
-
-});
-
-function getSelectedShoppingItems(){
-
-    const checkboxes = document.querySelectorAll(".shopping-checkbox:checked");
-
-    const items = [];
-
-    checkboxes.forEach(cb => {
-
-        items.push({
-            id: cb.value,
-            name: cb.dataset.name,
-            categoryId: cb.dataset.categoryId,
-            favorite: cb.dataset.favorite
-        });
-
-    });
-
-    return items;
+    return categoryClassMap[category] || "category-other";
 }
 
-document.getElementById("bulkPurchaseBtn").addEventListener("click", function(){
-    purchaseQueue = getSelectedShoppingItems();
-
-    if(purchaseQueue.length === 0){
-        // ★ 修正：中央ポップアップ
-        showPopupAndReload("項目を選択してください", "error");
-        return;
-    }
-    currentIndex = 0;
-    openPurchaseModal();
-});
-
-	
-	
-function openPurchaseModal(){
-
-    const item = purchaseQueue[currentIndex];
-
-    console.log(item);  // ←追加 デバック用
-
-    document.getElementById("shoppingListId").value = item.id;
-    document.getElementById("itemName").value = item.name;
-    document.getElementById("categoryId").value = item.categoryId;
-    document.getElementById("purchasedModal").classList.add("show");
-    document.getElementById("modalFavoriteField").value = item.favorite;
-}
-
-
-
-document.getElementById("bulkDeleteBtn").addEventListener("click", function(){
-
-    const items = getSelectedShoppingItems();
-
-
-    if(items.length === 0){
-        // 修正：中央ポップアップを表示（リロードしないようにshowPopupAndReloadを使わない場合は自作するか、このままリロードさせて良ければ使用）
-        showPopupAndReload("項目を選択してください", "error");
-        return;
+function parsePurchaseAmount(value) {
+    if (!value) {
+        return {
+            amount: 1,
+            unit: ""
+        };
     }
 
+    const match = String(value).match(/^(\d+(?:\.\d+)?)(.*)$/);
 
+    if (!match) {
+        return {
+            amount: 1,
+            unit: ""
+        };
+    }
 
+    return {
+        amount: Number(match[1]),
+        unit: match[2]
+    };
+}
 
-    const ids = items.map(i => i.id);
+const foodData = {
+    favorite: {
+        title: "お気に入り食材",
+        items: (typeof favoriteItemsFromServer !== 'undefined' ? favoriteItemsFromServer : []).map(item => {
 
+            const purchaseAmount = parsePurchaseAmount(item.purchaseAmount);
 
-    fetch("/shoppingList/bulk-delete",{
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify(ids)
-    })
-        .then(response => {
-
-            if(!response.ok) throw new Error("削除に失敗しました");
-
-            // ★ 成功メッセージ表示
-            showPopupAndReload("削除しました", "success");
-
+            return {
+                id: item.id,
+                name: item.name,
+                categoryId: item.categoryId,
+                category: item.categoryName,
+                currentQuantityText: item.status === 0 ? "在庫切れ" : item.amount || "",
+                status: item.status === 0 ? "out" : "normal",
+                defaultStock: purchaseAmount.amount,
+                unit: purchaseAmount.unit
+            };
         })
-        .catch(error=>{
+    },
+    food: {
+        title: "購入履歴",
+        items: []
+    }
+};
 
-            // ★ 失敗メッセージ表示
-            showPopupAndReload("削除に失敗しました", "error");
+
+/* =========================
+   Selection Modal
+========================= */
+
+/**
+ * 食材一覧を API から取得する
+ */
+async function fetchFoodItems() {
+    try {
+        const response = await fetch("/shopping-list/api/foods");
+        if (!response.ok) {
+            throw new Error("食材一覧の取得に失敗しました");
+        }
+        const data = await response.json();
+
+        // サーバ側で直近3回分の購入日ごとにグルーピングされたデータを想定
+        // data = [ { purchaseDate: "2026-08-25", items: [ {id, name, purchaseAmount, categoryId}, ... ] }, ... ]
+        foodData.food.groups = Array.isArray(data) ? data : [];
+
+    } catch (error) {
+        console.error("Error fetching food items:", error);
+        alert("食材一覧の読み込みに失敗しました。");
+    }
+}
+
+async function openSelectionModal(type) {
+    currentSelectionType = type;
+
+    // 食材一覧モーダルを開く時のみ API を呼び出す
+    if (type === "food") {
+        await fetchFoodItems();
+    }
+
+    renderSelectionList(type);
+    document.getElementById("selectionModal")?.classList.add("show");
+}
+
+function renderSelectionList(type) {
+    const data = foodData[type];
+    if (!data) return;
+
+    const title = document.getElementById("selectionTitle");
+    if (title) title.textContent = data.title;
+
+    const list = document.getElementById("selectionList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    if (type === "favorite") {
+        const sortedItems = [...data.items].sort((a, b) => {
+            const aOut = a.status === "out" ? 0 : 1;
+            const bOut = b.status === "out" ? 0 : 1;
+            if (aOut !== bOut) return aOut - bOut;
+            const categoryA = categoryOrder.indexOf(a.category);
+            const categoryB = categoryOrder.indexOf(b.category);
+            return categoryA - categoryB;
         });
 
-});
+        let currentCategory = null;
+
+        sortedItems.forEach(item => {
+            if (currentCategory !== item.category) {
+                currentCategory = item.category;
+                const categoryHeader = document.createElement("div");
+                categoryHeader.className = `shopping-selection-category ${getCategoryClass(item.category)}`;
+                categoryHeader.textContent = item.category;
+                list.appendChild(categoryHeader);
+            }
+
+            const row = document.createElement("div");
+            row.className = "shopping-selection-item";
+
+            let statusHtml = "";
+            if (item.status === "out") {
+                statusHtml = `<span class="shopping-stock-status shopping-stock-out">在庫切れ</span>`;
+            }
+
+            row.innerHTML = `
+                <div class="shopping-selection-food">
+                    <div class="shopping-selection-food-name">${escapeHtml(item.name)}</div>
+                    <div class="shopping-selection-food-info">${statusHtml}</div>
+                </div>
+                <div class="shopping-selection-quantity">
+                    <input type="number" class="shopping-selection-quantity-input" value="${escapeHtml(item.defaultStock)}" min="1" step="1">
+                    <span class="shopping-selection-quantity-unit">${escapeHtml(item.unit || '')}</span>
+                </div>
+            `;
+
+            row.dataset.id = item.id;
+            row.dataset.categoryId = item.categoryId;
+            row.dataset.category = item.category;
+            row.dataset.name = item.name;
+            row.dataset.unit = item.unit || '';
+
+            list.appendChild(row);
+            row.addEventListener("click", (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                row.classList.toggle("selected");
+            });
+        });
+
+    } else if (type === "food") {
+
+        // data.groups: [ { purchaseDate: '2026-08-25', items: [...] }, ... ]
+        const groups = data.groups || [];
+
+        // iterate groups in order (assumed already sorted by server: newest first)
+        groups.forEach(group => {
+            const dateStr = group.purchaseDate; // e.g. '2026-08-25'
+            const dateHeader = document.createElement("div");
+            dateHeader.className = 'shopping-selection-category shopping-selection-date';
+            dateHeader.textContent = formatDateJP(dateStr);
+            list.appendChild(dateHeader);
+
+            (group.items || []).forEach(item => {
+                const parsed = parsePurchaseAmount(item.purchaseAmount);
+                const defaultStock = parsed.amount || 1;
+                const unit = parsed.unit || '';
+
+                const row = document.createElement("div");
+                row.className = "shopping-selection-item";
+
+                row.innerHTML = `
+                    <div class="shopping-selection-food">
+                        <div class="shopping-selection-food-name">${escapeHtml(item.name)}</div>
+                    </div>
+                    <div class="shopping-selection-quantity">
+                        <input type="number" class="shopping-selection-quantity-input" value="${escapeHtml(defaultStock)}" min="1" step="1">
+                            <span class="shopping-selection-quantity-unit">${escapeHtml(unit || '')}</span>
+                    </div>
+                `;
+
+                row.dataset.id = item.id;
+                row.dataset.categoryId = item.categoryId;
+                row.dataset.name = item.name;
+                row.dataset.purchaseAmount = item.purchaseAmount;
+                row.dataset.unit = unit || '';
+
+                list.appendChild(row);
+                row.addEventListener("click", (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    row.classList.toggle("selected");
+                });
+            });
+        });
+
+    } else {
+        // fallback: no items
+    }
+}
+
+async function addSelectedFoods() {
+    const selectedRows = document.querySelectorAll(".shopping-selection-item.selected");
+    if (selectedRows.length === 0) {
+        alert("追加する食材を選択してください。");
+        return;
+    }
+
+    try {
+        const token = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+        const headers = {
+            "Content-Type": "application/json"
+        };
+        if (token && header) {
+            headers[header] = token;
+        }
+
+        // 複数選択された食材を順番に追加する
+        for (const row of Array.from(selectedRows)) {
+            const name = row.dataset.name || row.querySelector(".shopping-selection-food-name")?.textContent.trim();
+            const categoryId = row.dataset.categoryId;
+            const id = row.dataset.id;
+            const quantityInput = row.querySelector(".shopping-selection-quantity-input");
+            const unit = row.querySelector(".shopping-selection-quantity-unit")?.textContent.trim();
+            const quantity = Number(quantityInput?.value) || 1;
+            const displayQuantity = `${quantity}${unit || ""}`;
+
+            const body = JSON.stringify({
+                itemId: Number(id),
+                name: name,
+                amount: displayQuantity,
+                categoryId: Number(categoryId)
+            });
+
+            const response = await fetch("/shopping-list/add-new", {
+                method: "POST",
+                headers: headers,
+                body: body
+            });
+
+            if (!response.ok) {
+                throw new Error(`食材の追加に失敗しました: ${name}`);
+            }
+
+            const savedItem = await response.json();
+            addShoppingItem(savedItem.id, name, displayQuantity, categoryId);
+        }
+
+        updateCount();
+        closeModal("selectionModal");
+
+    } catch (error) {
+        console.error(error);
+        alert("食材の登録に失敗しました。\n詳細はコンソールを確認してください。");
+    }
+}
 
 
+/* =========================
+   Quantity Modal
+========================= */
+
+function openQuantityModal(id, name, category, categoryId, defaultStock, unit) {
+    selectedFood = { id, name, category, categoryId, defaultStock, unit };
+
+    const title = document.getElementById("quantityTitle");
+    if (title) title.textContent = `${name}の数量を入力`;
+
+    const input = document.getElementById("quantityInput");
+    if (input) input.value = defaultStock;
+
+    const unitElement = document.getElementById("quantityUnit");
+    if (unitElement) unitElement.textContent = unit;
+
+    closeModal("selectionModal");
+    document.getElementById("quantityModal")?.classList.add("show");
+
+    setTimeout(() => {
+        input?.focus();
+        input?.select();
+    }, 100);
+}
+
+async function confirmQuantity() {
+    if (!selectedFood) return;
+
+    const input = document.getElementById("quantityInput");
+    const quantity = Number(input?.value);
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+        alert("1以上の数量を入力してください。");
+        input?.focus();
+        return;
+    }
+
+    const displayQuantity = `${quantity}${selectedFood.unit || ""}`;
+
+    try {
+        const token = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+        const headers = {
+            "Content-Type": "application/json"
+        };
+        if (token && header) {
+            headers[header] = token;
+        }
+
+        const response = await fetch("/shopping-list/add-new", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+                itemId: Number(selectedFood.id),
+                name: selectedFood.name,
+                amount: displayQuantity,
+                categoryId: Number(selectedFood.categoryId)
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("買い物リストへの保存に失敗しました。");
+        }
+
+        const savedItem = await response.json();
+
+        addShoppingItem(savedItem.id, selectedFood.name, displayQuantity, selectedFood.categoryId);
+        updateCount();
+
+        closeModal("quantityModal");
+        selectedFood = null;
+
+    } catch (error) {
+        console.error("Error saving item:", error);
+        alert("食材の登録に失敗しました。");
+    }
+}
+
+function cancelQuantityModal() {
+    closeModal("quantityModal");
+    selectedFood = null;
+    if (currentSelectionType) {
+        openSelectionModal(currentSelectionType);
+    }
+}
+
+function formatDateJP(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${year}年${month}月${day}日`;
+}
 
 
+/* =========================
+   Purchase
+========================= */
+
+function purchaseSelected() {
+    const selected = document.querySelectorAll(".shopping-item.checked");
+
+    if (selected.length === 0) {
+        alert("購入済みにする食材を選択してください。");
+        return;
+    }
+
+    const confirmList = document.getElementById("confirmList");
+    if (!confirmList) return;
+
+    confirmList.innerHTML = "";
+
+    selected.forEach(item => {
+        const name = item.querySelector(".shopping-item__food-name")?.textContent;
+        const quantity = item.querySelector(".shopping-item__quantity")?.textContent;
+        const row = document.createElement("div");
+
+        row.className = "shopping-confirm-item";
+        row.innerHTML = `
+            <span>${escapeHtml(name)}（${escapeHtml(quantity)}）</span>
+            <span class="shopping-confirm-date">購入日：${getTodayDate()}</span>
+        `;
+        confirmList.appendChild(row);
+    });
+
+    document.getElementById("purchaseModal")?.classList.add("show");
+}
+
+async function completePurchase() {
+    const selected = document.querySelectorAll(".shopping-item.checked");
+    if (selected.length === 0) return;
+
+    try {
+        for (const item of selected) {
+            const shoppingListId = item.dataset.id;
+            const itemId = item.dataset.itemId;
+            const name = item.dataset.name;
+            const amount = item.dataset.amount;
+            const categoryId = item.dataset.categoryId;
+            const favorite = item.dataset.favorite === "true";
+
+            const data = {
+                id: Number(shoppingListId),
+                itemId: Number(itemId),
+                name: name,
+                amount: amount,
+                categoryId: Number(categoryId),
+                favorite: favorite,
+                purchaseDate: getTodayDate()
+            };
+
+            const response = await fetch(`/shoppingList/${shoppingListId}/move-to-items`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error("食材一覧への登録に失敗しました。");
+            }
+        }
+
+        closeModal("purchaseModal");
+        alert("購入済みとして食材一覧へ追加しました。");
+        window.location.reload();
+
+    } catch (error) {
+        console.error(error);
+        alert("食材一覧への登録に失敗しました。");
+    }
+}
 
 
+/* =========================
+   Modal & Utility
+========================= */
 
+function closeModal(id) {
+    document.getElementById(id)?.classList.remove("show");
+}
+
+function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}

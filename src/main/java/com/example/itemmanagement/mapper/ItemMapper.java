@@ -15,6 +15,8 @@ public interface ItemMapper {
 	int add(Items entity);
 	
 	int stop(@Param("id") Integer id,@Param("userId") Integer userId); //statsを0に変更（消費済み）するメソッド
+
+	int stopAll(@Param("ids") List<Integer> ids, @Param("userId") Integer userId); // 複数IDをまとめて status = 0 に変更
 	         
 	
 	Items findById(@Param("id") Integer id,@Param("userId") Integer userId);
@@ -42,10 +44,16 @@ public interface ItemMapper {
 	//AIに投げる用のアイテム取得
 	List<Items> getSourceItems(@Param("userId") Integer userId);
 
+	// 直近3回分の購入日に該当するアイテムを取得
+	List<Items> getItemsByRecentPurchaseDates(@Param("userId") Integer userId);
+
 	//選択されたアイテムIDでアイテムを取得する
 	List<Items> getSourceItemsById(@Param("userId") Integer userId, @Param("selectedIds") List<Integer> selectedIds);
 
 	//アイテム検索
 	List<Items> searchItems(@Param("userId") Integer userId);
+
+	// お気に入り食材を取得
+	List<Items> getFavoriteItems(@Param("userId") Integer userId);
 
 }

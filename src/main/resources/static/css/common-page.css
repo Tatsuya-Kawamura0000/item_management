@@ -1,0 +1,124 @@
+/* ========================================
+   共通ページ メインレイアウト
+======================================== */
+.page-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+}
+
+/* ========================================
+   共通ページヘッダー
+======================================== */
+.page-header {
+    margin-bottom: 30px;
+}
+
+/* ========================================
+   ページタイトル
+======================================== */
+.page-title-area {
+    margin-bottom: 20px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 750;
+    color: #222;
+    letter-spacing: 0.02em;
+}
+
+/* ========================================
+   ユーザー情報 & ログアウト
+======================================== */
+.user-info-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-top: 1px solid #e2e7e3;
+    border-bottom: 1px solid #e2e7e3;
+}
+
+.user-area {
+    min-width: 0;
+}
+
+.user-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    color: #4d7057;
+    white-space: nowrap;
+}
+
+.user-message {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 11px;
+    border: 1px solid #dedede;
+    border-radius: 9px;
+    background: #fff;
+    color: #777;
+    font-size: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    color: #444;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logout-icon {
+    font-size: 13px;
+}
+
+/* ========================================
+   スマホ
+======================================== */
+@media (max-width: 600px) {
+
+    .page-container {
+        padding: 18px 14px 32px;
+    }
+
+    .page-title-area {
+        margin-bottom: 18px;
+    }
+
+    .page-title {
+        font-size: 24px;
+    }
+
+    .user-info-area {
+        gap: 10px;
+    }
+
+    .user-name {
+        font-size: 13px;
+    }
+
+    .user-message {
+        font-size: 10px;
+    }
+
+    .logout-button {
+        padding: 6px 8px;
+        font-size: 9px;
+    }
+}

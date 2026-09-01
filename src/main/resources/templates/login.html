@@ -13,42 +13,37 @@
 
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link rel="stylesheet" th:href="@{/css/login.css}" />
-
-
-    <!-- Font Awesome（必要なら） -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body class="login-page">
-<div class="login-container">
-    <h1 class="page-title">ログイン</h1>
+<body class="auth-page login-page">
+<div class="auth-card login-container">
+    <header class="auth-header">
+        <div class="auth-badge"><i class="fa-solid fa-user-lock"></i></div>
+        <h1 class="auth-title">ログイン</h1>
+        <p class="auth-subtitle">続けるにはアカウントにサインインしてください</p>
+    </header>
 
-    <form th:action="@{/login}" method="post" >
-        <!-- Spring Security を使う場合は CSRF トークンを出力 -->
-        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
-
-
-        <div class="form-row">
+    <form class="auth-form" th:action="@{/login}" method="post">
+        <div class="auth-form-row">
             <label for="username">ユーザー名</label>
             <input id="username" type="text" name="username" placeholder="ユーザー名" required autofocus aria-required="true" />
         </div>
 
-        <div class="form-row">
+        <div class="auth-form-row">
             <label for="password">パスワード</label>
             <input id="password" type="password" name="password" placeholder="パスワード" required aria-required="true" />
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="button primary">ログイン</button>
-        </div>
+        <button type="submit" class="auth-button">ログイン</button>
     </form>
 
-    <div th:if="${param.error}" class="field-error">
+    <div th:if="${param.error}" class="auth-error field-error">
         ユーザー名またはパスワードが間違っています
     </div>
 
-    <p class="form-footer" style="text-align:center; margin-top:15px;">
+    <div class="auth-footer form-footer">
         <a th:href="@{/register}" class="add-btn">新規ユーザー登録</a>
-    </p>
+    </div>
 </div>
 </body>
 </html>

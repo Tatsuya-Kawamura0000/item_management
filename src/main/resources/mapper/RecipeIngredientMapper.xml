@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.itemmanagement.mapper.RecipeIngredientMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO recipe_ingredient (
+            recipe_id,
+            ingredient_name,
+            quantity,
+            unit,
+            is_main,
+            display_order,
+            category_id
+        ) VALUES
+        <foreach collection="ingredients" item="item" separator=",">
+        (
+            #{item.recipeId},
+            #{item.ingredientName},
+            #{item.quantity, jdbcType=NUMERIC},
+            #{item.unit, jdbcType=VARCHAR},
+            COALESCE(#{item.isMain}, false),
+            #{item.displayOrder},
+            #{item.categoryId, jdbcType=INTEGER}
+        )
+        </foreach>
+    </insert>
+
+    <select id="selectByRecipeId" resultType="com.example.itemmanagement.entity.RecipeIngredient">
+        SELECT
+            id,
+            recipe_id AS recipeId,
+            ingredient_name AS ingredientName,
+            quantity,
+            unit,
+            is_main AS isMain,
+            display_order AS displayOrder,
+            category_id AS categoryId
+        FROM recipe_ingredient
+        WHERE recipe_id = #{recipeId}
+        ORDER BY display_order ASC, id ASC
+    </select>
+
+    <delete id="deleteByRecipeId">
+        DELETE FROM recipe_ingredient
+        WHERE recipe_id = #{recipeId}
+    </delete>
+
+</mapper>

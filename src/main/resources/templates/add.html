@@ -1,118 +1,361 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<meta name="theme-color" content="#ff8c42" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	<link rel="manifest" href="/manifest.webmanifest" />
-	<link rel="apple-touch-icon" href="/icons/icon-192.png" />
-	<script defer src="/js/pwa.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- 共通スタイル（先に読み込む） -->
+	<title>食材を追加</title>
+
 	<link rel="stylesheet" th:href="@{/css/style.css}">
-	<!-- ページ固有スタイル（上書き用） -->
+	<link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
+	<link rel="stylesheet" th:href="@{/css/shopping-list.css}">
 	<link rel="stylesheet" th:href="@{/css/add.css}">
-
-	<!-- ページ固有の最小上書き（add.css が読み込まれない場合の保険） -->
-
-	<!-- jQuery（先に読み込む） -->
-	<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-
-	<!-- DatepickerのCSS/JS -->
-	<link rel="stylesheet" th:href="@{/bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker.min.css}" />
-	<script th:src="@{/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js}"></script>
-	<script th:src="@{/bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.ja.min.js}"></script>
-
-	<!-- Bootstrap（CSS/JS） -->
-	<link rel="stylesheet" th:href="@{'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css'}">
-	<script th:src="@{'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js'}"></script>
-
-	<!-- Font Awesome -->
-	<link rel="stylesheet"
-	      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-	      crossorigin="anonymous">
-
-	<title>食材追加</title>
 </head>
-<body class="login-page">
 
-<div class="form-wrapper" role="region" aria-labelledby="add-food-title">
-	<h1 id="add-food-title">食材追加</h1>
+<body>
 
-	<div th:if="${successMessage}" id="successMessage" class="alert alert-success" role="status">
-		<span th:text="${successMessage}"></span>
+<main class="add-page">
+
+	<!-- ヘッダー -->
+	<header class="add-header">
+
+		<div class="page-title-area">
+			<h1 class="page-title">
+				Add Items
+			</h1>
+
+			<p class="page-description">
+				食材の追加方法を選択してください
+			</p>
+		</div>
+
+		<!-- ユーザー情報 -->
+		<div class="user-info-area">
+
+			<div class="user-area">
+
+				<p class="user-name"
+				   th:text="|${#authentication.name} さん|">
+					〇〇さん
+				</p>
+
+				<p class="user-message">
+					食材を登録しましょう
+				</p>
+
+			</div>
+
+			<form th:action="@{/logout}" method="post">
+
+				<button type="submit"
+				        class="logout-button">
+
+					<span class="logout-icon">↪</span>
+
+					<span>ログアウト</span>
+
+				</button>
+
+			</form>
+
+		</div>
+
+	</header>
+
+
+	<!-- 追加方法 -->
+	<section class="add-method-section">
+
+		<div class="section-header">
+
+			<h2 class="section-title">
+				追加方法を選択
+			</h2>
+
+		</div>
+
+
+		<div class="add-method-grid">
+
+			<!-- 手動追加 -->
+			<button type="button"
+					id="manualMethodButton"
+					class="add-method-card manual-card">
+
+				<div class="method-icon-wrapper">
+
+					<svg class="method-icon"
+					     viewBox="0 0 24 24"
+					     fill="none"
+					     stroke="currentColor"
+					     stroke-width="1.8"
+					     stroke-linecap="round"
+					     stroke-linejoin="round">
+
+						<rect x="3" y="5" width="18" height="14" rx="2"></rect>
+
+						<path d="M7 9h.01"></path>
+						<path d="M10 9h.01"></path>
+						<path d="M13 9h.01"></path>
+						<path d="M16 9h.01"></path>
+
+						<path d="M7 12h.01"></path>
+						<path d="M10 12h.01"></path>
+						<path d="M13 12h.01"></path>
+						<path d="M16 12h.01"></path>
+
+						<path d="M7 15h10"></path>
+
+					</svg>
+
+				</div>
+
+				<div class="method-content">
+
+					<span class="method-label">
+						MANUAL
+					</span>
+
+					<h3 class="method-title">
+						手動で追加
+					</h3>
+
+					<p class="method-description">
+						食材名や賞味期限を
+						自分で入力します
+					</p>
+
+				</div>
+
+				<span class="method-arrow">
+					→
+				</span>
+
+			</button>
+
+
+			<!-- 手動追加モーダル (shopping-list と同様のスタイルに合わせる) -->
+			<div id="manualAddModal" class="modal-overlay">
+				<div class="shopping-modal">
+
+					<button type="button" id="closeManualModal" class="modal-close" aria-label="閉じる">×</button>
+
+					<h2>食材を追加</h2>
+
+					<p class="shopping-modal-description">食材名、購入量、カテゴリー、期限を入力して食材一覧へ登録します。</p>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodName">食材名</label>
+						<input type="text" id="manualFoodName" placeholder="例：キャベツ" autocomplete="off">
+						<div id="manualSuggestions" class="suggestions"></div>
+					</div>
+
+					<div class="shopping-form-group">
+						<div class="shopping-new-quantity-row">
+							<div class="shopping-new-quantity-field">
+								<label for="manualFoodQuantity">量</label>
+								<input type="number" id="manualFoodQuantity" value="1" min="1" step="1">
+							</div>
+							<div class="shopping-new-quantity-field">
+								<label for="manualFoodUnit">単位</label>
+								<select id="manualFoodUnit" class="shopping-new-unit-select">
+								    <option value="">- 指定なし</option>
+								    <option value="個">個</option>
+								    <option value="パック">パック</option>
+								    <option value="袋">袋</option>
+								    <option value="g">g</option>
+								    <option value="本">本</option>
+								    <option value="箱">箱</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodCategory">カテゴリー</label>
+						<select id="manualFoodCategory">
+					        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+						</select>
+					</div>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodDeadline">期限</label>
+						<input type="date" id="manualFoodDeadline">
+					</div>
+
+					<div class="shopping-modal-actions">
+						<button type="button" id="cancelManualAdd" class="shopping-modal-button shopping-modal-button-cancel">キャンセル</button>
+						<button type="button" id="manualAddButton" class="shopping-modal-button shopping-modal-button-confirm">追加する</button>
+					</div>
+
+				</div>
+			</div>
+
+
+			<!-- レシート読み取り -->
+			<button type="button"
+			        id="receiptMethodButton"
+			        class="add-method-card receipt-card">
+
+				<div class="method-icon-wrapper">
+
+					<svg class="method-icon"
+					     viewBox="0 0 24 24"
+					     fill="none"
+					     stroke="currentColor"
+					     stroke-width="1.8"
+					     stroke-linecap="round"
+					     stroke-linejoin="round">
+
+						<path d="M4 7h3l1.5-2h5L15 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
+
+						<circle cx="12" cy="13" r="3.5"></circle>
+
+					</svg>
+
+				</div>
+
+				<div class="method-content">
+
+                    <span class="method-label">
+                        RECEIPT
+                    </span>
+
+					<h3 class="method-title">
+						レシートを読み取る
+					</h3>
+
+					<p class="method-description">
+						レシートをカメラで撮影して
+						食材をまとめて登録します
+					</p>
+
+				</div>
+
+				<span class="method-arrow">
+                    →
+                </span>
+
+			</button>
+
+		</div>
+
+	</section>
+
+
+	<!-- レシート読み取り案内 -->
+	<section class="receipt-guide">
+
+		<div class="guide-icon">
+			↓
+		</div>
+
+		<div class="guide-content">
+
+			<h2>
+				レシート読み取りなら簡単
+			</h2>
+
+			<p>
+				購入した食材をまとめて登録できるので、
+				一つずつ入力する手間を減らせます。
+			</p>
+
+		</div>
+
+	</section>
+
+</main>
+
+<!-- ========================================
+     レシート読み取りモーダル
+======================================== -->
+
+<div id="receiptModal"
+     class="modal-overlay">
+
+	<div class="modal-container">
+
+		<button type="button"
+		        id="closeReceiptModal"
+		        class="modal-close"
+		        aria-label="閉じる">
+			×
+		</button>
+
+
+		<div class="modal-camera-icon">
+
+			<svg viewBox="0 0 24 24"
+			     fill="none"
+			     stroke="currentColor"
+			     stroke-width="1.7"
+			     stroke-linecap="round"
+			     stroke-linejoin="round">
+
+				<path d="M4 7h3l1.5-2h5L15 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
+
+				<circle cx="12" cy="13" r="3.5"></circle>
+
+			</svg>
+
+		</div>
+
+
+		<h2 class="modal-title">
+			レシートを読み取る
+		</h2>
+
+		<p class="modal-message">
+			レシートをカメラで撮影すると、<br>
+			購入した食材をまとめて登録できます。
+		</p>
+
+
+		<button type="button"
+		        class="camera-start-button">
+
+			<svg class="camera-button-icon"
+			     viewBox="0 0 24 24"
+			     fill="none"
+			     stroke="currentColor"
+			     stroke-width="1.8"
+			     stroke-linecap="round"
+			     stroke-linejoin="round">
+
+				<path d="M4 7h3l1.5-2h5L15 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
+
+				<circle cx="12" cy="13" r="3.5"></circle>
+
+			</svg>
+
+			カメラを起動
+
+		</button>
+
+
+		<button type="button"
+		        id="manualFromModal"
+		        class="modal-secondary-button">
+
+			手動で追加する
+
+		</button>
+
 	</div>
 
-	<form th:action="@{/items/add}" th:object="${form}" method="POST" novalidate>
-
-		<div class="form-row">
-			<label for="name">食材</label>
-			<input id="name" name="name" type="text" th:field="*{name}"
-			       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-			       class="form-control" aria-required="true" />
-			<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
-		</div>
-
-		<div class="form-row">
-			<label for="categoryId">カテゴリー</label>
-			<select id="categoryId" name="categoryId" th:field="*{categoryId}" class="form-control">
-				<option th:each="category : ${categories}"
-				        th:value="${category.id}"
-				        th:text="${category.name}">
-				</option>
-			</select>
-		</div>
-
-		<div class="form-row date-row">
-			<label for="deadline">期限</label>
-			<input id="deadline" name="deadline" type="text" th:field="*{deadline}" class="form-control datepicker" />
-		</div>
-
-		<div class="form-row date-row">
-			<label for="purchaseDate">購入日</label>
-			<input id="purchaseDate" name="purchaseDate" type="text" th:field="*{purchaseDate}" class="form-control datepicker" />
-			<div th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}" class="invalid-feedback"></div>
-		</div>
-
-		<div class="form-row">
-			<label for="amount">量</label>
-			<input id="amount" name="amount" type="text" th:field="*{amount}"
-			       th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : ''"
-			       class="form-control" />
-			<div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="invalid-feedback"></div>
-		</div>
-
-		<div class="form-row">
-			<label for="others">その他</label>
-			<input id="others" name="others" type="text" th:field="*{others}"
-			       th:classappend="${#fields.hasErrors('others')} ? 'is-invalid' : ''"
-			       class="form-control" />
-			<div th:if="${#fields.hasErrors('others')}" th:errors="*{others}" class="invalid-feedback"></div>
-		</div>
-
-		<div class="form-row" style="display:flex; align-items:center; gap:12px;">
-			<button type="button" class="heart-btn heart-home" id="favoriteButton" aria-pressed="false" title="お気に入り切替">
-				<i class="fa-solid fa-heart"></i>
-			</button>
-			<input type="hidden" th:field="*{favorite}" id="favoriteField" />
-		</div>
-
-		<div class="form-actions">
-			<!-- 追加ボタン（見た目を統一） -->
-			<button type="submit" class="button primary">追加</button>
-
-			<!-- 戻るはリンク風ボタン -->
-			<a th:href="@{/}" class="button secondary" role="button">戻る</a>
-		</div>
-
-	</form>
 </div>
 
-<!-- add.js を読み込む -->
-<script th:src="@{/js/addForm.js}"></script>
+<!-- 下部ナビゲーション -->
+<div th:replace="~{fragments/bottom-navigation :: bottomNavigation}"></div>
+
+<!-- 共通JS -->
 <script th:src="@{/js/common.js}"></script>
+
+<!-- 食材追加画面専用JS -->
+<script th:src="@{/js/add.js}"></script>
 
 </body>
 </html>

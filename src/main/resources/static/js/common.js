@@ -1,40 +1,77 @@
+/**
+ * 共通UI処理
+ */
+document.addEventListener("DOMContentLoaded", () => {
 
-function showModalMessage(message, type = "success") {
+    /*
+     * モーダルを閉じる
+     *
+     * 以下のモーダルを共通で処理する
+     * ・.modal-overlay
+     * ・.shopping-modal-overlay
+     *
+     * モーダル本体をクリックした場合は閉じず、
+     * 背景部分をクリックした場合のみ閉じる。
+     */
+    const modalOverlays =
+        document.querySelectorAll(
+            ".modal-overlay, .shopping-modal-overlay"
+        );
 
-    const el = document.getElementById("modalMessage");
 
-    el.textContent = message;
-    el.className = "modal-message show " + type;
+    modalOverlays.forEach(modal => {
 
-    setTimeout(() => {
-        el.classList.remove("show");
-    }, 2000);
-}
+        modal.addEventListener("click", (event) => {
+
+            /*
+             * モーダル本体をクリックした場合は
+             * 閉じない。
+             */
+            if (event.target !== modal) {
+                return;
+            }
 
 
+            modal.classList.remove("show");
 
-//ポップアップメッセージ　
-function showPopupAndReload(message, type = "success") {
-    // 1. ポップアップ要素を作成
-    const popup = document.createElement('div');
-    popup.className = `custom-modal-popup ${type}`;
+        });
 
-    // 2. アイコンの判定（FontAwesomeを使用している前提）
-    const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+    });
 
-    // 3. 中身の構築
-    popup.innerHTML = `
-        <div class="popup-content">
-            <i class="fa-solid ${icon}"></i>
-            <span>${message}</span>
-        </div>
-    `;
 
-    // 4. bodyに直接追加（これでレイアウト崩れを防ぐ）
-    document.body.appendChild(popup);
+    /*
+     * ESCキーでモーダルを閉じる
+     */
+    document.addEventListener("keydown", (event) => {
 
-    // 5. 3秒後にリロード
-    setTimeout(() => {
-        location.reload();
-    }, 3000);
-}
+        if (event.key !== "Escape") {
+            return;
+        }
+
+
+        /*
+         * 既存モーダル
+         */
+        document
+            .querySelectorAll(".modal-overlay.show")
+            .forEach(modal => {
+
+                modal.classList.remove("show");
+
+            });
+
+
+        /*
+         * 買い物リスト用モーダル
+         */
+        document
+            .querySelectorAll(".shopping-modal-overlay.show")
+            .forEach(modal => {
+
+                modal.classList.remove("show");
+
+            });
+
+    });
+
+});

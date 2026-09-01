@@ -13,8 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor			//デフォルトコンストラクタを自動的に生成
 @AllArgsConstructor	
 public class AddItemForm {
-	
-	private int id;
+
+	private Integer id;
+
+	private Integer itemId;
 
 	@Size(max = 50, message = "食材は50文字以内で入力してください")
 	private String name;

@@ -11,10 +11,17 @@ public interface RecipeMapper {
 
     void insertRecipe(Recipe recipe);
 
-    //保存済みレシピ表示
-    List<Recipe> selectRecipe (@Param("userId") Integer userId);
+    Recipe findById(@Param("id") Integer id);
 
-    //直近30件の過去レシピ取得
-    List<Recipe> selectByUserId (@Param("userId") Integer userId);
+    // 保存済み最新レシピ表示
+    List<Recipe> selectRecipe(@Param("userId") Integer userId);
 
+    // ユーザーの全レシピ取得
+    List<Recipe> selectByUserId(@Param("userId") Integer userId);
+
+    // レシピ更新
+    int updateRecipe(Recipe recipe);
+
+    // レシピ削除
+    int deleteByIdAndUserId(@Param("id") Integer id, @Param("userId") Integer userId);
 }
