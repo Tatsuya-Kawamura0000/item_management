@@ -213,7 +213,6 @@ async function addNewFood() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                itemId: Number(selectedFood.id),
                 name: name,
                 amount: displayQuantity,
                 categoryId: Number(categoryId)

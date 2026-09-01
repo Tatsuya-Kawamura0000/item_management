@@ -69,220 +69,207 @@
            カテゴリタブ
         ========================================= */
 
-        /* =========================================
-   カテゴリタブ
-========================================= */
+       /* =========================================
+           カテゴリタブ（レシピ画面のカテゴリカードに合わせる）
+       ========================================= */
 
-        .category-tabs {
-            display: flex;
-            gap: 9px;
-            overflow-x: auto;
-            overflow-y: visible;
-            padding: 4px 0 10px;
-            margin-bottom: 18px;
-            white-space: nowrap;
-            scrollbar-width: thin;
-        }
+       .category-tabs {
+           display: flex;
+           gap: 9px;
+           overflow-x: auto;
+           overflow-y: visible;
+           padding: 4px 0 10px;
+           margin-bottom: 18px;
+           white-space: nowrap;
+           scrollbar-width: thin;
+       }
 
-        .category-tab {
-            --tab-bg: #ffffff;
-            --tab-border: #e5e5e5;
-            --tab-text: #555555;
-            --badge-bg: #e9e9e9;
-            --badge-border: rgba(0, 0, 0, 0.05);
-            --badge-text: #555555;
+       .category-tab {
+           --tab-bg: #f5f5f5;
+           --tab-border: #e5e5e5;
+           --tab-text: #4f5e4f;
+           --badge-bg: #ececec;
+           --badge-border: rgba(0, 0, 0, 0.05);
+           --badge-text: #555555;
 
-            flex: 0 0 auto;
-            border: 1px solid var(--tab-border);
-            background: var(--tab-bg);
-            padding: 8px 13px;
-            border-radius: 20px 20px 0 0;
-            font-size: 13px;
-            color: var(--tab-text);
-            cursor: pointer;
-            transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, filter 0.18s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-            position: relative;
-            z-index: 1;
-            overflow: visible;
-        }
+           display: inline-flex;
+           align-items: center;
+           justify-content: center;
+           gap: 6px;
+           flex: 0 0 auto;
+           min-height: 42px;
+           padding: 10px 14px;
+           border: 1px solid var(--tab-border);
+           border-radius: 12px;
+           background: var(--tab-bg);
+           color: var(--tab-text);
+           font-size: 12px;
+           font-weight: 700;
+           line-height: 1;
+           cursor: pointer;
+           transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+           user-select: none;
+       }
 
-        .category-tab:hover {
-            filter: brightness(0.97);
-            transform: translateY(-2px);
-        }
+       .category-tab:hover {
+           transform: translateY(-2px);
+           filter: brightness(0.97);
+           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+       }
 
-        .category-tab.active {
-            font-weight: bold;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.7), 0 8px 18px rgba(0, 0, 0, 0.12);
-            border-width: 3px;
-            border-bottom-width: 3px;
-            border-color: color-mix(in srgb, var(--tab-border) 70%, black 30%);
-            position: relative;
-            top: 0;
-            z-index: 2;
-            margin-bottom: -1px;
-        }
+       .category-tab.active {
+           background: var(--tab-active-bg, var(--tab-bg));
+           border-color: var(--tab-active-border, var(--tab-border));
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75), 0 6px 16px rgba(0, 0, 0, 0.12);
+           transform: translateY(-1px);
+           color: var(--tab-active-text, #ffffff);
+       }
 
-        .category-tab.active {
-            background: color-mix(in srgb, var(--tab-bg) 88%, white 12%);
-            overflow: visible;
-        }
+       .category-tab.active .badge {
+           background: var(--badge-active-bg, rgba(255, 255, 255, 0.22));
+           border-color: var(--badge-active-border, rgba(255, 255, 255, 0.2));
+           color: var(--badge-active-text, #ffffff);
+           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+       }
 
-        .category-tab.active .badge {
-            transform: scale(1.04);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25), 0 2px 6px rgba(0, 0, 0, 0.08);
-        }
+       .category-tab.category-vegetable {
+           --tab-bg: #edf7ee;
+           --tab-border: #cfe5d0;
+           --badge-bg: #d5efd9;
+           --badge-border: rgba(64, 125, 77, 0.12);
+           --badge-text: #3f8f4f;
+       }
 
-        .category-tab.category-vegetable {
-            --tab-bg: #e9f5eb;
-            --tab-border: #bcd9bf;
-            --badge-bg: #cfead5;
-            --badge-border: rgba(64, 125, 77, 0.12);
-            --badge-text: #4d7e55;
-        }
+       .category-tab.category-vegetable.active {
+           background: linear-gradient(180deg, #2e7d32 0%, #236d2b 100%);
+           border-color: #2e7d32;
+       }
 
-        .category-tab.category-vegetable.active {
-            background: linear-gradient(180deg, #e0f3e5 0%, #d5f0db 100%);
-            border-color: #7ea981;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(89, 151, 104, 0.18);
-        }
+       .category-tab.category-meat {
+           --tab-bg: #fbeaea;
+           --tab-border: #efc3c3;
+           --badge-bg: #f5d5d5;
+           --badge-border: rgba(185, 88, 88, 0.12);
+           --badge-text: #b74f4f;
+       }
 
-        .category-tab.category-meat {
-            --tab-bg: #fbeaea;
-            --tab-border: #efbcbc;
-            --badge-bg: #f5d4d4;
-            --badge-border: rgba(185, 88, 88, 0.12);
-            --badge-text: #8a3d3d;
-        }
+       .category-tab.category-meat.active {
+           background: linear-gradient(180deg, #d64d4d 0%, #b93b3b 100%);
+           border-color: #d64d4d;
+       }
 
-        .category-tab.category-meat.active {
-            background: linear-gradient(180deg, #fce6e6 0%, #f8d8d8 100%);
-            border-color: #d17d7d;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(189, 96, 96, 0.18);
-        }
+       .category-tab.category-fish {
+           --tab-bg: #eaf2fb;
+           --tab-border: #cfe0f7;
+           --badge-bg: #d6e8ff;
+           --badge-border: rgba(43, 102, 194, 0.15);
+           --badge-text: #3f7fc4;
+       }
 
-        .category-tab.category-fish {
-            --tab-bg: #eaf2fb;
-            --tab-border: #bdd4ee;
-            --badge-bg: #cfe0ff;
-            --badge-border: rgba(43, 102, 194, 0.15);
-            --badge-text: #2d5da8;
-        }
+       .category-tab.category-fish.active {
+           background: linear-gradient(180deg, #3f7fc4 0%, #2d67a8 100%);
+           border-color: #3f7fc4;
+       }
 
-        .category-tab.category-fish.active {
-            background: linear-gradient(180deg, #e5f0ff 0%, #d4e7ff 100%);
-            border-color: #8aa5d7;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(74, 116, 204, 0.18);
-        }
+       .category-tab.category-seasoning {
+           --tab-bg: #f7eee6;
+           --tab-border: #e5d0b7;
+           --badge-bg: #f0d9c1;
+           --badge-border: rgba(152, 103, 52, 0.12);
+           --badge-text: #875627;
+       }
 
-        .category-tab.category-seasoning {
-            --tab-bg: #f7eee6;
-            --tab-border: #dec7b1;
-            --badge-bg: #f0d9c0;
-            --badge-border: rgba(152, 103, 52, 0.12);
-            --badge-text: #7c5430;
-        }
+       .category-tab.category-seasoning.active {
+           background: linear-gradient(180deg, #bb7a3a 0%, #9a6121 100%);
+           border-color: #bb7a3a;
+       }
 
-        .category-tab.category-seasoning.active {
-            background: linear-gradient(180deg, #f8eedf 0%, #f0dfc8 100%);
-            border-color: #c39359;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(160, 110, 59, 0.18);
-        }
+       .category-tab.category-leftover {
+           --tab-bg: #f1eafa;
+           --tab-border: #dccaf1;
+           --badge-bg: #e7d7ff;
+           --badge-border: rgba(123, 90, 186, 0.12);
+           --badge-text: #7654a9;
+       }
 
-        .category-tab.category-leftover {
-            --tab-bg: #f1eafa;
-            --tab-border: #d2bfe6;
-            --badge-bg: #e0d1fa;
-            --badge-border: rgba(123, 90, 186, 0.12);
-            --badge-text: #5b3e92;
-        }
+       .category-tab.category-leftover.active {
+           background: linear-gradient(180deg, #7b5ab8 0%, #5a3d8e 100%);
+           border-color: #7b5ab8;
+       }
 
-        .category-tab.category-leftover.active {
-            background: linear-gradient(180deg, #efe9ff 0%, #e4d8ff 100%);
-            border-color: #a588d7;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(125, 96, 173, 0.18);
-        }
+       .category-tab.category-drink {
+           --tab-bg: #eaf4fb;
+           --tab-border: #d0e8f8;
+           --badge-bg: #d7edf9;
+           --badge-border: rgba(52, 110, 170, 0.12);
+           --badge-text: #4c7ca8;
+       }
 
-        .category-tab.category-drink {
-            --tab-bg: #eaf4fb;
-            --tab-border: #bed9eb;
-            --badge-bg: #d4ebff;
-            --badge-border: rgba(52, 110, 170, 0.12);
-            --badge-text: #2b5e8d;
-        }
+       .category-tab.category-drink.active {
+           background: linear-gradient(180deg, #4f8fc4 0%, #3b739f 100%);
+           border-color: #4f8fc4;
+       }
 
-        .category-tab.category-drink.active {
-            background: linear-gradient(180deg, #edf8ff 0%, #d8efff 100%);
-            border-color: #8cb2d1;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(54, 111, 170, 0.18);
-        }
+       .category-tab.category-preserved {
+           --tab-bg: #fcf4df;
+           --tab-border: #eedca5;
+           --badge-bg: #f5e2a0;
+           --badge-border: rgba(166, 122, 26, 0.12);
+           --badge-text: #9a6e1e;
+       }
 
-        .category-tab.category-preserved {
-            --tab-bg: #fcf4df;
-            --tab-border: #ead39a;
-            --badge-bg: #f3df9a;
-            --badge-border: rgba(166, 122, 26, 0.12);
-            --badge-text: #7a5d1d;
-        }
+       .category-tab.category-preserved.active {
+           background: linear-gradient(180deg, #dca92d 0%, #b78410 100%);
+           border-color: #dca92d;
+       }
 
-        .category-tab.category-preserved.active {
-            background: linear-gradient(180deg, #fff5d2 0%, #f8e7ae 100%);
-            border-color: #d4af4f;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(171, 135, 42, 0.18);
-        }
+       .category-tab.category-other {
+           --tab-bg: #f1f1f1;
+           --tab-border: #d9d9d9;
+           --badge-bg: #e3e3e3;
+           --badge-border: rgba(86, 86, 86, 0.12);
+           --badge-text: #5d5d5d;
+       }
 
-        .category-tab.category-other {
-            --tab-bg: #f1f1f1;
-            --tab-border: #d5d5d5;
-            --badge-bg: #dfe3e6;
-            --badge-border: rgba(86, 86, 86, 0.12);
-            --badge-text: #4d4d4d;
-        }
+       .category-tab.category-other.active {
+           background: linear-gradient(180deg, #666666 0%, #4a4a4a 100%);
+           border-color: #666666;
+       }
 
-        .category-tab.category-other.active {
-            background: linear-gradient(180deg, #f0f0f0 0%, #e4e4e4 100%);
-            border-color: #a6a6a6;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 6px 16px rgba(102, 102, 102, 0.12);
-        }
+       .category-tab.all-category {
+           --tab-bg: #f5f5f5;
+           --tab-border: #dcdcdc;
+           --badge-bg: #eaeaea;
+           --badge-border: rgba(0, 0, 0, 0.05);
+           --badge-text: #555555;
+           font-size: 13px;
+           color: #555;
+       }
 
-        .category-tab.all-category {
-            --tab-bg: #f5f5f5;
-            --tab-border: #dcdcdc;
-            --badge-bg: #eaeaea;
-            --badge-border: rgba(0, 0, 0, 0.05);
-            --badge-text: #555555;
-            padding: 9px 15px;
-            font-size: 14px;
-            color: #555;
-        }
+       .category-tab.all-category.active {
+           background: linear-gradient(180deg, #2f7d32 0%, #1d5f25 100%);
+           border-color: #2f7d32;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75), 0 6px 16px rgba(47, 125, 50, 0.2);
+           color: #ffffff;
+       }
 
-        .category-tab.all-category.active {
-            background: linear-gradient(180deg, #f1f1f1 0%, #e7e7e7 100%);
-            border-color: #b1b1b1;
-            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 5px 14px rgba(87, 87, 87, 0.14);
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 20px;
-            height: 20px;
-            margin-left: 4px;
-            padding: 0 5px;
-            border-radius: 10px;
-            background: var(--badge-bg, #e9e9e9);
-            color: var(--badge-text, #555);
-            border: 1px solid var(--badge-border, rgba(0, 0, 0, 0.05));
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .category-tab.active .badge {
-            background: var(--badge-bg, rgba(0, 0, 0, 0.08));
-        }
+       .badge {
+           display: inline-flex;
+           align-items: center;
+           justify-content: center;
+           min-width: 22px;
+           height: 20px;
+           padding: 0 6px;
+           border-radius: 10px;
+           background: var(--badge-bg, #e9e9e9);
+           color: var(--badge-text, #555555);
+           border: 1px solid var(--badge-border, rgba(0, 0, 0, 0.05));
+           box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+           font-size: 11px;
+           font-weight: 700;
+           line-height: 1;
+       }
 
         /* =========================================
            選択時操作バー
@@ -1286,14 +1273,14 @@
     const rowChecks = document.querySelectorAll(".row-check");
 
     const categoryColorMap = {
-        "野菜": { tabBg: '#e9f5eb', border: '#bcd9bf', badgeBg: '#cfead5', badgeText: '#4d7e55' },
-        "肉": { tabBg: '#fbeaea', border: '#efbcbc', badgeBg: '#f5d4d4', badgeText: '#8a3d3d' },
-        "魚": { tabBg: '#eaf2fb', border: '#bdd4ee', badgeBg: '#cfe0ff', badgeText: '#2d5da8' },
-        "調味料": { tabBg: '#f7eee6', border: '#dec7b1', badgeBg: '#f0d9c0', badgeText: '#7c5430' },
-        "残り物": { tabBg: '#f1eafa', border: '#d2bfe6', badgeBg: '#e0d1fa', badgeText: '#5b3e92' },
-        "飲み物": { tabBg: '#eaf4fb', border: '#bed9eb', badgeBg: '#d4ebff', badgeText: '#2b5e8d' },
-        "保存食": { tabBg: '#fcf4df', border: '#ead39a', badgeBg: '#f3df9a', badgeText: '#7a5d1d' },
-        "その他": { tabBg: '#f1f1f1', border: '#d5d5d5', badgeBg: '#dfe3e6', badgeText: '#4d4d4d' }
+        "野菜": { tabBg: '#edf7ee', border: '#cfe5d0', badgeBg: '#d5efd9', badgeText: '#3f8f4f', activeBg: '#2e7d32', activeBorder: '#2e7d32', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "肉": { tabBg: '#fbeaea', border: '#efc3c3', badgeBg: '#f5d5d5', badgeText: '#b74f4f', activeBg: '#d64d4d', activeBorder: '#d64d4d', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "魚": { tabBg: '#eaf2fb', border: '#cfe0f7', badgeBg: '#d6e8ff', badgeText: '#3f7fc4', activeBg: '#3f7fc4', activeBorder: '#3f7fc4', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "調味料": { tabBg: '#f7eee6', border: '#e5d0b7', badgeBg: '#f0d9c1', badgeText: '#875627', activeBg: '#bb7a3a', activeBorder: '#bb7a3a', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "残り物": { tabBg: '#f1eafa', border: '#dccaf1', badgeBg: '#e7d7ff', badgeText: '#7654a9', activeBg: '#7b5ab8', activeBorder: '#7b5ab8', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "飲み物": { tabBg: '#eaf4fb', border: '#d0e8f8', badgeBg: '#d7edf9', badgeText: '#4c7ca8', activeBg: '#4f8fc4', activeBorder: '#4f8fc4', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "保存食": { tabBg: '#fcf4df', border: '#eedca5', badgeBg: '#f5e2a0', badgeText: '#9a6e1e', activeBg: '#dca92d', activeBorder: '#dca92d', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' },
+        "その他": { tabBg: '#f1f1f1', border: '#d9d9d9', badgeBg: '#e3e3e3', badgeText: '#5d5d5d', activeBg: '#666666', activeBorder: '#666666', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' }
     };
 
     function applyCategoryTabColor(tab) {
@@ -1309,6 +1296,11 @@
         tab.style.setProperty('--badge-bg', palette.badgeBg);
         tab.style.setProperty('--badge-text', palette.badgeText);
         tab.style.setProperty('--badge-border', 'rgba(0, 0, 0, 0.08)');
+        tab.style.setProperty('--tab-active-bg', palette.activeBg);
+        tab.style.setProperty('--tab-active-border', palette.activeBorder);
+        tab.style.setProperty('--tab-active-text', palette.activeText);
+        tab.style.setProperty('--badge-active-bg', palette.activeBadgeBg);
+        tab.style.setProperty('--badge-active-text', palette.activeBadgeText);
     }
 
     categoryTabs.forEach(tab => applyCategoryTabColor(tab));

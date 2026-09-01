@@ -1,110 +1,694 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>AIレシピ提案 | 毎日の料理をクリエイティブに</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#ff8c42" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-    <script defer src="/js/pwa.js"></script>
-    <link rel="stylesheet" th:href="@{/css/recipe.css}">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>レシピ</title>
+    <!-- FontAwesome (アイコンライブラリ) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/common-page.css}">
+    <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe.css}">
+    <link rel="stylesheet" th:href="@{/css/popup.css}">
+
+    <style>
+        /* ========================================
+           基本設定
+        ======================================== */
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0 0 90px;
+            font-family:
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    "Noto Sans JP",
+                    sans-serif;
+            background: #f6f8f6;
+            color: #333;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        /* ========================================
+           中央 追加ボタン
+        ======================================== */
+        .nav-add {
+            position: relative;
+            top: -18px;
+            flex: 0 0 58px;
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #3f9c5b;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(48, 125, 68, 0.28);
+            border: 4px solid #f6f8f6;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-add:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 23px rgba(48, 125, 68, 0.34);
+        }
+
+        .nav-add-icon {
+            width: 26px;
+            height: 26px;
+        }
+
+        .nav-add-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .nav-add-label {
+            position: absolute;
+            top: 61px;
+            color: #999;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        /* ========================================
+           スマホ
+        ======================================== */
+        @media (max-width: 600px) {
+            .page-container {
+                padding: 18px 14px 32px;
+            }
+            .page-title {
+                font-size: 24px;
+            }
+            .user-name {
+                font-size: 13px;
+            }
+            .user-message {
+                font-size: 10px;
+            }
+
+            /* AI */
+            .recipe-ai-card {
+                padding: 16px;
+                border-radius: 15px;
+            }
+            .recipe-condition-list {
+                gap: 7px;
+            }
+            .recipe-condition {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+            .ai-recipe-button {
+                min-height: 44px;
+                font-size: 12px;
+            }
+
+            /* レシピ登録 */
+            .recipe-register-button {
+                min-height: 42px;
+                padding: 0 13px;
+                font-size: 11px;
+            }
+            .recipe-register-icon {
+                font-size: 15px;
+            }
+
+            /* 一覧 */
+            .recipe-card {
+                padding: 14px;
+            }
+            .recipe-card-title-area h3 {
+                font-size: 12px;
+            }
+
+            /* ナビ */
+            .bottom-navigation {
+                height: 68px;
+            }
+            .nav-icon {
+                width: 19px;
+                height: 19px;
+            }
+            .nav-item {
+                font-size: 9px;
+            }
+            .nav-add {
+                flex-basis: 54px;
+                width: 54px;
+                height: 54px;
+            }
+            .nav-add-label {
+                top: 57px;
+            }
+        }
+    </style>
+
 </head>
 
-<body class="text-slate-800 leading-relaxed antialiased">
+<body>
 
-<div class="max-w-5xl mx-auto px-6 py-16">
-
-    <header class="mb-16">
-        <div class="mb-8">
-            <a th:href="@{/}" class="inline-flex items-center text-stone-400 hover:text-stone-800 transition-colors duration-300 group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                <span class="text-sm font-bold tracking-widest uppercase">一覧に戻る</span>
-            </a>
-        </div>
-
-        <span class="text-xs uppercase tracking-widest text-stone-400 font-bold mb-2 block">Personalized AI Suggestions</span>
-        <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-stone-800 mb-4">
-            レシピ提案
-        </h1>
-        <p class="text-stone-500 font-serif text-lg max-w-xl">
-            AIがあなたのリクエストに合わせて、心温まる一皿をデザインしました。
-        </p>
-        <div class="h-1 w-20 bg-stone-200 mt-8"></div>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-
-        <article th:each="recipe : ${rvm.recipe}" class="recipe-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between">
-
-            <div>
-                <div class="flex justify-between items-start mb-6">
-                        <span class="pastel-badge text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase"
-                              th:text="${recipe.status}">STATUS</span>
-
-                    <button class="text-rose-200 hover:text-rose-400 transition-colors duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <h2 class="text-3xl font-bold text-stone-800 mb-4 leading-tight" th:text="${recipe.recipeName}">
-                    レシピタイトル
-                </h2>
-
-                <p class="font-serif text-stone-600 mb-8 leading-loose" th:text="${recipe.description}">
-                    レシピの説明が入ります。
-                </p>
-
-                <div class="space-y-6 mb-10 text-sm">
-                    <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
-                        <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Ingredients</h3>
-                        <ul class="space-y-1">
-                            <li th:each="item : ${recipe.ingredientsList}" class="flex items-center mb-1">
-                                <span class="w-1 h-1 bg-stone-300 rounded-full mr-2"></span>
-                                <span th:text="${item}" class="font-serif text-stone-700">材料名</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-stone-50/50 rounded-2xl p-5 border border-stone-100">
-                        <h3 class="font-bold text-stone-400 uppercase tracking-widest text-[10px] mb-3">Steps</h3>
-                        <ol class="space-y-4">
-                            <li th:each="step, stat : ${recipe.stepsList}" class="flex gap-4">
-                                    <span class="flex-none w-6 h-6 bg-stone-100 text-stone-500 text-xs font-bold rounded-full flex items-center justify-center"
-                                          th:text="${stat.count}">1</span>
-                                <span th:text="${step}" class="font-serif text-stone-700">手順の内容</span>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div> <div class="flex items-center justify-between pt-6 border-t border-stone-100 mt-auto">
-            <time class="text-xs text-stone-400 font-mono" th:text="${recipe.createdAt}">2024.01.01</time>
-            <a th:href="@{/recipes/history}" class="group flex items-center text-sm font-bold text-stone-800">
-                過去レシピ一覧 🍳
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </a>
-        </div>
-
-        </article>
-
+<!-- 成功トーストメッセージ -->
+<div th:if="${successMessage}" class="custom-modal-popup success" id="toastMessage">
+    <div class="popup-content">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${successMessage}"></span>
     </div>
+</div>
+<!-- エラートーストメッセージ -->
+<div th:if="${errorMessage}" class="custom-modal-popup error" id="toastErrorMessage">
+    <div class="popup-content">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+</div>
 
-    <footer class="mt-24 text-center border-t border-stone-200 pt-12">
-        <p class="text-stone-400 text-sm italic font-serif">&copy; 2026 AI Kitchen Lab.</p>
-    </footer>
+<!-- ========================================
+     メイン
+======================================== -->
+
+<div class="page-container">
+
+    <main class="dashboard">
+        <div th:replace="~{fragments/page-header :: pageHeader(
+    'Recipes',
+    'レシピを管理しましょう'
+)}"></div>
+
+    <!-- ========================================
+         ① AIにレシピを提案してもらう
+    ======================================== -->
+
+    <section class="recipe-ai-section">
+
+        <div class="recipe-section-title">
+            <span class="recipe-section-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+            <h2>AIレシピ提案</h2>
+        </div>
+
+        <div class="recipe-ai-card">
+            <p class="recipe-ai-description">
+                条件を選択すると、今ある食材に合ったレシピを提案します。
+            </p>
+
+            <div class="recipe-condition-list">
+                <button type="button" class="recipe-condition"><i class="fa-solid fa-utensils"></i> ジャンル</button>
+                <button type="button" class="recipe-condition"><i class="fa-solid fa-clock"></i> 期限間近</button>
+                <button type="button" class="recipe-condition"><i class="fa-solid fa-seedling"></i> 低カロリー</button>
+                <button type="button" class="recipe-condition"><i class="fa-solid fa-bolt"></i> 手軽</button>
+                <button type="button" class="recipe-condition"><i class="fa-solid fa-basket-shopping"></i> 食材を指定</button>
+            </div>
+
+            <button type="button" class="ai-recipe-button">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> レシピを提案してもらう
+            </button>
+        </div>
+
+    </section>
+
+    <!-- ========================================
+         ② レシピ一覧（カテゴリカード & 実データ）
+    ======================================== -->
+
+    <section class="recipe-section">
+
+        <div class="recipe-section-header">
+            <div class="header-left">
+                <h2 class="recipe-section-title-text">レシピ一覧</h2>
+                <span class="recipe-total-badge" id="recipeTotalDisplay" th:text="|全 ${rvm.totalRecipeCount} 件|">全 0 件</span>
+            </div>
+
+            <!-- レシピ登録ボタン -->
+            <button type="button" id="openRegisterModalBtn" class="recipe-register-button">
+                <i class="fa-solid fa-plus recipe-register-icon"></i>
+                <span>レシピを登録</span>
+            </button>
+        </div>
+
+        <!-- カテゴリ選択カードエリア (アイコンなし・ジャンルカラー適用) -->
+        <div class="recipe-categories-container">
+            <div class="category-cards-scroll">
+                <!-- すべて -->
+                <div class="category-select-card cat-all active" data-category="all">
+                    <span class="cat-card-name">すべて</span>
+                    <span class="cat-card-count" th:text="${rvm.totalRecipeCount}">0</span>
+                </div>
+
+                <!-- 各カテゴリカード -->
+                <div th:each="cat : ${rvm.categories}"
+                     class="category-select-card"
+                     th:classappend="${cat.name.contains('主食')} ? 'cat-staple' : (${cat.name.contains('主菜')} ? 'cat-main' : (${cat.name.contains('副菜')} ? 'cat-side' : (${cat.name.contains('汁')} ? 'cat-soup' : 'cat-other')))"
+                     th:data-category="${cat.id}">
+                    <span class="cat-card-name" th:text="${cat.name}">主菜</span>
+                    <span class="cat-card-count" th:text="${rvm.categoryCountMap[cat.id] != null ? rvm.categoryCountMap[cat.id] : 0}">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 検索バー -->
+        <div class="recipe-search">
+            <i class="fa-solid fa-magnifying-glass recipe-search-icon"></i>
+            <input type="text" id="recipeSearchInput" placeholder="レシピ名や材料名で検索...">
+            <button type="button" id="recipeSearchClear" class="recipe-search-clear" style="display:none;" aria-label="クリア">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- 件数表示 -->
+        <p class="recipe-count" id="activeCategoryCountText">
+            表示中: <span id="filteredRecipeCount" th:text="${rvm.totalRecipeCount}">0</span>件
+        </p>
+
+        <!-- ========================================
+             レシピカード一覧 (DB実データ)
+        ======================================== -->
+        <div class="recipe-list" id="recipeListContainer">
+
+            <!-- レシピカード (Thymeleafループ) -->
+            <div th:each="recipe : ${rvm.recipes}"
+                 class="recipe-card-box"
+                 th:data-category-id="${recipe.categoryId != null ? recipe.categoryId : 'none'}"
+                 th:data-recipe-id="${recipe.id}"
+                 th:data-base-servings="${recipe.servings != null ? recipe.servings : 2}">
+
+                <!-- カードサマリー行 -->
+                <div class="recipe-card-summary">
+                    <div class="recipe-card-main-info" onclick="toggleRecipeDetails(this)">
+                        <div class="recipe-card-title-area">
+                            <h3 class="recipe-title-text" th:text="${recipe.recipeName}">レシピ名</h3>
+                            <span class="recipe-genre-badge"
+                                  th:classappend="${recipe.categoryName != null and recipe.categoryName.contains('主食')} ? 'staple' : (${recipe.categoryName != null and recipe.categoryName.contains('主菜')} ? 'main' : (${recipe.categoryName != null and recipe.categoryName.contains('副菜')} ? 'side' : (${recipe.categoryName != null and recipe.categoryName.contains('汁')} ? 'soup' : 'other')))"
+                                  th:text="${recipe.categoryName != null ? recipe.categoryName : '未分類'}">
+                                主菜
+                            </span>
+                            <span class="recipe-servings-badge" th:text="|${recipe.servings != null ? recipe.servings : 2}人分|">2人分</span>
+                        </div>
+
+                        <!-- 材料プレビュー (カンマ区切り) -->
+                        <p class="recipe-foods" th:if="${recipe.ingredients != null and !#lists.isEmpty(recipe.ingredients)}">
+                            <span class="food-label">材料:</span>
+                            <span th:text="${#strings.arrayJoin(recipe.ingredients.![ingredientName], '・')}">材料リスト</span>
+                        </p>
+                        <p class="recipe-foods empty-ing" th:if="${recipe.ingredients == null or #lists.isEmpty(recipe.ingredients)}">
+                            <span class="food-label">材料:</span> なし
+                        </p>
+                    </div>
+
+                    <!-- 右側ボタングループ -->
+                    <div class="recipe-card-actions">
+                        <button type="button" class="btn-action-icon btn-edit" th:data-id="${recipe.id}" onclick="openEditModal(this.getAttribute('data-id'))" title="レシピを編集">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" class="btn-action-icon btn-delete" th:data-id="${recipe.id}" th:data-name="${recipe.recipeName}" onclick="openDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-name'))" title="レシピを削除">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <button type="button" class="recipe-detail-toggle-btn" onclick="toggleRecipeDetails(this)" title="詳細を開く/閉じる">
+                            <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- カード詳細展開エリア (アコーディオン) -->
+                <div class="recipe-card-details">
+                    <div class="details-inner">
+
+                        <!-- ① 人前変更・分量自動計算コントローラー -->
+                        <div class="servings-stepper-container">
+                            <div class="stepper-label-group">
+                                <span class="stepper-title"><i class="fa-solid fa-users"></i> つくる人数:</span>
+                                <span class="stepper-base-note" th:text="|（基準: ${recipe.servings != null ? recipe.servings : 2}人分）|">（基準: 2人分）</span>
+                            </div>
+                            <div class="servings-stepper">
+                                <button type="button" class="btn-servings-step btn-minus" onclick="changeServings(this, -1)" aria-label="1人分減らす">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <span class="servings-num-display" th:text="${recipe.servings != null ? recipe.servings : 2}">2</span>
+                                <span class="servings-unit">人分</span>
+                                <button type="button" class="btn-servings-step btn-plus" onclick="changeServings(this, 1)" aria-label="1人分増やす">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ② 材料リスト -->
+                        <div class="details-section">
+                            <h4 class="details-section-title"><i class="fa-solid fa-carrot"></i> 材料リスト</h4>
+                            <div class="details-ingredients-list" th:if="${recipe.ingredients != null and !#lists.isEmpty(recipe.ingredients)}">
+                                <div class="detail-ingredient-item" th:each="ing : ${recipe.ingredients}">
+                                    <div class="ing-name-wrap">
+                                        <i th:if="${ing.isMain}" class="fa-solid fa-star main-star-badge" title="主要材料"></i>
+                                        <span class="ing-name-text" th:text="${ing.ingredientName}">牛肉</span>
+                                    </div>
+                                    <div class="ing-qty-wrap">
+                                        <span class="calc-qty"
+                                              th:data-base-qty="${ing.quantity != null ? ing.quantity : ''}"
+                                              th:text="${ing.quantity != null ? (ing.quantity % 1 == 0 ? #numbers.formatDecimal(ing.quantity, 1, 0) : ing.quantity) : ''}">
+                                            200
+                                        </span>
+                                        <span class="qty-unit-text" th:text="${ing.unit != null ? ing.unit : ''}">g</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="empty-section-text" th:if="${recipe.ingredients == null or #lists.isEmpty(recipe.ingredients)}">材料が登録されていません</p>
+                        </div>
+
+                        <!-- ③ 調理手順リスト -->
+                        <div class="details-section">
+                            <h4 class="details-section-title"><i class="fa-solid fa-list-ol"></i> 調理手順</h4>
+                            <div class="details-steps-list" th:if="${recipe.steps != null and !#lists.isEmpty(recipe.steps)}">
+                                <div class="detail-step-item" th:each="step : ${recipe.steps}">
+                                    <span class="step-badge" th:text="${step.stepNo}">1</span>
+                                    <p class="step-text" th:text="${step.instruction}">野菜を食べやすい大きさに切る</p>
+                                </div>
+                            </div>
+                            <p class="empty-section-text" th:if="${recipe.steps == null or #lists.isEmpty(recipe.steps)}">調理手順が登録されていません</p>
+                        </div>
+
+                        <!-- ④ メモ & 出典URL -->
+                        <div class="details-meta-group" th:if="${(recipe.memo != null and !#strings.isEmpty(recipe.memo)) or (recipe.sourceUrl != null and !#strings.isEmpty(recipe.sourceUrl))}">
+                            <div class="meta-memo-box" th:if="${recipe.memo != null and !#strings.isEmpty(recipe.memo)}">
+                                <span class="meta-label"><i class="fa-solid fa-lightbulb"></i> メモ・コツ:</span>
+                                <p class="meta-content" th:text="${recipe.memo}">中火でじっくり煮込むと美味しくなります。</p>
+                            </div>
+                            <div class="meta-url-box" th:if="${recipe.sourceUrl != null and !#strings.isEmpty(recipe.sourceUrl)}">
+                                <span class="meta-label"><i class="fa-solid fa-link"></i> 参考元:</span>
+                                <a th:href="${recipe.sourceUrl}" target="_blank" rel="noopener noreferrer" class="meta-link" th:text="${recipe.sourceUrl}">https://...</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- エンプティステート -->
+            <div id="recipeEmptyState" class="recipe-empty-state" th:style="${#lists.isEmpty(rvm.recipes)} ? 'display:flex;' : 'display:none;'">
+                <i class="fa-solid fa-book-open empty-icon"></i>
+                <h3 class="empty-title">レシピがありません</h3>
+                <p class="empty-desc">登録されたレシピがないか、検索条件に一致するレシピが見つかりませんでした。</p>
+                <button type="button" class="btn-empty-register" onclick="document.getElementById('openRegisterModalBtn').click()">
+                    <i class="fa-solid fa-plus"></i> はじめてのレシピを登録
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+   </main>
 
 </div>
+
+<!-- ========================================
+     レシピ登録モーダル
+======================================== -->
+<div id="recipeRegisterModal" class="recipe-modal-backdrop" th:classappend="${showRegisterModal} ? 'show' : ''" aria-hidden="true">
+    <div class="recipe-modal-container">
+        <div class="recipe-modal-header">
+            <h3 class="recipe-modal-title"><i class="fa-solid fa-book-bookmark"></i> レシピを登録</h3>
+            <button type="button" id="closeRegisterModalBtn" class="recipe-modal-close" aria-label="閉じる">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form th:action="@{/recipes/create}" th:object="${recipeCreateForm}" method="post" id="recipeCreateForm" class="recipe-form">
+            <!-- レシピ基本情報 -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="recipeName" class="form-label required">レシピ名</label>
+                    <input type="text" id="recipeName" th:field="*{recipeName}" class="form-input" placeholder="例: 肉じゃが" required>
+                    <span th:if="${#fields.hasErrors('recipeName')}" th:errors="*{recipeName}" class="form-error"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="servings" class="form-label required">人数</label>
+                        <div class="input-with-suffix">
+                            <input type="number" id="servings" th:field="*{servings}" class="form-input" min="1" max="20" required>
+                            <span class="input-suffix">人分</span>
+                        </div>
+                        <span th:if="${#fields.hasErrors('servings')}" th:errors="*{servings}" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="categoryId" class="form-label">レシピカテゴリ</label>
+                        <select id="categoryId" th:field="*{categoryId}" class="form-select">
+                            <option value="">-- 選択してください --</option>
+                            <option th:each="cat : ${recipeCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 材料セクション -->
+            <div class="form-section">
+                <div class="section-title-bar">
+                    <label class="form-label"><i class="fa-solid fa-carrot"></i> 材料</label>
+                    <span class="sub-label">主要な材料には★をつけておくと提案で優遇されます</span>
+                </div>
+
+                <div id="ingredientListContainer" class="dynamic-list-container">
+                    <div th:each="ing, stat : *{ingredients}" class="ingredient-row" th:data-index="${stat.index}">
+                        <div class="ing-col name-col">
+                            <input type="text" th:field="*{ingredients[__${stat.index}__].ingredientName}" class="form-input ing-name-input" placeholder="材料名 (例: 牛肉)">
+                        </div>
+                        <div class="ing-col qty-col">
+                            <input type="number" step="0.01" th:field="*{ingredients[__${stat.index}__].quantity}" class="form-input ing-qty-input" placeholder="分量">
+                        </div>
+                        <div class="ing-col unit-col">
+                            <input type="text" th:field="*{ingredients[__${stat.index}__].unit}" class="form-input ing-unit-input" placeholder="単位 (g, 個, 大さじ)">
+                        </div>
+                        <div class="ing-col cat-col">
+                            <select th:field="*{ingredients[__${stat.index}__].categoryId}" class="form-select ing-cat-select">
+                                <option value="">食材カテゴリ</option>
+                                <option th:each="icat : ${ingredientCategories}" th:value="${icat.id}" th:text="${icat.name}"></option>
+                            </select>
+                        </div>
+                        <div class="ing-col main-col">
+                            <label class="main-checkbox-label" title="主要材料">
+                                <input type="checkbox" th:field="*{ingredients[__${stat.index}__].isMain}" value="true">
+                                <span><i class="fa-solid fa-star"></i> 主要</span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn-remove-row" onclick="removeIngredientRow(this)" title="削除">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" id="btnAddIngredient" class="btn-add-row">
+                    <i class="fa-solid fa-plus"></i> 材料を追加
+                </button>
+            </div>
+
+            <!-- 調理手順セクション -->
+            <div class="form-section">
+                <div class="section-title-bar">
+                    <label class="form-label"><i class="fa-solid fa-kitchen-set"></i> 調理手順</label>
+                </div>
+
+                <div id="stepListContainer" class="dynamic-list-container">
+                    <div th:each="step, stat : *{steps}" class="step-row" th:data-index="${stat.index}">
+                        <span class="step-number" th:text="${stat.count}">1</span>
+                        <div class="step-content-col">
+                            <textarea th:field="*{steps[__${stat.index}__].instruction}" class="form-textarea step-textarea" placeholder="調理手順を入力してください (例: 野菜を一口大に切る)" rows="2"></textarea>
+                        </div>
+                        <button type="button" class="btn-remove-row" onclick="removeStepRow(this)" title="削除">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" id="btnAddStep" class="btn-add-row">
+                    <i class="fa-solid fa-plus"></i> 手順を追加
+                </button>
+            </div>
+
+            <!-- メモ・出典情報 -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="memo" class="form-label">メモ・コツ</label>
+                    <textarea id="memo" th:field="*{memo}" class="form-textarea" placeholder="調理のコツや味付けのポイントなど" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="sourceUrl" class="form-label">参考元・出典URL</label>
+                    <input type="url" id="sourceUrl" th:field="*{sourceUrl}" class="form-input" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="recipe-modal-footer">
+                <button type="button" id="btnCancelRegister" class="btn-secondary">キャンセル</button>
+                <button type="submit" class="btn-primary">レシピを登録する</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================
+     レシピ編集モーダル
+======================================== -->
+<div id="recipeEditModal" class="recipe-modal-backdrop" aria-hidden="true">
+    <div class="recipe-modal-container">
+        <div class="recipe-modal-header">
+            <h3 class="recipe-modal-title"><i class="fa-solid fa-pen-to-square"></i> レシピを編集</h3>
+            <button type="button" id="closeEditModalBtn" class="recipe-modal-close" aria-label="閉じる">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form th:action="@{/recipes/edit/0}" method="post" id="recipeEditForm" class="recipe-form">
+            <input type="hidden" id="editRecipeId" name="recipeId">
+
+            <!-- レシピ基本情報 -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="editRecipeName" class="form-label required">レシピ名</label>
+                    <input type="text" id="editRecipeName" name="recipeName" class="form-input" placeholder="例: 肉じゃが" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="editServings" class="form-label required">人数</label>
+                        <div class="input-with-suffix">
+                            <input type="number" id="editServings" name="servings" class="form-input" min="1" max="20" required>
+                            <span class="input-suffix">人分</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group flex-1">
+                        <label for="editCategoryId" class="form-label">レシピカテゴリ</label>
+                        <select id="editCategoryId" name="categoryId" class="form-select">
+                            <option value="">-- 選択してください --</option>
+                            <option th:each="cat : ${recipeCategories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 材料セクション -->
+            <div class="form-section">
+                <div class="section-title-bar">
+                    <label class="form-label"><i class="fa-solid fa-carrot"></i> 材料</label>
+                    <span class="sub-label">主要な材料には★をつけておくと提案で優遇されます</span>
+                </div>
+
+                <div id="editIngredientListContainer" class="dynamic-list-container">
+                    <!-- JSで動的生成 -->
+                </div>
+
+                <button type="button" id="btnEditAddIngredient" class="btn-add-row">
+                    <i class="fa-solid fa-plus"></i> 材料を追加
+                </button>
+            </div>
+
+            <!-- 調理手順セクション -->
+            <div class="form-section">
+                <div class="section-title-bar">
+                    <label class="form-label"><i class="fa-solid fa-kitchen-set"></i> 調理手順</label>
+                </div>
+
+                <div id="editStepListContainer" class="dynamic-list-container">
+                    <!-- JSで動的生成 -->
+                </div>
+
+                <button type="button" id="btnEditAddStep" class="btn-add-row">
+                    <i class="fa-solid fa-plus"></i> 手順を追加
+                </button>
+            </div>
+
+            <!-- メモ・出典情報 -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="editMemo" class="form-label">メモ・コツ</label>
+                    <textarea id="editMemo" name="memo" class="form-textarea" placeholder="調理のコツや味付けのポイントなど" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editSourceUrl" class="form-label">参考元・出典URL</label>
+                    <input type="url" id="editSourceUrl" name="sourceUrl" class="form-input" placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="recipe-modal-footer">
+                <button type="button" id="btnCancelEdit" class="btn-secondary">キャンセル</button>
+                <button type="submit" class="btn-primary">更新内容を保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================
+     削除確認モーダル
+======================================== -->
+<div id="recipeDeleteModal" class="recipe-modal-backdrop" aria-hidden="true">
+    <div class="recipe-modal-container modal-small">
+        <div class="recipe-modal-header">
+            <h3 class="recipe-modal-title"><i class="fa-solid fa-triangle-exclamation"></i> レシピの削除</h3>
+            <button type="button" id="closeDeleteModalBtn" class="recipe-modal-close" aria-label="閉じる">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="recipeDeleteForm" method="post" class="recipe-form">
+            <div class="delete-confirm-body">
+                <p class="delete-warning-text">
+                    レシピ「<strong id="deleteTargetRecipeName"></strong>」を本当に削除しますか？
+                </p>
+                <p class="delete-sub-text">※ 登録された材料や手順もすべて削除されます。この操作は取り消せません。</p>
+            </div>
+
+            <div class="recipe-modal-footer">
+                <button type="button" id="btnCancelDelete" class="btn-secondary">キャンセル</button>
+                <button type="submit" class="btn-danger">削除する</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================
+     下部ナビゲーション
+======================================== -->
+
+<!-- 下部ナビゲーションの呼び出し -->
+<div th:replace="~{fragments/bottom-navigation :: bottomNavigation}"></div>
+
+<script th:src="@{/js/recipe.js}"></script>
+
+<!-- 食材カテゴリの選択肢をJSテンプレート用に出力 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const ingredientCategoryOptions = /*[[${ingredientCategories}]]*/ [];
+    const recipeCategoryOptions = /*[[${recipeCategories}]]*/ [];
+    /*]]>*/
+</script>
 
 </body>
 </html>

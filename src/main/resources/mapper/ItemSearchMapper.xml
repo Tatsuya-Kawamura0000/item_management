@@ -10,6 +10,7 @@
    items.name,
    items.category_id AS categoryId,
    items.amount,
+   items.purchase_amount AS purchaseAmount,
    items.deadline,
    items.purchase_date AS purchaseDate,
    items.others,

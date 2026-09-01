@@ -10,6 +10,7 @@
 
 	<link rel="stylesheet" th:href="@{/css/style.css}">
 	<link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
+	<link rel="stylesheet" th:href="@{/css/shopping-list.css}">
 	<link rel="stylesheet" th:href="@{/css/add.css}">
 </head>
 
@@ -22,7 +23,7 @@
 
 		<div class="page-title-area">
 			<h1 class="page-title">
-				食材を追加
+				Add Items
 			</h1>
 
 			<p class="page-description">
@@ -41,7 +42,7 @@
 				</p>
 
 				<p class="user-message">
-					食材を登録して期限を管理しましょう
+					食材を登録しましょう
 				</p>
 
 			</div>
@@ -79,8 +80,9 @@
 		<div class="add-method-grid">
 
 			<!-- 手動追加 -->
-			<a href="#"
-			   class="add-method-card manual-card">
+			<button type="button"
+					id="manualMethodButton"
+					class="add-method-card manual-card">
 
 				<div class="method-icon-wrapper">
 
@@ -112,9 +114,9 @@
 
 				<div class="method-content">
 
-                    <span class="method-label">
-                        MANUAL
-                    </span>
+					<span class="method-label">
+						MANUAL
+					</span>
 
 					<h3 class="method-title">
 						手動で追加
@@ -128,10 +130,68 @@
 				</div>
 
 				<span class="method-arrow">
-                    →
-                </span>
+					→
+				</span>
 
-			</a>
+			</button>
+
+
+			<!-- 手動追加モーダル (shopping-list と同様のスタイルに合わせる) -->
+			<div id="manualAddModal" class="modal-overlay">
+				<div class="shopping-modal">
+
+					<button type="button" id="closeManualModal" class="modal-close" aria-label="閉じる">×</button>
+
+					<h2>食材を追加</h2>
+
+					<p class="shopping-modal-description">食材名、購入量、カテゴリー、期限を入力して食材一覧へ登録します。</p>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodName">食材名</label>
+						<input type="text" id="manualFoodName" placeholder="例：キャベツ" autocomplete="off">
+						<div id="manualSuggestions" class="suggestions"></div>
+					</div>
+
+					<div class="shopping-form-group">
+						<div class="shopping-new-quantity-row">
+							<div class="shopping-new-quantity-field">
+								<label for="manualFoodQuantity">量</label>
+								<input type="number" id="manualFoodQuantity" value="1" min="1" step="1">
+							</div>
+							<div class="shopping-new-quantity-field">
+								<label for="manualFoodUnit">単位</label>
+								<select id="manualFoodUnit" class="shopping-new-unit-select">
+								    <option value="">- 指定なし</option>
+								    <option value="個">個</option>
+								    <option value="パック">パック</option>
+								    <option value="袋">袋</option>
+								    <option value="g">g</option>
+								    <option value="本">本</option>
+								    <option value="箱">箱</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodCategory">カテゴリー</label>
+						<select id="manualFoodCategory">
+					        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+						</select>
+					</div>
+
+					<div class="shopping-form-group">
+						<label for="manualFoodDeadline">期限</label>
+						<input type="date" id="manualFoodDeadline">
+					</div>
+
+					<div class="shopping-modal-actions">
+						<button type="button" id="cancelManualAdd" class="shopping-modal-button shopping-modal-button-cancel">キャンセル</button>
+						<button type="button" id="manualAddButton" class="shopping-modal-button shopping-modal-button-confirm">追加する</button>
+					</div>
+
+				</div>
+			</div>
 
 
 			<!-- レシート読み取り -->

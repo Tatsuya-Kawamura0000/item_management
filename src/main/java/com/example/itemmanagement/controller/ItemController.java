@@ -40,7 +40,10 @@ public class ItemController {
     }
 
     @GetMapping("/add")
-    public String showAddPage() {
+    public String showAddPage(Model model, @AuthenticationPrincipal LoginUser loginUser) {
+
+        List<Categories> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
 
         return "add";
     }

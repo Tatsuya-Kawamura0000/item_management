@@ -41,8 +41,7 @@
     AND
      status = true
     ORDER BY
-     category_id ASC,
-     added_at DESC
+     category_id ASC
     </select>
 
     <select id="countByUserId" resultType="int">

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.itemmanagement.mapper.RecipeStepMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO recipe_step (
+            recipe_id,
+            step_no,
+            instruction
+        ) VALUES
+        <foreach collection="steps" item="step" separator=",">
+        (
+            #{step.recipeId},
+            #{step.stepNo},
+            #{step.instruction, jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+    <select id="selectByRecipeId" resultType="com.example.itemmanagement.entity.RecipeStep">
+        SELECT
+            id,
+            recipe_id AS recipeId,
+            step_no AS stepNo,
+            instruction
+        FROM recipe_step
+        WHERE recipe_id = #{recipeId}
+        ORDER BY step_no ASC, id ASC
+    </select>
+
+    <delete id="deleteByRecipeId">
+        DELETE FROM recipe_step
+        WHERE recipe_id = #{recipeId}
+    </delete>
+
+</mapper>
