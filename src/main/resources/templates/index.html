@@ -119,17 +119,15 @@
        }
 
        .category-tab.active {
-           background: var(--tab-active-bg, var(--tab-bg));
-           border-color: var(--tab-active-border, var(--tab-border));
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75), 0 6px 16px rgba(0, 0, 0, 0.12);
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
            transform: translateY(-1px);
-           color: var(--tab-active-text, #ffffff);
+           color: #ffffff;
        }
 
        .category-tab.active .badge {
-           background: var(--badge-active-bg, rgba(255, 255, 255, 0.22));
-           border-color: var(--badge-active-border, rgba(255, 255, 255, 0.2));
-           color: var(--badge-active-text, #ffffff);
+           background: rgba(255, 255, 255, 0.22);
+           border-color: rgba(255, 255, 255, 0.2);
+           color: #ffffff;
            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
        }
 
@@ -144,6 +142,8 @@
        .category-tab.category-vegetable.active {
            background: linear-gradient(180deg, #2e7d32 0%, #236d2b 100%);
            border-color: #2e7d32;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-meat {
@@ -157,6 +157,8 @@
        .category-tab.category-meat.active {
            background: linear-gradient(180deg, #d64d4d 0%, #b93b3b 100%);
            border-color: #d64d4d;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-fish {
@@ -170,6 +172,8 @@
        .category-tab.category-fish.active {
            background: linear-gradient(180deg, #3f7fc4 0%, #2d67a8 100%);
            border-color: #3f7fc4;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-seasoning {
@@ -183,6 +187,8 @@
        .category-tab.category-seasoning.active {
            background: linear-gradient(180deg, #bb7a3a 0%, #9a6121 100%);
            border-color: #bb7a3a;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-leftover {
@@ -196,6 +202,8 @@
        .category-tab.category-leftover.active {
            background: linear-gradient(180deg, #7b5ab8 0%, #5a3d8e 100%);
            border-color: #7b5ab8;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-drink {
@@ -209,6 +217,8 @@
        .category-tab.category-drink.active {
            background: linear-gradient(180deg, #4f8fc4 0%, #3b739f 100%);
            border-color: #4f8fc4;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-preserved {
@@ -222,6 +232,8 @@
        .category-tab.category-preserved.active {
            background: linear-gradient(180deg, #dca92d 0%, #b78410 100%);
            border-color: #dca92d;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.category-other {
@@ -235,6 +247,8 @@
        .category-tab.category-other.active {
            background: linear-gradient(180deg, #666666 0%, #4a4a4a 100%);
            border-color: #666666;
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           color: #ffffff;
        }
 
        .category-tab.all-category {
@@ -250,7 +264,7 @@
        .category-tab.all-category.active {
            background: linear-gradient(180deg, #2f7d32 0%, #1d5f25 100%);
            border-color: #2f7d32;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.75), 0 6px 16px rgba(47, 125, 50, 0.2);
+           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
            color: #ffffff;
        }
 
@@ -355,6 +369,11 @@
             text-align: left;
             border-bottom: 1px solid #eee;
             white-space: nowrap;
+        }
+
+        .food-table th.col-favorite {
+            color: transparent;
+            font-size: 0;
         }
 
         .food-table td {
@@ -498,7 +517,6 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
             min-width: 72px;
             width: 100%;
             max-width: 110px;
@@ -509,11 +527,7 @@
         }
 
         .expiration-date .expiration-icon {
-            flex: 0 0 12px;
-            width: 12px;
-            font-size: 12px;
-            line-height: 1;
-            text-align: center;
+            display: none;
         }
 
         .expiration-date > span:last-child {
@@ -527,7 +541,7 @@
         }
 
         .expiration-soon .expiration-icon {
-            color: #e08a00;
+            display: none;
         }
 
         .expiration-expired {
@@ -535,7 +549,7 @@
         }
 
         .expiration-expired .expiration-icon {
-            color: #d64545;
+            display: none;
         }
 
         /* =========================================
@@ -1161,19 +1175,14 @@
 
         element.classList.remove("expiration-soon", "expiration-expired");
 
-        let iconClass = "";
         if (diffDays < 0) {
             element.classList.add("expiration-expired");
-            iconClass = "fa-solid fa-circle-exclamation";
         } else if (diffDays <= 3) {
             element.classList.add("expiration-soon");
-            iconClass = "fa-solid fa-triangle-exclamation";
         }
 
         const formattedDate = formatShortExpirationDate(deadline);
-        element.innerHTML = iconClass
-            ? `<i class="expiration-icon ${iconClass}"></i><span>${formattedDate}</span>`
-            : `<i class="expiration-icon" aria-hidden="true" style="visibility:hidden;"></i><span>${formattedDate}</span>`;
+        element.innerHTML = `<span>${formattedDate}</span>`;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1816,4 +1825,4 @@
 
 </body>
 </html>
-```
+
