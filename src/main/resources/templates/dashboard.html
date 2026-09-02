@@ -41,7 +41,7 @@
             <h2 class="section-title">SOON</h2>
         </div>
         <div class="item-scroll" id="soonList">
-            <article class="food-card soon-card" th:each="food : ${soonFoods}" th:attr="data-id=${food.id}">
+            <article class="food-card soon-card" th:each="food : ${soonFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}">
                 <div class="food-card-top">
                     <h3 class="food-card-name" th:text="${food.name}">牛乳</h3>
                 </div>
@@ -66,7 +66,7 @@
             <h2 class="section-title">EXPIRED</h2>
         </div>
         <div class="item-scroll" id="expiredList">
-            <article class="food-card expired-card" th:each="food : ${expiredFoods}" th:attr="data-id=${food.id}">
+            <article class="food-card expired-card" th:each="food : ${expiredFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}">
                 <div class="food-card-top">
                     <h3 class="food-card-name" th:text="${food.name}">食パン</h3>
                 </div>

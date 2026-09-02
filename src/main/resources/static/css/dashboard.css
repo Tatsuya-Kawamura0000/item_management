@@ -101,14 +101,31 @@
 /* 食材カード */
 .food-card {
     position: relative;
-    flex: 0 0 180px;
-    min-height: 155px;
-    padding: 16px;
-    border-radius: 16px;
+    /* reduced to ~2/3 size */
+    flex: 0 0 120px;
+    min-height: 105px;
+    padding: 10px;
+    border-radius: 12px;
     background: #fff;
     cursor: pointer;
     user-select: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* 空の時のモダンなプレースホルダー */
+.empty-card {
+    flex: 0 0 120px;
+    min-height: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fbfff8 0%, #ffffff 100%);
+    color: #98a68f;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: 1px dashed rgba(150,150,150,0.12);
+    box-shadow: 0 6px 18px rgba(50, 80, 50, 0.06);
 }
 
 .soon-card {
@@ -228,7 +245,7 @@
     .section { margin-bottom: 29px; }
     .section-title { font-size: 14px; }
 
-    .food-card { flex-basis: 170px; min-height: 150px; padding: 15px; border-radius: 14px; }
+    .food-card { flex-basis: 113px; min-height: 100px; padding: 10px; border-radius: 12px; }
     .food-card-name { font-size: 16px; }
     .food-card-date { font-size: 23px; }
 

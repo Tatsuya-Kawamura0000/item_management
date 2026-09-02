@@ -42,6 +42,62 @@ document.addEventListener("DOMContentLoaded", () => {
     const consumeButton = document.getElementById("consumeButton");
     const selectedCountSpan = document.getElementById("selectedCount");
 
+    // Sort cards by deadline (earliest first) and show a modern empty state if none
+    function sortAndHandleEmpty(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // remove pre-existing empty placeholder
+        const existingEmpty = container.querySelector('.empty-card');
+        if (existingEmpty) existingEmpty.remove();
+
+        const cards = Array.from(container.querySelectorAll('.food-card'));
+        if (!cards.length) {
+            const el = document.createElement('div');
+            el.className = 'empty-card';
+            el.textContent = '該当なし';
+            container.appendChild(el);
+            return;
+        }
+
+        cards.sort((a, b) => {
+            const aD = a.dataset.deadline ? new Date(a.dataset.deadline) : parseDateFromText(a.querySelector('.food-card-date'));
+            const bD = b.dataset.deadline ? new Date(b.dataset.deadline) : parseDateFromText(b.querySelector('.food-card-date'));
+            return aD - bD;
+        });
+
+        cards.forEach(c => container.appendChild(c));
+    }
+
+    function parseDateFromText(dateElem) {
+        if (!dateElem) return new Date(0);
+        // expected M/d or similar; parse as this year fallback
+        const txt = (dateElem.textContent || '').trim();
+        const parts = txt.split('/');
+        if (parts.length >= 2) {
+            const month = parseInt(parts[0], 10) - 1;
+            const day = parseInt(parts[1], 10);
+            const now = new Date();
+            return new Date(now.getFullYear(), month, day);
+        }
+        return new Date(0);
+    }
+
+    // apply sorting & empty-state for both lists right away
+    sortAndHandleEmpty('soonList');
+    sortAndHandleEmpty('expiredList');
+
+    // observe changes to keep empty-state in sync (e.g., after removals)
+    const observer = new MutationObserver(() => {
+        sortAndHandleEmpty('soonList');
+        sortAndHandleEmpty('expiredList');
+        updateSummary();
+    });
+    const soonContainer = document.getElementById('soonList');
+    const expiredContainer = document.getElementById('expiredList');
+    if (soonContainer) observer.observe(soonContainer, { childList: true });
+    if (expiredContainer) observer.observe(expiredContainer, { childList: true });
+
     const modalOverlay = document.getElementById("modalOverlay");
     const modalMessage = document.getElementById("modalMessage");
     const cancelBtn = document.getElementById("cancelBtn");

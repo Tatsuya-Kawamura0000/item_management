@@ -334,6 +334,16 @@
     color: #ffffff;
 }
 
+/* 強制: アクティブ時にしっかり色が出るように追加ルール */
+.category-select-card.active {
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+.category-select-card.active .cat-card-count {
+    background: rgba(255,255,255,0.22) !important;
+    color: #ffffff !important;
+}
+
 /* ========================================
    レシピ登録ボタン
 ======================================== */

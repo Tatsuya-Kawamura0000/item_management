@@ -296,7 +296,8 @@
                  class="recipe-card-box"
                  th:data-category-id="${recipe.categoryId != null ? recipe.categoryId : 'none'}"
                  th:data-recipe-id="${recipe.id}"
-                 th:data-base-servings="${recipe.servings != null ? recipe.servings : 2}">
+                 th:data-base-servings="${recipe.servings != null ? recipe.servings : 2}"
+                 th:attr="data-ingredients=${recipe.ingredients != null ? #strings.arrayJoin(recipe.ingredients.![ingredientName], ' ') : ''}">
 
                 <!-- カードサマリー行 -->
                 <div class="recipe-card-summary">
@@ -311,14 +312,6 @@
                             <span class="recipe-servings-badge" th:text="|${recipe.servings != null ? recipe.servings : 2}人分|">2人分</span>
                         </div>
 
-                        <!-- 材料プレビュー (カンマ区切り) -->
-                        <p class="recipe-foods" th:if="${recipe.ingredients != null and !#lists.isEmpty(recipe.ingredients)}">
-                            <span class="food-label">材料:</span>
-                            <span th:text="${#strings.arrayJoin(recipe.ingredients.![ingredientName], '・')}">材料リスト</span>
-                        </p>
-                        <p class="recipe-foods empty-ing" th:if="${recipe.ingredients == null or #lists.isEmpty(recipe.ingredients)}">
-                            <span class="food-label">材料:</span> なし
-                        </p>
                     </div>
 
                     <!-- 右側ボタングループ -->
