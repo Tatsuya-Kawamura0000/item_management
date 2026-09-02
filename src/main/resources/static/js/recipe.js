@@ -160,10 +160,10 @@ function applyFilters() {
     recipeBoxes.forEach(box => {
         const catId = box.getAttribute('data-category-id');
         const titleElem = box.querySelector('.recipe-title-text');
-        const foodsElem = box.querySelector('.recipe-foods');
+        const ingredientsData = box.getAttribute('data-ingredients') || '';
 
         const titleText = titleElem ? titleElem.textContent.toLowerCase() : '';
-        const foodsText = foodsElem ? foodsElem.textContent.toLowerCase() : '';
+        const foodsText = (ingredientsData || '').toLowerCase();
 
         const matchesCategory = (activeCategory === 'all') || (catId === activeCategory);
         const matchesKeyword = !keyword || titleText.includes(keyword) || foodsText.includes(keyword);
