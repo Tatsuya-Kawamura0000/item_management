@@ -24,8 +24,18 @@ public class ItemmanagementApplication {
 			System.setProperty("OPENAI_API_KEY", dotenv.get("OPENAI_API_KEY"));
 		}
 
+		// ローカル開発用。本番は Render の環境変数を使う
+		copyDotenvIfPresent(dotenv, "VAPID_PUBLIC_KEY");
+		copyDotenvIfPresent(dotenv, "VAPID_PRIVATE_KEY");
+		copyDotenvIfPresent(dotenv, "VAPID_SUBJECT");
 
 		SpringApplication.run(ItemmanagementApplication.class, args);
+	}
+
+	private static void copyDotenvIfPresent(Dotenv dotenv, String key) {
+		if (dotenv.get(key) != null) {
+			System.setProperty(key, dotenv.get(key));
+		}
 	}
 
 }
