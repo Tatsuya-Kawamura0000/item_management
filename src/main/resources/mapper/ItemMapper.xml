@@ -229,6 +229,30 @@ ORDER BY
 ]]>
 </select>
 
+
+<select id="findExpiringItemsByUserId"
+            resultType="com.example.itemmanagement.entity.Items">
+        <![CDATA[
+SELECT
+     items.id,
+     items.name,
+     items.deadline,
+     items.user_id AS userId
+FROM items
+WHERE
+     items.status <> 0
+AND
+     items.user_id = #{userId}
+AND
+     items.deadline IS NOT NULL
+AND
+     (items.deadline - CURRENT_DATE) BETWEEN 0 AND 3
+ORDER BY
+      items.deadline ASC
+]]>
+</select>
+
+
 <select id="countItemsByCategory" resultType="map">
 SELECT
  category_id,

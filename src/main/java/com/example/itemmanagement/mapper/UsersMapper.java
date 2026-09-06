@@ -1,9 +1,10 @@
 package com.example.itemmanagement.mapper;
 
+import com.example.itemmanagement.entity.Users;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.itemmanagement.entity.Users;
+import java.util.List;
 
 @Mapper
 public interface UsersMapper {
@@ -15,6 +16,8 @@ public interface UsersMapper {
     
  //mail送信   
     String findEmailById(@Param("id") Integer id);
-    
+
+// PUSH通知用：全ユーザーIDを取得
+    List<Integer> findAllUserIds();
 
 }

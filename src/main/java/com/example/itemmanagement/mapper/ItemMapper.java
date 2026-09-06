@@ -38,6 +38,11 @@ public interface ItemMapper {
     //mail送信用
     List<Items> findExpiringItems();
 
+	// PUSH通知用：ユーザーごとの期限間近アイテムを取得
+	List<Items> findExpiringItemsByUserId(
+			@Param("userId") Integer userId
+	);
+
 	//カテゴリーごとのアイテム数をカウント
 	List<Map<String, Object>> countItemsByCategory(@Param("userId") Integer userId);
 

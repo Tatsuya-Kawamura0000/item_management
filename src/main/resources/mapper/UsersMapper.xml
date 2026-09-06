@@ -37,5 +37,11 @@
         id = #{id}
   </select>
 
+  <select id="findAllUserIds" resultType="int">
+      SELECT id
+      FROM users
+      ORDER BY id
+  </select>
+
 
 </mapper>
