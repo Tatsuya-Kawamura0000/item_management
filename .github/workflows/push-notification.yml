@@ -1,0 +1,21 @@
+name: Push Notification
+
+on:
+  schedule:
+    # 毎日 9:00 JST
+    # GitHub ActionsのcronはUTCなので 00:00 UTC
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  send-push-notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send push notification
+        run: |
+          curl --fail-with-body \
+            --request POST \
+            --header "X-Push-Secret: ${{ secrets.PUSH_NOTIFICATION_SECRET }}" \
+            https://item-management-jkf3.onrender.com/api/push/expiring-items
