@@ -41,6 +41,10 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 	implementation 'com.sendgrid:sendgrid-java:4.10.2'
+	// ブラウザ標準の Web Push を自前送信する（FCM 等は使わない）
+	implementation 'nl.martijndwars:web-push:5.1.1'
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+	implementation 'org.bitbucket.b_c:jose4j:0.9.6'
 }
 
 tasks.named('test') {

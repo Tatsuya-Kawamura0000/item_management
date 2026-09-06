@@ -22,6 +22,7 @@ public class SecurityConfig {
 						.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
 						.requestMatchers("/manifest.webmanifest", "/sw.js", "/icons/**").permitAll()
 						.requestMatchers("/login", "/register", "/error").permitAll()
+						.requestMatchers("/api/push/test", "/api/push/expiring-items").permitAll()
 						//.requestMatchers("/test-recipe").permitAll()
 						.anyRequest().authenticated()
 				)

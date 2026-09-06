@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.itemmanagement.mapper.PushNotificationMapper">
+
+    <!--
+        同一ユーザー・同一日の通知処理を開始する。
+
+        すでに sent の場合は 0 件更新となり、
+        通知処理を実行しない。
+    -->
+    <insert id="insertProcessingLog">
+        INSERT INTO push_notification_logs (
+        user_id,
+        sent_on,
+        status,
+        claimed_at,
+        updated_at
+        )
+        VALUES (
+        #{userId},
+        CURRENT_DATE,
+        'processing',
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+        )
+        ON CONFLICT (user_id, sent_on)
+        DO UPDATE SET
+        status = 'processing',
+        claimed_at = CURRENT_TIMESTAMP,
+        updated_at = CURRENT_TIMESTAMP
+        WHERE push_notification_logs.status = 'failed'
+    </insert>
+
+    <!-- 通知成功 -->
+    <update id="updateSent">
+        UPDATE push_notification_logs
+        SET
+        status = 'sent',
+        updated_at = CURRENT_TIMESTAMP
+        WHERE
+        user_id = #{userId}
+        AND sent_on = CURRENT_DATE
+    </update>
+
+    <!-- 通知失敗 -->
+    <update id="updateFailed">
+        UPDATE push_notification_logs
+        SET
+        status = 'failed',
+        updated_at = CURRENT_TIMESTAMP
+        WHERE
+        user_id = #{userId}
+        AND sent_on = CURRENT_DATE
+    </update>
+
+</mapper>
