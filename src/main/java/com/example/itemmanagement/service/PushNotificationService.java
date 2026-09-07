@@ -44,7 +44,7 @@ public class PushNotificationService {
 
         String payload = """
                 {
-                    "title": "賞味期限管理",
+                    "title": "賞味期限のお知らせfrom賞味期限管理アプリ",
                     "body": "Push通知のテストです。",
                     "data": {
                         "url": "/dashboard"
@@ -166,7 +166,7 @@ public class PushNotificationService {
 
             String payload = """
                 {
-                    "title": "賞味期限管理アプリ",
+                    "title": "賞味期限のお知らせfrom賞味期限管理アプリ",
                     "body": %s,
                     "data": {
                         "url": "/dashboard"
