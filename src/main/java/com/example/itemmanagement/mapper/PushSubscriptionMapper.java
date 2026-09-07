@@ -24,6 +24,11 @@ public interface PushSubscriptionMapper {
             @Param("endpoint") String endpoint
     );
 
+    void deleteByUserIdAndEndpoint(
+            @Param("userId") Integer userId,
+            @Param("endpoint") String endpoint
+    );
+
     class PushSubscription {
         private String endpoint;
         private String p256dh;

@@ -29,4 +29,9 @@ public class PushSubscriptionService {
                 userAgent
         );
     }
+
+    @Transactional
+    public void deleteSubscription(Integer userId, String endpoint) {
+        pushSubscriptionMapper.deleteByUserIdAndEndpoint(userId, endpoint);
+    }
 }
