@@ -36,20 +36,34 @@
 
             </div>
 
-            <!-- ログアウト -->
-            <form th:action="@{/logout}"
-                  method="post"
-                  style="display:inline;">
+            <!-- ヘッダー右側アクション（Push通知トグル & ログアウト） -->
+            <div class="header-actions">
 
-                <button class="logout-button"
-                        type="submit">
+                <!-- Push通知トグルスイッチ -->
+                <div class="push-toggle-wrapper" id="pushToggleWrapper" style="display: none;">
+                    <span class="push-toggle-label">Push通知</span>
+                    <label class="push-switch" for="pushToggleCheckbox" title="Push通知のオン/オフ">
+                        <input type="checkbox" id="pushToggleCheckbox" aria-label="Push通知の有効化">
+                        <span class="push-slider"></span>
+                    </label>
+                </div>
 
-                    <span class="logout-icon">↪</span>
-                    ログアウト
+                <!-- ログアウト -->
+                <form th:action="@{/logout}"
+                      method="post"
+                      style="display:inline;">
 
-                </button>
+                    <button class="logout-button"
+                            type="submit">
 
-            </form>
+                        <span class="logout-icon">↪</span>
+                        ログアウト
+
+                    </button>
+
+                </form>
+
+            </div>
 
         </div>
 

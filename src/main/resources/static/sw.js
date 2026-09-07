@@ -1,4 +1,4 @@
-const CACHE_NAME = "item-management-static-v1";
+const CACHE_NAME = "item-management-static-v2";
 
 const STATIC_PATH_PREFIXES = [
     "/css/",

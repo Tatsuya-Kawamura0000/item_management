@@ -45,4 +45,10 @@
         WHERE endpoint = #{endpoint}
     </delete>
 
+    <delete id="deleteByUserIdAndEndpoint">
+        DELETE FROM push_subscriptions
+        WHERE user_id = #{userId}
+        AND endpoint = #{endpoint}
+    </delete>
+
 </mapper>
