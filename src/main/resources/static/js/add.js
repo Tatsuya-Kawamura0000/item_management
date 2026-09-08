@@ -12,6 +12,101 @@ document.addEventListener("DOMContentLoaded", () => {
         closeReceiptModal.addEventListener("click", () => receiptModal.classList.remove("show"));
     }
 
+    // レシートモーダル内の「手動で追加する」ボタン
+    const manualFromModalBtn = document.getElementById("manualFromModal");
+    if (manualFromModalBtn && receiptModal && manualModal) {
+        manualFromModalBtn.addEventListener("click", () => {
+            receiptModal.classList.remove("show");
+            manualModal.classList.add("show");
+        });
+    }
+
+    // カメラ関連要素
+    const startCameraBtn = document.getElementById("startCameraButton");
+    const cameraModal = document.getElementById("cameraModal");
+    const closeCameraModal = document.getElementById("closeCameraModal");
+    const cancelCameraBtn = document.getElementById("cancelCameraButton");
+    const cameraVideo = document.getElementById("cameraVideo");
+    let cameraStream = null;
+
+    /**
+     * カメラを起動してビデオ要素に映像をプレビュー表示
+     */
+    async function startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("お使いのブラウザまたは環境はカメラ機能に対応していません。HTTPS接続または対応ブラウザをご確認ください。");
+            return;
+        }
+
+        try {
+            // 背面カメラ（environment）を優先して取得
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+            } catch (fallbackErr) {
+                // 背面カメラ指定で失敗した場合は制約なしで再試行
+                console.warn("FacingMode environment failed, trying fallback:", fallbackErr);
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+            }
+
+            if (cameraVideo) {
+                cameraVideo.srcObject = cameraStream;
+                await cameraVideo.play();
+            }
+
+            // レシート選択モーダルを閉じ、カメラプレビューモーダルを開く
+            if (receiptModal) receiptModal.classList.remove("show");
+            if (cameraModal) cameraModal.classList.add("show");
+
+        } catch (err) {
+            console.error("Camera access error:", err);
+            if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+                alert("カメラへのアクセスが許可されていません。\n端末やブラウザの設定でカメラへのアクセスを許可してください。");
+            } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+                alert("利用可能なカメラが見つかりませんでした。");
+            } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+                alert("カメラが他のアプリケーションで使用中か、起動できませんでした。");
+            } else if (err.name === "OverconstrainedError") {
+                alert("要求された条件に適合するカメラが見つかりませんでした。");
+            } else {
+                alert("カメラの起動に失敗しました: " + (err.message || err.name));
+            }
+        }
+    }
+
+    /**
+     * カメラを停止してプレビューモーダルを閉じる
+     */
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => {
+                track.stop();
+            });
+            cameraStream = null;
+        }
+        if (cameraVideo) {
+            cameraVideo.srcObject = null;
+        }
+        if (cameraModal) {
+            cameraModal.classList.remove("show");
+        }
+    }
+
+    if (startCameraBtn) {
+        startCameraBtn.addEventListener("click", startCamera);
+    }
+    if (closeCameraModal) {
+        closeCameraModal.addEventListener("click", stopCamera);
+    }
+    if (cancelCameraBtn) {
+        cancelCameraBtn.addEventListener("click", stopCamera);
+    }
+
     // 手動追加モーダル要素
     const manualBtn = document.getElementById("manualMethodButton");
     const manualModal = document.getElementById("manualAddModal");

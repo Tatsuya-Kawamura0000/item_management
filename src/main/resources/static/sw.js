@@ -93,12 +93,12 @@ self.addEventListener("push", (event) => {
         data = event.data.json();
     } catch (error) {
         data = {
-            title: "賞味期限のお知らせfrom賞味期限管理アプリ",
+            title: "賞味期限のお知らせ",
             body: event.data.text()
         };
     }
 
-    const title = data.title || "賞味期限のお知らせfrom賞味期限管理アプリ";
+    const title = data.title || "賞味期限のお知らせ";
 
     const options = {
         body: data.body || "",

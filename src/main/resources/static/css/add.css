@@ -517,3 +517,130 @@
     }
 
 }
+
+/* ========================================
+   カメラプレビューモーダル
+======================================== */
+
+.camera-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+    backdrop-filter: blur(4px);
+}
+
+.camera-modal-overlay.show {
+    display: flex;
+}
+
+.camera-container {
+    background: #1c1f1d;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: cameraModalFadeIn 0.25s ease-out;
+}
+
+@keyframes cameraModalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.camera-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: #232724;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.camera-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #eaf6ed;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.camera-close-button {
+    background: transparent;
+    border: none;
+    color: #9aa89d;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.15s ease;
+}
+
+.camera-close-button:hover {
+    color: #ffffff;
+}
+
+.camera-video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#cameraVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.camera-footer {
+    padding: 14px 18px;
+    background: #232724;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.camera-action-button {
+    width: 100%;
+    min-height: 44px;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.camera-cancel-button {
+    background: rgba(255, 255, 255, 0.12);
+    color: #e5ede7;
+}
+
+.camera-cancel-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
