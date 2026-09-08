@@ -315,6 +315,7 @@
 
 
 		<button type="button"
+		        id="startCameraButton"
 		        class="camera-start-button">
 
 			<svg class="camera-button-icon"
@@ -343,6 +344,41 @@
 			手動で追加する
 
 		</button>
+
+	</div>
+
+</div>
+
+<!-- ========================================
+     カメラプレビューモーダル
+======================================== -->
+<div id="cameraModal"
+     class="camera-modal-overlay">
+
+	<div class="camera-container">
+
+		<div class="camera-header">
+			<h2 class="camera-title">カメラプレビュー</h2>
+			<button type="button"
+			        id="closeCameraModal"
+			        class="camera-close-button"
+			        aria-label="閉じる">×</button>
+		</div>
+
+		<div class="camera-video-wrapper">
+			<video id="cameraVideo"
+			       autoplay
+			       playsinline
+			       muted></video>
+		</div>
+
+		<div class="camera-footer">
+			<button type="button"
+			        id="cancelCameraButton"
+			        class="camera-action-button camera-cancel-button">
+				閉じる
+			</button>
+		</div>
 
 	</div>
 
