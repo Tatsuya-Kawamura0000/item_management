@@ -1,25 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    // レシート関連要素
     const receiptMethodButton = document.getElementById("receiptMethodButton");
     const receiptModal = document.getElementById("receiptModal");
     const closeReceiptModal = document.getElementById("closeReceiptModal");
-
-    // 既存のレシートモーダル
-    if (receiptMethodButton && receiptModal) {
-        receiptMethodButton.addEventListener("click", () => receiptModal.classList.add("show"));
-    }
-    if (closeReceiptModal && receiptModal) {
-        closeReceiptModal.addEventListener("click", () => receiptModal.classList.remove("show"));
-    }
-
-    // レシートモーダル内の「手動で追加する」ボタン
     const manualFromModalBtn = document.getElementById("manualFromModal");
-    if (manualFromModalBtn && receiptModal && manualModal) {
-        manualFromModalBtn.addEventListener("click", () => {
-            receiptModal.classList.remove("show");
-            manualModal.classList.add("show");
-        });
-    }
+
+    // 手動追加関連要素
+    const manualBtn = document.getElementById("manualMethodButton");
+    const manualModal = document.getElementById("manualAddModal");
+    const closeManual = document.getElementById("closeManualModal");
+    const cancelManual = document.getElementById("cancelManualAdd");
+    const manualAddButton = document.getElementById("manualAddButton");
+    const manualNameInput = document.getElementById("manualFoodName");
+    const manualQuantityInput = document.getElementById("manualFoodQuantity");
+    const manualUnitSelect = document.getElementById("manualFoodUnit");
+    const manualCategorySelect = document.getElementById("manualFoodCategory");
+    const manualDeadlineInput = document.getElementById("manualFoodDeadline");
+    const manualSuggestions = document.getElementById("manualSuggestions");
 
     // カメラ関連要素
     const startCameraBtn = document.getElementById("startCameraButton");
@@ -28,6 +26,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelCameraBtn = document.getElementById("cancelCameraButton");
     const cameraVideo = document.getElementById("cameraVideo");
     let cameraStream = null;
+
+    // レシートモーダル開閉
+    if (receiptMethodButton && receiptModal) {
+        receiptMethodButton.addEventListener("click", () => receiptModal.classList.add("show"));
+    }
+    if (closeReceiptModal && receiptModal) {
+        closeReceiptModal.addEventListener("click", () => receiptModal.classList.remove("show"));
+    }
+
+    // レシートモーダル内の「手動で追加する」ボタン
+    if (manualFromModalBtn && receiptModal && manualModal) {
+        manualFromModalBtn.addEventListener("click", () => {
+            receiptModal.classList.remove("show");
+            manualModal.classList.add("show");
+        });
+    }
+
+    // 手動追加モーダル開閉
+    if (manualBtn && manualModal) {
+        manualBtn.addEventListener("click", () => manualModal.classList.add("show"));
+    }
+    if (closeManual) closeManual.addEventListener("click", () => manualModal.classList.remove("show"));
+    if (cancelManual) cancelManual.addEventListener("click", () => manualModal.classList.remove("show"));
 
     /**
      * カメラを起動してビデオ要素に映像をプレビュー表示
@@ -106,26 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cancelCameraBtn) {
         cancelCameraBtn.addEventListener("click", stopCamera);
     }
-
-    // 手動追加モーダル要素
-    const manualBtn = document.getElementById("manualMethodButton");
-    const manualModal = document.getElementById("manualAddModal");
-    const closeManual = document.getElementById("closeManualModal");
-    const cancelManual = document.getElementById("cancelManualAdd");
-    const manualAddButton = document.getElementById("manualAddButton");
-
-    const manualNameInput = document.getElementById("manualFoodName");
-    const manualQuantityInput = document.getElementById("manualFoodQuantity");
-    const manualUnitSelect = document.getElementById("manualFoodUnit");
-    const manualCategorySelect = document.getElementById("manualFoodCategory");
-    const manualDeadlineInput = document.getElementById("manualFoodDeadline");
-    const manualSuggestions = document.getElementById("manualSuggestions");
-
-    if (manualBtn && manualModal) {
-        manualBtn.addEventListener("click", () => manualModal.classList.add("show"));
-    }
-    if (closeManual) closeManual.addEventListener("click", () => manualModal.classList.remove("show"));
-    if (cancelManual) cancelManual.addEventListener("click", () => manualModal.classList.remove("show"));
 
     // デバウンス
     function debounce(fn, ms) {
