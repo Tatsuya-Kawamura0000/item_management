@@ -24,7 +24,7 @@ function showGlobalToast(message, type = "success") {
 }
 
 async function bulkConsumeSelectedItems(ids) {
-const response = await fetch("/items/bulk-stop", {
+    const response = await fetch("/items/bulk-stop", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -38,11 +38,27 @@ const response = await fetch("/items/bulk-stop", {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const foodCards = document.querySelectorAll(".food-card");
     const consumeButton = document.getElementById("consumeButton");
     const selectedCountSpan = document.getElementById("selectedCount");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalMessage = document.getElementById("modalMessage");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
 
-    // Sort cards by deadline (earliest first) and show a modern empty state if none
+    function parseDateFromText(dateElem) {
+        if (!dateElem) return new Date(0);
+        const txt = (dateElem.textContent || '').trim();
+        const parts = txt.split('/');
+        if (parts.length >= 2) {
+            const month = parseInt(parts[0], 10) - 1;
+            const day = parseInt(parts[1], 10);
+            const now = new Date();
+            return new Date(now.getFullYear(), month, day);
+        }
+        return new Date(0);
+    }
+
+    // Sort cards by deadline (earliest first) and show empty state if none
     function sortAndHandleEmpty(containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -69,73 +85,70 @@ document.addEventListener("DOMContentLoaded", () => {
         cards.forEach(c => container.appendChild(c));
     }
 
-    function parseDateFromText(dateElem) {
-        if (!dateElem) return new Date(0);
-        // expected M/d or similar; parse as this year fallback
-        const txt = (dateElem.textContent || '').trim();
-        const parts = txt.split('/');
-        if (parts.length >= 2) {
-            const month = parseInt(parts[0], 10) - 1;
-            const day = parseInt(parts[1], 10);
-            const now = new Date();
-            return new Date(now.getFullYear(), month, day);
+    function updateSummary(consumedCount = 0) {
+        const soonCount = document.querySelectorAll("#soonList .food-card").length;
+        const expiredCount = document.querySelectorAll("#expiredList .food-card").length;
+
+        const soonCountEl = document.getElementById("soonCount");
+        const expiredCountEl = document.getElementById("expiredCount");
+        const totalCountEl = document.getElementById("totalCount");
+
+        if (soonCountEl) soonCountEl.textContent = soonCount;
+        if (expiredCountEl) expiredCountEl.textContent = expiredCount;
+        if (totalCountEl && consumedCount > 0) {
+            const currentTotal = parseInt(totalCountEl.textContent || "0", 10);
+            totalCountEl.textContent = Math.max(0, currentTotal - consumedCount);
         }
-        return new Date(0);
     }
-
-    // apply sorting & empty-state for both lists right away
-    sortAndHandleEmpty('soonList');
-    sortAndHandleEmpty('expiredList');
-
-    // observe changes to keep empty-state in sync (e.g., after removals)
-    const observer = new MutationObserver(() => {
-        sortAndHandleEmpty('soonList');
-        sortAndHandleEmpty('expiredList');
-        updateSummary();
-    });
-    const soonContainer = document.getElementById('soonList');
-    const expiredContainer = document.getElementById('expiredList');
-    if (soonContainer) observer.observe(soonContainer, { childList: true });
-    if (expiredContainer) observer.observe(expiredContainer, { childList: true });
-
-    const modalOverlay = document.getElementById("modalOverlay");
-    const modalMessage = document.getElementById("modalMessage");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const confirmBtn = document.getElementById("confirmBtn");
-
-    if (!foodCards.length || !consumeButton || !selectedCountSpan) return;
 
     function updateConsumeButton() {
         const selectedCards = document.querySelectorAll(".food-card.selected");
         const count = selectedCards.length;
 
-        if (count > 0) {
-            selectedCountSpan.textContent = count;
-            consumeButton.classList.add("show");
-        } else {
-            selectedCountSpan.textContent = "0";
-            consumeButton.classList.remove("show");
+        if (selectedCountSpan) {
+            selectedCountSpan.textContent = count > 0 ? count : "0";
+        }
+        if (consumeButton) {
+            if (count > 0) {
+                consumeButton.classList.add("show");
+            } else {
+                consumeButton.classList.remove("show");
+            }
         }
     }
 
-    foodCards.forEach(card => {
-        card.addEventListener("click", () => {
-            card.classList.toggle("selected");
-            updateConsumeButton();
+    function attachCardEvents() {
+        const foodCards = document.querySelectorAll(".food-card");
+        foodCards.forEach(card => {
+            card.addEventListener("click", () => {
+                card.classList.toggle("selected");
+                updateConsumeButton();
+            });
         });
-    });
+    }
 
-    consumeButton.addEventListener("click", () => {
-        const selectedCards = document.querySelectorAll(".food-card.selected");
-        if (selectedCards.length === 0) return;
+    // Initialize list sorting and empty state
+    sortAndHandleEmpty('soonList');
+    sortAndHandleEmpty('expiredList');
+    attachCardEvents();
 
-        if (modalMessage) {
-            modalMessage.textContent = `選択した ${selectedCards.length} 件の食材を消費済みにしますか？`;
-        }
-        if (modalOverlay) {
-            modalOverlay.classList.add("show");
-        }
-    });
+    if (consumeButton) {
+        consumeButton.addEventListener("click", () => {
+            const selectedCards = document.querySelectorAll(".food-card.selected");
+            if (selectedCards.length === 0) return;
+
+            if (modalMessage) {
+                modalMessage.textContent = `選択した ${selectedCards.length} 件の食材を消費済みにしますか？`;
+            }
+            if (modalOverlay) {
+                modalOverlay.classList.add("show");
+            }
+        });
+    }
+
+    function closeModal() {
+        if (modalOverlay) modalOverlay.classList.remove("show");
+    }
 
     if (cancelBtn) {
         cancelBtn.addEventListener("click", closeModal);
@@ -164,11 +177,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 closeModal();
                 showGlobalToast("消費済みにしました");
                 selectedCards.forEach(card => card.remove());
-                updateSummary();
+                sortAndHandleEmpty('soonList');
+                sortAndHandleEmpty('expiredList');
+                updateSummary(ids.length);
                 updateConsumeButton();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
             } catch (error) {
                 console.error(error);
                 closeModal();
@@ -181,22 +193,5 @@ document.addEventListener("DOMContentLoaded", () => {
         modalOverlay.addEventListener("click", (e) => {
             if (e.target === modalOverlay) closeModal();
         });
-    }
-
-    function closeModal() {
-        if (modalOverlay) modalOverlay.classList.remove("show");
-    }
-
-    function updateSummary() {
-        const soonCount = document.querySelectorAll("#soonList .food-card").length;
-        const expiredCount = document.querySelectorAll("#expiredList .food-card").length;
-
-        const soonCountEl = document.getElementById("soonCount");
-        const expiredCountEl = document.getElementById("expiredCount");
-        const totalCountEl = document.getElementById("totalCount");
-
-        if (soonCountEl) soonCountEl.textContent = soonCount;
-        if (expiredCountEl) expiredCountEl.textContent = expiredCount;
-        if (totalCountEl) totalCountEl.textContent = soonCount + expiredCount;
     }
 });
