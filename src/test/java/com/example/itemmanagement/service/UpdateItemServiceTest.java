@@ -91,8 +91,8 @@ class UpdateItemServiceTest {
         sut.bulkDelete(ids, userId);
 
         //Assert
-        verify(slMapper, times(ids.size()))
-                .stop(anyInt(), eq(userId));
+        verify(itemMapper, times(ids.size()))
+                .deleteFromShoppingList(anyInt(), eq(userId));
     }
 
 
@@ -115,6 +115,36 @@ class UpdateItemServiceTest {
         //Assert
         verify(itemMapper, times(ids.size()))
                 .stop(anyInt(), eq(userId));
+
+    }
+
+    @Test
+    void bulkStopFromItems_stopAllが呼び出せること() {
+
+        //Arrange
+        Integer userId = 999;
+        List<Integer> ids = List.of(1, 2, 3);
+
+        //Act
+        sut.bulkStopFromItems(ids, userId);
+
+        //Assert
+        verify(itemMapper, times(1)).stopAll(ids, userId);
+
+    }
+
+    @Test
+    void bulkStopFromItems_空リストの場合はstopAllが呼び出されないこと() {
+
+        //Arrange
+        Integer userId = 999;
+        List<Integer> ids = List.of();
+
+        //Act
+        sut.bulkStopFromItems(ids, userId);
+
+        //Assert
+        verify(itemMapper, times(0)).stopAll(ids, userId);
 
     }
 
