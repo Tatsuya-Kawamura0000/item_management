@@ -119,15 +119,17 @@
        }
 
        .category-tab.active {
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           background: var(--tab-active-bg, #2e7d32);
+           border-color: var(--tab-active-border, #2e7d32);
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
            transform: translateY(-1px);
-           color: #ffffff;
+           color: var(--tab-active-text, #ffffff);
        }
 
        .category-tab.active .badge {
-           background: rgba(255, 255, 255, 0.22);
+           background: var(--badge-active-bg, rgba(255, 255, 255, 0.22));
            border-color: rgba(255, 255, 255, 0.2);
-           color: #ffffff;
+           color: var(--badge-active-text, #ffffff);
            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
        }
 
@@ -137,12 +139,14 @@
            --badge-bg: #d5efd9;
            --badge-border: rgba(64, 125, 77, 0.12);
            --badge-text: #3f8f4f;
+           --tab-active-bg: #2e7d32;
+           --tab-active-border: #2e7d32;
        }
 
        .category-tab.category-vegetable.active {
            background: linear-gradient(180deg, #2e7d32 0%, #236d2b 100%);
            border-color: #2e7d32;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
            color: #ffffff;
        }
 
@@ -152,12 +156,14 @@
            --badge-bg: #f5d5d5;
            --badge-border: rgba(185, 88, 88, 0.12);
            --badge-text: #b74f4f;
+           --tab-active-bg: #d64d4d;
+           --tab-active-border: #d64d4d;
        }
 
        .category-tab.category-meat.active {
            background: linear-gradient(180deg, #d64d4d 0%, #b93b3b 100%);
            border-color: #d64d4d;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(214, 77, 77, 0.25);
            color: #ffffff;
        }
 
@@ -167,12 +173,14 @@
            --badge-bg: #d6e8ff;
            --badge-border: rgba(43, 102, 194, 0.15);
            --badge-text: #3f7fc4;
+           --tab-active-bg: #3f7fc4;
+           --tab-active-border: #3f7fc4;
        }
 
        .category-tab.category-fish.active {
            background: linear-gradient(180deg, #3f7fc4 0%, #2d67a8 100%);
            border-color: #3f7fc4;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(63, 127, 196, 0.25);
            color: #ffffff;
        }
 
@@ -182,12 +190,14 @@
            --badge-bg: #f0d9c1;
            --badge-border: rgba(152, 103, 52, 0.12);
            --badge-text: #875627;
+           --tab-active-bg: #bb7a3a;
+           --tab-active-border: #bb7a3a;
        }
 
        .category-tab.category-seasoning.active {
            background: linear-gradient(180deg, #bb7a3a 0%, #9a6121 100%);
            border-color: #bb7a3a;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(187, 122, 58, 0.25);
            color: #ffffff;
        }
 
@@ -197,12 +207,14 @@
            --badge-bg: #e7d7ff;
            --badge-border: rgba(123, 90, 186, 0.12);
            --badge-text: #7654a9;
+           --tab-active-bg: #7b5ab8;
+           --tab-active-border: #7b5ab8;
        }
 
        .category-tab.category-leftover.active {
            background: linear-gradient(180deg, #7b5ab8 0%, #5a3d8e 100%);
            border-color: #7b5ab8;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(123, 90, 184, 0.25);
            color: #ffffff;
        }
 
@@ -212,12 +224,14 @@
            --badge-bg: #d7edf9;
            --badge-border: rgba(52, 110, 170, 0.12);
            --badge-text: #4c7ca8;
+           --tab-active-bg: #4f8fc4;
+           --tab-active-border: #4f8fc4;
        }
 
        .category-tab.category-drink.active {
            background: linear-gradient(180deg, #4f8fc4 0%, #3b739f 100%);
            border-color: #4f8fc4;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(79, 143, 196, 0.25);
            color: #ffffff;
        }
 
@@ -227,12 +241,14 @@
            --badge-bg: #f5e2a0;
            --badge-border: rgba(166, 122, 26, 0.12);
            --badge-text: #9a6e1e;
+           --tab-active-bg: #dca92d;
+           --tab-active-border: #dca92d;
        }
 
        .category-tab.category-preserved.active {
            background: linear-gradient(180deg, #dca92d 0%, #b78410 100%);
            border-color: #dca92d;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(220, 169, 45, 0.25);
            color: #ffffff;
        }
 
@@ -242,12 +258,14 @@
            --badge-bg: #e3e3e3;
            --badge-border: rgba(86, 86, 86, 0.12);
            --badge-text: #5d5d5d;
+           --tab-active-bg: #666666;
+           --tab-active-border: #666666;
        }
 
        .category-tab.category-other.active {
            background: linear-gradient(180deg, #666666 0%, #4a4a4a 100%);
            border-color: #666666;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(102, 102, 102, 0.25);
            color: #ffffff;
        }
 
@@ -257,6 +275,8 @@
            --badge-bg: #eaeaea;
            --badge-border: rgba(0, 0, 0, 0.05);
            --badge-text: #555555;
+           --tab-active-bg: #2f7d32;
+           --tab-active-border: #2f7d32;
            font-size: 13px;
            color: #555;
        }
@@ -264,7 +284,7 @@
        .category-tab.all-category.active {
            background: linear-gradient(180deg, #2f7d32 0%, #1d5f25 100%);
            border-color: #2f7d32;
-           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+           box-shadow: 0 4px 12px rgba(47, 125, 50, 0.25);
            color: #ffffff;
        }
 
@@ -961,6 +981,7 @@
         <button type="button"
                 th:each="cat : ${categories}"
                 class="category-tab"
+                th:classappend="${cat.name == '野菜'} ? 'category-vegetable' : (${cat.name == '肉'} ? 'category-meat' : (${cat.name == '魚'} ? 'category-fish' : (${cat.name == '調味料'} ? 'category-seasoning' : (${cat.name == '残り物'} ? 'category-leftover' : (${cat.name == '飲み物'} ? 'category-drink' : (${cat.name == '保存食'} ? 'category-preserved' : 'category-other'))))))"
                 th:attr="data-category=${cat.id},data-category-name=${cat.name}">
             <span th:text="${cat.name}">カテゴリ名</span>
             <span class="badge" th:text="${categoryCounts[cat.id] != null ? categoryCounts[cat.id] : 0}">0</span>
@@ -1327,8 +1348,24 @@
         "その他": { tabBg: '#f1f1f1', border: '#d9d9d9', badgeBg: '#e3e3e3', badgeText: '#5d5d5d', activeBg: '#666666', activeBorder: '#666666', activeText: '#ffffff', activeBadgeBg: 'rgba(255,255,255,0.22)', activeBadgeText: '#ffffff' }
     };
 
+    const categoryClassMap = {
+        "野菜": "category-vegetable",
+        "肉": "category-meat",
+        "魚": "category-fish",
+        "調味料": "category-seasoning",
+        "残り物": "category-leftover",
+        "飲み物": "category-drink",
+        "保存食": "category-preserved",
+        "その他": "category-other"
+    };
+
     function applyCategoryTabColor(tab) {
         const categoryName = tab.dataset.categoryName || tab.textContent.trim();
+        const className = categoryClassMap[categoryName];
+        if (className && !tab.classList.contains(className)) {
+            tab.classList.add(className);
+        }
+
         const palette = categoryColorMap[categoryName];
 
         if (!palette) {
