@@ -17,11 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RecipeCreateForm {
 
-    @NotBlank(message = "レシピ名を入力してください")
     private String recipeName;
 
-    @NotNull(message = "人数を入力してください")
-    @Min(value = 1, message = "人数は1人分以上を指定してください")
     private Integer servings = 2; // デフォルト2人分
 
     private Integer categoryId; // レシピカテゴリID
