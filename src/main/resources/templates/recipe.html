@@ -435,16 +435,16 @@
             <!-- レシピ基本情報 -->
             <div class="form-section">
                 <div class="form-group">
-                    <label for="recipeName" class="form-label required">レシピ名</label>
-                    <input type="text" id="recipeName" th:field="*{recipeName}" class="form-input" placeholder="例: 肉じゃが" required>
+                    <label for="recipeName" class="form-label">レシピ名</label>
+                    <input type="text" id="recipeName" th:field="*{recipeName}" class="form-input" placeholder="例: 肉じゃが">
                     <span th:if="${#fields.hasErrors('recipeName')}" th:errors="*{recipeName}" class="form-error"></span>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group flex-1">
-                        <label for="servings" class="form-label required">人数</label>
+                        <label for="servings" class="form-label">人数</label>
                         <div class="input-with-suffix">
-                            <input type="number" id="servings" th:field="*{servings}" class="form-input" min="1" max="20" required>
+                            <input type="number" id="servings" th:field="*{servings}" class="form-input" min="1" max="20">
                             <span class="input-suffix">人分</span>
                         </div>
                         <span th:if="${#fields.hasErrors('servings')}" th:errors="*{servings}" class="form-error"></span>
@@ -533,7 +533,7 @@
 
                 <div class="form-group">
                     <label for="sourceUrl" class="form-label">参考元・出典URL</label>
-                    <input type="url" id="sourceUrl" th:field="*{sourceUrl}" class="form-input" placeholder="https://...">
+                    <input type="text" id="sourceUrl" th:field="*{sourceUrl}" class="form-input" placeholder="https://...">
                 </div>
             </div>
 
@@ -563,15 +563,15 @@
             <!-- レシピ基本情報 -->
             <div class="form-section">
                 <div class="form-group">
-                    <label for="editRecipeName" class="form-label required">レシピ名</label>
-                    <input type="text" id="editRecipeName" name="recipeName" class="form-input" placeholder="例: 肉じゃが" required>
+                    <label for="editRecipeName" class="form-label">レシピ名</label>
+                    <input type="text" id="editRecipeName" name="recipeName" class="form-input" placeholder="例: 肉じゃが">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group flex-1">
-                        <label for="editServings" class="form-label required">人数</label>
+                        <label for="editServings" class="form-label">人数</label>
                         <div class="input-with-suffix">
-                            <input type="number" id="editServings" name="servings" class="form-input" min="1" max="20" required>
+                            <input type="number" id="editServings" name="servings" class="form-input" min="1" max="20">
                             <span class="input-suffix">人分</span>
                         </div>
                     </div>
@@ -626,7 +626,7 @@
 
                 <div class="form-group">
                     <label for="editSourceUrl" class="form-label">参考元・出典URL</label>
-                    <input type="url" id="editSourceUrl" name="sourceUrl" class="form-input" placeholder="https://...">
+                    <input type="text" id="editSourceUrl" name="sourceUrl" class="form-input" placeholder="https://...">
                 </div>
             </div>
 

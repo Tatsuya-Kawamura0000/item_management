@@ -47,8 +47,12 @@ public class RecipeService {
         // ① レシピ本体の作成・登録
         Recipe recipe = new Recipe();
         recipe.setUserId(userId);
-        recipe.setRecipeName(form.getRecipeName());
-        recipe.setServings(form.getServings() != null ? form.getServings() : 2);
+        String recipeName = form.getRecipeName();
+        if (recipeName == null || recipeName.isBlank()) {
+            recipeName = "無題のレシピ";
+        }
+        recipe.setRecipeName(recipeName.trim());
+        recipe.setServings(form.getServings() != null && form.getServings() >= 1 ? form.getServings() : 2);
         recipe.setCategoryId(form.getCategoryId());
         recipe.setSourceType(form.getSourceType() != null && !form.getSourceType().isBlank() ? form.getSourceType() : "USER");
         recipe.setSourceUrl(form.getSourceUrl());
@@ -203,8 +207,12 @@ public class RecipeService {
         }
 
         // ① レシピ本体の更新
-        recipe.setRecipeName(form.getRecipeName());
-        recipe.setServings(form.getServings() != null ? form.getServings() : 2);
+        String recipeName = form.getRecipeName();
+        if (recipeName == null || recipeName.isBlank()) {
+            recipeName = "無題のレシピ";
+        }
+        recipe.setRecipeName(recipeName.trim());
+        recipe.setServings(form.getServings() != null && form.getServings() >= 1 ? form.getServings() : 2);
         recipe.setCategoryId(form.getCategoryId());
         recipe.setSourceUrl(form.getSourceUrl());
         recipe.setMemo(form.getMemo());

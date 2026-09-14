@@ -148,6 +148,31 @@ class RecipeServiceTest {
     }
 
     @Test
+    void createRecipe_レシピ名や人数が未入力でも安全なデフォルト値で登録されること() {
+        // Arrange
+        RecipeCreateForm form = new RecipeCreateForm();
+        form.setRecipeName(null);
+        form.setServings(null);
+
+        doAnswer(invocation -> {
+            Recipe r = invocation.getArgument(0);
+            r.setId(102);
+            return null;
+        }).when(recipeMapper).insertRecipe(any(Recipe.class));
+
+        // Act
+        Integer createdId = sut.createRecipe(userId, form);
+
+        // Assert
+        assertEquals(102, createdId);
+        ArgumentCaptor<Recipe> recipeCaptor = ArgumentCaptor.forClass(Recipe.class);
+        verify(recipeMapper, times(1)).insertRecipe(recipeCaptor.capture());
+        Recipe capturedRecipe = recipeCaptor.getValue();
+        assertEquals("無題のレシピ", capturedRecipe.getRecipeName());
+        assertEquals(2, capturedRecipe.getServings());
+    }
+
+    @Test
     void getRecipeDetail_材料と手順を含んだRecipeが取得できること() {
         // Arrange
         Integer recipeId = 50;
@@ -222,6 +247,31 @@ class RecipeServiceTest {
         verify(recipeIngredientMapper, times(1)).batchInsert(anyList());
         verify(recipeStepMapper, times(1)).deleteByRecipeId(recipeId);
         verify(recipeStepMapper, times(1)).batchInsert(anyList());
+    }
+
+    @Test
+    void updateRecipe_レシピ名や人数が未入力でも安全なデフォルト値で更新されること() {
+        // Arrange
+        Integer recipeId = 15;
+        Recipe existing = new Recipe();
+        existing.setId(recipeId);
+        existing.setUserId(userId);
+
+        when(recipeMapper.findById(recipeId)).thenReturn(existing);
+
+        RecipeCreateForm form = new RecipeCreateForm();
+        form.setRecipeName("  ");
+        form.setServings(null);
+
+        // Act
+        sut.updateRecipe(userId, recipeId, form);
+
+        // Assert
+        ArgumentCaptor<Recipe> recipeCaptor = ArgumentCaptor.forClass(Recipe.class);
+        verify(recipeMapper, times(1)).updateRecipe(recipeCaptor.capture());
+        Recipe capturedRecipe = recipeCaptor.getValue();
+        assertEquals("無題のレシピ", capturedRecipe.getRecipeName());
+        assertEquals(2, capturedRecipe.getServings());
     }
 
     @Test

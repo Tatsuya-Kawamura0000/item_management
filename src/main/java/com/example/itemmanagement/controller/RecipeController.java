@@ -93,7 +93,10 @@ public class RecipeController {
 
         Integer recipeId = recipeService.createRecipe(userId, form);
         log.info("[RecipeCreate] 登録完了 - 生成レシピID: {}", recipeId);
-        redirectAttributes.addFlashAttribute("successMessage", "レシピ「" + form.getRecipeName() + "」を登録しました");
+        String displayName = (form.getRecipeName() != null && !form.getRecipeName().isBlank())
+                ? form.getRecipeName().trim()
+                : "無題のレシピ";
+        redirectAttributes.addFlashAttribute("successMessage", "レシピ「" + displayName + "」を登録しました");
 
         return "redirect:/recipes";
     }
@@ -123,7 +126,10 @@ public class RecipeController {
 
         try {
             recipeService.updateRecipe(userId, id, form);
-            redirectAttributes.addFlashAttribute("successMessage", "レシピ「" + form.getRecipeName() + "」を更新しました");
+            String displayName = (form.getRecipeName() != null && !form.getRecipeName().isBlank())
+                    ? form.getRecipeName().trim()
+                    : "無題のレシピ";
+            redirectAttributes.addFlashAttribute("successMessage", "レシピ「" + displayName + "」を更新しました");
         } catch (Exception e) {
             log.error("[RecipeEdit] 更新エラー: ", e);
             redirectAttributes.addFlashAttribute("errorMessage", "レシピの更新に失敗しました");
