@@ -1,117 +1,42 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>賞味期限管理 - Dashboard</title>
-    <!-- CSS読み込み -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/common-page.css}">
-    <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}">
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <link rel="stylesheet" th:href="@{/css/popup.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}"><link rel="stylesheet" th:href="@{/css/common-page.css}">
+    <link rel="stylesheet" th:href="@{/css/bottom-navigation.css}"><link rel="stylesheet" th:href="@{/css/dashboard.css}"><link rel="stylesheet" th:href="@{/css/popup.css}">
 </head>
 <body>
-
 <main class="dashboard">
-    <div th:replace="~{fragments/page-header :: pageHeader(
-    'Dashboard',
-    '食材の期限を確認しましょう'
-)}"></div>
-
-    <!-- サマリーカード -->
-    <section class="summary-grid">
-        <div class="summary-card total">
-            <span class="summary-label">アイテム数</span>
-            <span id="totalCount" class="summary-number" th:text="${summary.totalCount}">0</span>
+    <div th:replace="~{fragments/page-header :: pageHeader('Dashboard', '食材の期限を確認しましょう')}"></div>
+    <section class="summary-grid" aria-label="期限が近い食材">
+        <div class="summary-card soon"><div class="summary-card-heading"><span class="summary-label">SOON</span><span id="soonCount" class="summary-number" th:text="${summary.warningCount}">0</span></div>
+            <div class="item-scroll" id="soonList"><article class="food-card soon-card" th:each="food : ${soonFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}"><h3 class="food-card-name" th:text="${food.name}">牛乳</h3><div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M月d日')}">8月20日</div></article></div>
         </div>
-        <div class="summary-card soon">
-            <span class="summary-label">期限間近</span>
-            <span id="soonCount" class="summary-number" th:text="${summary.warningCount}">0</span>
-        </div>
-        <div class="summary-card expired">
-            <span class="summary-label">期限切れ</span>
-            <span id="expiredCount" class="summary-number" th:text="${summary.expiredCount}">0</span>
+        <div class="summary-card expired"><div class="summary-card-heading"><span class="summary-label">EXPIRED</span><span id="expiredCount" class="summary-number" th:text="${summary.expiredCount}">0</span></div>
+            <div class="item-scroll" id="expiredList"><article class="food-card expired-card" th:each="food : ${expiredFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}"><h3 class="food-card-name" th:text="${food.name}">食パン</h3><div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M月d日')}">8月18日</div></article></div>
         </div>
     </section>
-
-    <!-- SOON セクション -->
-    <section class="section soon">
-        <div class="section-header">
-            <h2 class="section-title">SOON</h2>
+    <section class="tonight-menu" aria-labelledby="tonightMenuTitle">
+        <div class="tonight-menu-header"><h2 id="tonightMenuTitle"><i class="fa-solid fa-hat-chef" aria-hidden="true"></i> 今夜の献立</h2><p>登録しているレシピから、今夜の一品を選びましょう。</p></div>
+        <div class="menu-category-row" th:each="category : ${rvm.categories}">
+            <div class="menu-category-name" th:classappend="${category.name.contains('主食')} ? 'staple' : (${category.name.contains('主菜')} ? 'main' : (${category.name.contains('副菜')} ? 'side' : (${category.name.contains('汁')} ? 'soup' : 'other')))" th:text="${category.name}">主菜</div>
+            <div class="menu-recipes-scroll"><button type="button" class="menu-recipe-card" th:each="recipe : ${menuRecipes}" th:if="${recipe.categoryId == category.id}" th:attr="data-recipe-id=${recipe.id}"><span th:text="${recipe.recipeName}">鶏の照り焼き</span><small><i class="fa-solid fa-utensils"></i> レシピを見る</small></button><p class="menu-empty" th:if="${menuCategoryCountMap[category.id] == null or menuCategoryCountMap[category.id] == 0}" th:text="${rvm.categoryCountMap[category.id] == null or rvm.categoryCountMap[category.id] == 0 ? 'レシピを登録しましょう' : '食材が足りません'}">食材が足りません</p></div>
         </div>
-        <div class="item-scroll" id="soonList">
-            <article class="food-card soon-card" th:each="food : ${soonFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}">
-                <div class="food-card-top">
-                    <h3 class="food-card-name" th:text="${food.name}">牛乳</h3>
-                </div>
-                <div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M/d')}">8/20</div>
-                <div class="food-card-details">
-                    <div class="food-card-detail">
-                        <span class="detail-label">量</span>
-                        <span th:text="${food.amount}">1本</span>
-                    </div>
-                    <div class="food-card-detail">
-                        <span class="detail-label">メモ</span>
-                        <span class="food-card-note" th:text="${food.others}">朝食用</span>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <!-- EXPIRED セクション -->
-    <section class="section expired">
-        <div class="section-header">
-            <h2 class="section-title">EXPIRED</h2>
-        </div>
-        <div class="item-scroll" id="expiredList">
-            <article class="food-card expired-card" th:each="food : ${expiredFoods}" th:attr="data-id=${food.id},data-deadline=${food.deadline}">
-                <div class="food-card-top">
-                    <h3 class="food-card-name" th:text="${food.name}">食パン</h3>
-                </div>
-                <div class="food-card-date" th:text="${#temporals.format(food.deadline, 'M/d')}">8/18</div>
-                <div class="food-card-details">
-                    <div class="food-card-detail">
-                        <span class="detail-label">量</span>
-                        <span th:text="${food.amount}">1袋</span>
-                    </div>
-                    <div class="food-card-detail">
-                        <span class="detail-label">メモ</span>
-                        <span class="food-card-note" th:text="${food.others}">開封済み</span>
-                    </div>
-                </div>
-            </article>
-        </div>
+        <div class="menu-empty-all" th:if="${#lists.isEmpty(rvm.recipes)}">レシピを登録しましょう。</div>
     </section>
 </main>
-
-<!-- 選択時に浮き出る「消費済みにする」ボタン -->
-<div class="action-area">
-    <button id="consumeButton" class="consume-button" type="button">
-        <span class="trash-icon">🗑</span>
-        <span>消費済みにする</span>
-        <span id="selectedCount" class="consume-count">0</span>件
-    </button>
+<div class="action-area"><button id="consumeButton" class="consume-button" type="button"><span class="trash-icon">🗑</span><span>消費済みにする</span><span id="selectedCount" class="consume-count">0</span>件</button></div>
+<div id="modalOverlay" class="modal-overlay"><div class="modal-container"><h3 class="modal-title">消費の確認</h3><p id="modalMessage" class="modal-message">選択した食材を消費済みにしますか？</p><div class="modal-actions"><button id="cancelBtn" class="modal-btn cancel" type="button">キャンセル</button><button id="confirmBtn" class="modal-btn confirm" type="button">消費済みにする</button></div></div></div>
+<div class="dashboard-recipe-modal" th:each="recipe : ${menuRecipes}" th:id="|recipeModal-${recipe.id}|" aria-hidden="true">
+    <div class="dashboard-recipe-dialog" role="dialog" aria-modal="true" th:aria-label="${recipe.recipeName}"><div class="dashboard-recipe-modal-header"><div><span class="dashboard-recipe-category" th:text="${recipe.categoryName != null ? recipe.categoryName : '未分類'}">主菜</span><h2 th:text="${recipe.recipeName}">鶏の照り焼き</h2></div><button type="button" class="dashboard-recipe-close" aria-label="閉じる"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="dashboard-recipe-modal-body" th:attr="data-base-servings=${recipe.servings != null ? recipe.servings : 2}"><div class="servings-stepper-container"><span class="stepper-title"><i class="fa-solid fa-users"></i> つくる人数</span><div class="servings-stepper"><button type="button" class="dashboard-servings-step" data-delta="-1" aria-label="1人分減らす"><i class="fa-solid fa-minus"></i></button><span class="servings-num-display" th:text="${recipe.servings != null ? recipe.servings : 2}">2</span><span class="servings-unit">人分</span><button type="button" class="dashboard-servings-step" data-delta="1" aria-label="1人分増やす"><i class="fa-solid fa-plus"></i></button></div></div>
+            <section class="details-section"><h3>材料リスト</h3><div class="details-ingredients-list" th:if="${recipe.ingredients != null and !#lists.isEmpty(recipe.ingredients)}"><div class="detail-ingredient-item" th:each="ingredient : ${recipe.ingredients}"><span class="ing-name-text"><i th:if="${ingredient.isMain}" class="fa-solid fa-star main-star-badge"></i><span th:text="${ingredient.ingredientName}">鶏肉</span></span><span class="ing-qty-wrap"><span class="calc-qty" th:data-base-qty="${ingredient.quantity}" th:text="${ingredient.quantity != null ? (ingredient.quantity % 1 == 0 ? #numbers.formatDecimal(ingredient.quantity, 1, 0) : ingredient.quantity) : ''}">200</span><span th:text="${ingredient.unit}">g</span></span></div></div><p class="empty-section-text" th:if="${recipe.ingredients == null or #lists.isEmpty(recipe.ingredients)}">材料が登録されていません</p></section>
+            <section class="details-section"><h3>調理手順</h3><div class="details-steps-list" th:if="${recipe.steps != null and !#lists.isEmpty(recipe.steps)}"><div class="detail-step-item" th:each="step : ${recipe.steps}"><span class="step-badge" th:text="${step.stepNo}">1</span><p th:text="${step.instruction}">手順</p></div></div><p class="empty-section-text" th:if="${recipe.steps == null or #lists.isEmpty(recipe.steps)}">調理手順が登録されていません</p></section>
+            <section class="details-meta-group" th:if="${(recipe.memo != null and !#strings.isEmpty(recipe.memo)) or (recipe.sourceUrl != null and !#strings.isEmpty(recipe.sourceUrl))}"><p th:if="${recipe.memo != null and !#strings.isEmpty(recipe.memo)}"><strong>メモ・コツ</strong><span th:text="${recipe.memo}">メモ</span></p><a th:if="${recipe.sourceUrl != null and !#strings.isEmpty(recipe.sourceUrl)}" th:href="${recipe.sourceUrl}" target="_blank" rel="noopener noreferrer">参考元を開く</a></section>
+        </div></div>
 </div>
-
-<!-- ポップアップモーダル -->
-<div id="modalOverlay" class="modal-overlay">
-    <div class="modal-container">
-        <h3 class="modal-title">消費の確認</h3>
-        <p id="modalMessage" class="modal-message">選択した食材を消費済みにしますか？</p>
-        <div class="modal-actions">
-            <button id="cancelBtn" class="modal-btn cancel" type="button">キャンセル</button>
-            <button id="confirmBtn" class="modal-btn confirm" type="button">消費済みにする</button>
-        </div>
-    </div>
-</div>
-
-<!-- 下部ナビゲーションの呼び出し -->
 <div th:replace="~{fragments/bottom-navigation :: bottomNavigation}"></div>
-
-<!-- JSの読み込み -->
-<script defer src="/js/pwa.js"></script>
-<script th:src="@{/js/dashboard.js}"></script>
-</body>
-</html>
+<script defer src="/js/pwa.js"></script><script th:src="@{/js/dashboard.js}"></script>
+</body></html>
