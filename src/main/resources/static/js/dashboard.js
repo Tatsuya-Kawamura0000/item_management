@@ -132,6 +132,52 @@ document.addEventListener("DOMContentLoaded", () => {
     sortAndHandleEmpty('expiredList');
     attachCardEvents();
 
+    // ダッシュボード内でレシピ詳細を開く（画面遷移はしない）
+    const recipeModals = document.querySelectorAll('.dashboard-recipe-modal');
+    function closeRecipeModal(modal) {
+        if (!modal) return;
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.menu-recipe-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const modal = document.getElementById(`recipeModal-${card.dataset.recipeId}`);
+            if (!modal) return;
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    recipeModals.forEach(modal => {
+        modal.querySelector('.dashboard-recipe-close')?.addEventListener('click', () => closeRecipeModal(modal));
+        modal.addEventListener('click', event => {
+            if (event.target === modal) closeRecipeModal(modal);
+        });
+        modal.querySelectorAll('.dashboard-servings-step').forEach(button => {
+            button.addEventListener('click', () => {
+                const body = modal.querySelector('.dashboard-recipe-modal-body');
+                const display = body.querySelector('.servings-num-display');
+                const baseServings = Number(body.dataset.baseServings) || 2;
+                const nextServings = Math.min(20, Math.max(1, (Number(display.textContent) || baseServings) + Number(button.dataset.delta)));
+                display.textContent = nextServings;
+                body.querySelectorAll('.calc-qty').forEach(quantity => {
+                    const baseQuantity = Number(quantity.dataset.baseQty);
+                    if (Number.isFinite(baseQuantity)) {
+                        const calculated = baseQuantity * nextServings / baseServings;
+                        quantity.textContent = Number.isInteger(calculated) ? calculated : Number(calculated.toFixed(2));
+                    }
+                });
+            });
+        });
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') recipeModals.forEach(closeRecipeModal);
+    });
+
     if (consumeButton) {
         consumeButton.addEventListener("click", () => {
             const selectedCards = document.querySelectorAll(".food-card.selected");
