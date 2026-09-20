@@ -44,9 +44,10 @@
                 shopping: '/shopping-list'
             };
 
-            let activeNav = 'dashboard';
+            const isAddPage = path === '/foods/add' || path.startsWith('/foods/add/');
+            let activeNav = isAddPage ? null : 'dashboard';
             Object.entries(routeMap).forEach(([key, value]) => {
-                if (path === value || path.startsWith(value + '/')) {
+                if (path === value || (path.startsWith(value + '/') && !isAddPage)) {
                     activeNav = key;
                 }
             });

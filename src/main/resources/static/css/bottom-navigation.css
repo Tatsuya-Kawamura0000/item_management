@@ -120,7 +120,8 @@
 /* スマホレスポンシブ */
 @media (max-width: 600px) {
     .bottom-navigation {
-        height: 68px;
+        /* 約2.3mm（9 CSS px）広げ、アイコンを画面下端から離す。 */
+        height: 77px;
     }
     .nav-icon {
         width: 19px;
