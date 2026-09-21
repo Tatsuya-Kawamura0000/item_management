@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -79,6 +80,13 @@ class AddItemServiceTest {
         verify(mapper, times(1))    //きちんとmapper.addが呼ばれて例外を出したかを確認するため
                 .add(any(Items.class));
 
+    }
+
+    @Test
+    void addAll_通常登録と同じMapperを件数分呼び出せること() {
+        sut.addAll(List.of(createForm(), createForm()), userId);
+
+        verify(mapper, times(2)).add(any(Items.class));
     }
 
     @Test
