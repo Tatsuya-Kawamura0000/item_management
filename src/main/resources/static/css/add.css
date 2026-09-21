@@ -616,6 +616,13 @@
     display: block;
 }
 
+#receiptPreviewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 .camera-footer {
     padding: 14px 18px;
     background: #232724;
@@ -643,4 +650,50 @@
 .camera-cancel-button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-}
+}
+
+.camera-capture-button {
+    background: #3f9c5b;
+    color: #fff;
+}
+
+.camera-capture-button:hover {
+    background: #35894e;
+    transform: translateY(-1px);
+}
+
+.camera-footer { gap: 10px; }
+
+.receipt-preview-actions .camera-action-button { width: 50%; }
+
+.receipt-items-modal {
+    width: min(680px, calc(100vw - 32px));
+    max-height: 88vh;
+    overflow-y: auto;
+}
+
+.receipt-items-list { display: grid; gap: 12px; margin: 16px 0; }
+
+.receipt-item-card {
+    padding: 14px;
+    border: 1px solid #e1ebe3;
+    border-radius: 12px;
+    background: #fbfdfb;
+}
+
+.receipt-item-card h3 { margin: 0 0 11px; color: #315242; font-size: 14px; }
+
+.receipt-item-fields {
+    display: grid;
+    grid-template-columns: minmax(130px, 2fr) minmax(70px, 1fr) minmax(85px, 1fr) minmax(110px, 1.4fr) minmax(140px, 1.3fr);
+    gap: 8px;
+}
+
+.receipt-item-field { display: grid; gap: 4px; font-size: 11px; color: #68736b; }
+.receipt-item-field input, .receipt-item-field select { min-width: 0; padding: 8px; border: 1px solid #dbe4dc; border-radius: 8px; background: #fff; font: inherit; color: #374047; }
+.receipt-read-message { min-height: 1.2em; color: #c7643b; font-size: 12px; }
+
+@media (max-width: 600px) {
+    .receipt-item-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .receipt-item-field:first-child { grid-column: 1 / -1; }
+}

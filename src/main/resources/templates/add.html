@@ -374,6 +374,11 @@
 
 		<div class="camera-footer">
 			<button type="button"
+			        id="captureReceiptButton"
+			        class="camera-action-button camera-capture-button">
+				撮影
+			</button>
+			<button type="button"
 			        id="cancelCameraButton"
 			        class="camera-action-button camera-cancel-button">
 				閉じる
@@ -382,6 +387,36 @@
 
 	</div>
 
+</div>
+
+<!-- 撮影画像の確認 -->
+<div id="receiptPreviewModal" class="camera-modal-overlay">
+	<div class="camera-container receipt-preview-container">
+		<div class="camera-header">
+			<h2 class="camera-title">撮影画像を確認</h2>
+			<button type="button" id="closeReceiptPreview" class="camera-close-button" aria-label="閉じる">×</button>
+		</div>
+		<div class="camera-video-wrapper"><img id="receiptPreviewImage" alt="撮影したレシート"></div>
+		<div class="camera-footer receipt-preview-actions">
+			<button type="button" id="retakeReceiptButton" class="camera-action-button camera-cancel-button">もう一度撮影</button>
+			<button type="button" id="readReceiptButton" class="camera-action-button camera-capture-button">読み取り開始</button>
+		</div>
+	</div>
+</div>
+
+<!-- AI読み取り結果の確認・編集 -->
+<div id="receiptItemsModal" class="modal-overlay receipt-items-overlay">
+	<div class="shopping-modal receipt-items-modal">
+		<button type="button" id="closeReceiptItemsModal" class="modal-close" aria-label="閉じる">×</button>
+		<h2>登録予定</h2>
+		<p class="shopping-modal-description">内容を確認・編集してから追加してください。カテゴリーが「-」の項目は未分類で登録されます。</p>
+		<p id="receiptReadMessage" class="receipt-read-message" aria-live="polite"></p>
+		<div id="receiptItemsList" class="receipt-items-list"></div>
+		<div class="shopping-modal-actions">
+			<button type="button" id="cancelReceiptItems" class="shopping-modal-button shopping-modal-button-cancel">キャンセル</button>
+			<button type="button" id="bulkAddReceiptItems" class="shopping-modal-button shopping-modal-button-confirm">まとめて追加</button>
+		</div>
+	</div>
 </div>
 
 <!-- 下部ナビゲーション -->

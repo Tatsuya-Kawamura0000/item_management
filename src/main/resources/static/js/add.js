@@ -25,7 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeCameraModal = document.getElementById("closeCameraModal");
     const cancelCameraBtn = document.getElementById("cancelCameraButton");
     const cameraVideo = document.getElementById("cameraVideo");
+    const captureReceiptButton = document.getElementById("captureReceiptButton");
+    const receiptPreviewModal = document.getElementById("receiptPreviewModal");
+    const receiptPreviewImage = document.getElementById("receiptPreviewImage");
+    const closeReceiptPreview = document.getElementById("closeReceiptPreview");
+    const retakeReceiptButton = document.getElementById("retakeReceiptButton");
+    const readReceiptButton = document.getElementById("readReceiptButton");
+    const receiptItemsModal = document.getElementById("receiptItemsModal");
+    const receiptItemsList = document.getElementById("receiptItemsList");
+    const receiptReadMessage = document.getElementById("receiptReadMessage");
+    const closeReceiptItemsModal = document.getElementById("closeReceiptItemsModal");
+    const cancelReceiptItems = document.getElementById("cancelReceiptItems");
+    const bulkAddReceiptItems = document.getElementById("bulkAddReceiptItems");
     let cameraStream = null;
+    let receiptImageBlob = null;
 
     // レシートモーダル開閉
     if (receiptMethodButton && receiptModal) {
@@ -127,6 +140,176 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cancelCameraBtn) {
         cancelCameraBtn.addEventListener("click", stopCamera);
     }
+
+    function closeReceiptPreviewModal() {
+        receiptPreviewModal?.classList.remove("show");
+        receiptImageBlob = null;
+        if (receiptPreviewImage) receiptPreviewImage.src = "";
+    }
+
+    function captureReceipt() {
+        if (!cameraVideo || !cameraVideo.videoWidth) {
+            alert("カメラ映像の準備ができていません。もう一度お試しください。");
+            return;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = cameraVideo.videoWidth;
+        canvas.height = cameraVideo.videoHeight;
+        canvas.getContext("2d").drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => {
+            if (!blob) {
+                alert("撮影に失敗しました。もう一度お試しください。");
+                return;
+            }
+            receiptImageBlob = blob;
+            if (receiptPreviewImage) receiptPreviewImage.src = URL.createObjectURL(blob);
+            stopCamera();
+            receiptPreviewModal?.classList.add("show");
+        }, "image/jpeg", 0.9);
+    }
+
+    captureReceiptButton?.addEventListener("click", captureReceipt);
+    closeReceiptPreview?.addEventListener("click", closeReceiptPreviewModal);
+    retakeReceiptButton?.addEventListener("click", () => {
+        closeReceiptPreviewModal();
+        startCamera();
+    });
+
+    function today() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function validDate(value) {
+        return /^\d{4}-\d{2}-\d{2}$/.test(value || "") && !Number.isNaN(new Date(`${value}T00:00:00`).getTime());
+    }
+
+    function categoryOptions(selectedId) {
+        const select = document.createElement("select");
+        const unknown = new Option("-", "");
+        select.appendChild(unknown);
+        Array.from(manualCategorySelect?.options || []).forEach(option => {
+            select.appendChild(new Option(option.text, option.value));
+        });
+        select.value = selectedId ? String(selectedId) : "";
+        return select;
+    }
+
+    function unitOptions(unit) {
+        const select = document.createElement("select");
+        Array.from(manualUnitSelect?.options || []).forEach(option => {
+            select.appendChild(new Option(option.text, option.value));
+        });
+        const value = unit && unit !== "-" ? unit : "";
+        if (value && !Array.from(select.options).some(option => option.value === value)) {
+            select.appendChild(new Option(value, value));
+        }
+        select.value = value;
+        return select;
+    }
+
+    function addReceiptField(label, control) {
+        const wrapper = document.createElement("label");
+        wrapper.className = "receipt-item-field";
+        wrapper.append(document.createTextNode(label), control);
+        return wrapper;
+    }
+
+    function renderReceiptItems(items) {
+        receiptItemsList.innerHTML = "";
+        items.forEach((item, index) => {
+            const card = document.createElement("section");
+            card.className = "receipt-item-card";
+            const title = document.createElement("h3");
+            title.textContent = `食材 ${index + 1}`;
+            const fields = document.createElement("div");
+            fields.className = "receipt-item-fields";
+            const name = document.createElement("input");
+            name.type = "text"; name.value = item.name || ""; name.maxLength = 50; name.dataset.field = "name";
+            const quantity = document.createElement("input");
+            quantity.type = "number"; quantity.min = "1"; quantity.step = "1"; quantity.value = item.quantity > 0 ? item.quantity : 1; quantity.dataset.field = "quantity";
+            const unit = unitOptions(item.unit); unit.dataset.field = "unit";
+            const category = categoryOptions(item.categoryId); category.dataset.field = "categoryId";
+            const deadline = document.createElement("input");
+            deadline.type = "date"; deadline.value = validDate(item.expirationDate) ? item.expirationDate : ""; deadline.dataset.field = "deadline";
+            fields.append(addReceiptField("食材名", name), addReceiptField("量", quantity), addReceiptField("単位", unit), addReceiptField("カテゴリー", category), addReceiptField("期限", deadline));
+            card.append(title, fields);
+            receiptItemsList.appendChild(card);
+        });
+    }
+
+    function closeReceiptItems() {
+        receiptItemsModal?.classList.remove("show");
+        if (receiptReadMessage) receiptReadMessage.textContent = "";
+    }
+
+    readReceiptButton?.addEventListener("click", async () => {
+        if (!receiptImageBlob) return;
+        readReceiptButton.disabled = true;
+        readReceiptButton.textContent = "読み取り中…";
+        try {
+            const formData = new FormData();
+            formData.append("image", receiptImageBlob, "receipt.jpg");
+            const response = await fetch("/api/receipts/analyze", { method: "POST", body: formData });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.message || "レシートの読み取りに失敗しました。");
+            closeReceiptPreviewModal();
+            renderReceiptItems(data.items || []);
+            receiptItemsModal?.classList.add("show");
+        } catch (error) {
+            alert(error.message || "レシートの読み取りに失敗しました。");
+        } finally {
+            readReceiptButton.disabled = false;
+            readReceiptButton.textContent = "読み取り開始";
+        }
+    });
+
+    closeReceiptItemsModal?.addEventListener("click", closeReceiptItems);
+    cancelReceiptItems?.addEventListener("click", closeReceiptItems);
+
+    bulkAddReceiptItems?.addEventListener("click", async () => {
+        const cards = Array.from(receiptItemsList?.querySelectorAll(".receipt-item-card") || []);
+        const items = cards.map(card => {
+            const value = field => card.querySelector(`[data-field="${field}"]`)?.value || "";
+            const unit = value("unit");
+            return {
+                name: value("name").trim(),
+                categoryId: value("categoryId") ? Number(value("categoryId")) : null,
+                amount: `${value("quantity") || "1"}${unit}`,
+                deadline: value("deadline") || null
+            };
+        });
+        const missingDeadline = items.find(item => item.deadline === null || item.deadline === undefined || item.deadline === "");
+        if (missingDeadline) {
+            receiptReadMessage.textContent = "期限を入力してください。";
+            return;
+        }
+        const missingCategory = items.find(item => item.categoryId === null || item.categoryId === undefined || item.categoryId === "");
+        if (missingCategory) {
+            receiptReadMessage.textContent = "カテゴリーを入力してください。";
+            return;
+        }
+        const invalid = cards.find((card, index) => !items[index].name || Number(card.querySelector('[data-field="quantity"]')?.value) < 1);
+        if (invalid) {
+            receiptReadMessage.textContent = "食材名と1以上の量を入力してください。";
+            return;
+        }
+        if (!window.confirm(`以下の ${items.length} 件を追加します。よろしいですか？`)) return;
+        bulkAddReceiptItems.disabled = true;
+        try {
+            const response = await fetch("/api/receipts/bulk-add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.message || "食材の登録に失敗しました。");
+            window.location.href = "/";
+        } catch (error) {
+            receiptReadMessage.textContent = error.message || "食材の登録に失敗しました。";
+        } finally {
+            bulkAddReceiptItems.disabled = false;
+        }
+    });
 
     // デバウンス
     function debounce(fn, ms) {

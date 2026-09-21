@@ -8,6 +8,8 @@ import com.example.itemmanagement.entity.Items;
 import com.example.itemmanagement.form.AddItemForm;
 import com.example.itemmanagement.mapper.ItemMapper;
 
+import java.util.List;
+
 @Service
 public class AddItemService {
 
@@ -23,6 +25,12 @@ public class AddItemService {
         mapper.add(entity);
 
         return entity;
+    }
+
+    /** レシート確認後の複数件登録も、通常登録と同じEntity変換・Mapperを使用する。 */
+    @Transactional
+    public List<Items> addAll(List<AddItemForm> forms, Integer userId) {
+        return forms.stream().map(form -> add(form, userId)).toList();
     }
     
 
